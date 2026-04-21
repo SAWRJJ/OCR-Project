@@ -4,7 +4,9 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="8dae42eb-bb69-4c69-8122-86870f3e60ec" name="Changes" comment="init" />
+    <list default="true" id="8dae42eb-bb69-4c69-8122-86870f3e60ec" name="Changes" comment="init">
+      <change beforePath="$PROJECT_DIR$/t1.py" beforeDir="false" afterPath="$PROJECT_DIR$/t1.py" afterDir="false" />
+    </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -46,42 +48,43 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent">{
-  &quot;keyToString&quot;: {
-    &quot;Python.LW_detect.executor&quot;: &quot;Run&quot;,
-    &quot;Python.detect_contours.executor&quot;: &quot;Run&quot;,
-    &quot;Python.detect_traffic_light.executor&quot;: &quot;Run&quot;,
-    &quot;Python.draw_micro_poly.executor&quot;: &quot;Run&quot;,
-    &quot;Python.feature_matching_ransac.executor&quot;: &quot;Run&quot;,
-    &quot;Python.find_boundary_dark.executor&quot;: &quot;Run&quot;,
-    &quot;Python.generate_report.executor&quot;: &quot;Run&quot;,
-    &quot;Python.kdtree_match.executor&quot;: &quot;Run&quot;,
-    &quot;Python.main.executor&quot;: &quot;Debug&quot;,
-    &quot;Python.match_contours.executor&quot;: &quot;Run&quot;,
-    &quot;Python.new_method.executor&quot;: &quot;Run&quot;,
-    &quot;Python.rotate_image.executor&quot;: &quot;Run&quot;,
-    &quot;Python.scan_dark_pixels.executor&quot;: &quot;Run&quot;,
-    &quot;Python.singal (1).executor&quot;: &quot;Run&quot;,
-    &quot;Python.singal.executor&quot;: &quot;Run&quot;,
-    &quot;Python.t1.executor&quot;: &quot;Run&quot;,
-    &quot;Python.template_match.executor&quot;: &quot;Run&quot;,
-    &quot;Python.template_matcher.executor&quot;: &quot;Run&quot;,
-    &quot;Python.test.executor&quot;: &quot;Run&quot;,
-    &quot;Python.test4.executor&quot;: &quot;Run&quot;,
-    &quot;Python.test5.executor&quot;: &quot;Run&quot;,
-    &quot;Python.visualize_micro_poly.executor&quot;: &quot;Run&quot;,
-    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
-    &quot;last_opened_file_path&quot;: &quot;D:/work/ocr+Transformer&quot;,
-    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
-    &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
-    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
-    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
-    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
-    &quot;settings.editor.selected.configurable&quot;: &quot;org.jetbrains.plugins.github.ui.GithubSettingsConfigurable&quot;,
-    &quot;two.files.diff.last.used.file&quot;: &quot;D:/work/ocr+Transformer/little_light/LW_detect.py&quot;,
-    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "Python.LW_detect.executor": "Run",
+    "Python.detect_contours.executor": "Run",
+    "Python.detect_traffic_light.executor": "Run",
+    "Python.draw_micro_poly.executor": "Run",
+    "Python.feature_matching_ransac.executor": "Run",
+    "Python.find_boundary_dark.executor": "Run",
+    "Python.generate_report.executor": "Run",
+    "Python.kdtree_match.executor": "Run",
+    "Python.main.executor": "Debug",
+    "Python.match_contours.executor": "Run",
+    "Python.new_method.executor": "Run",
+    "Python.rotate_image.executor": "Run",
+    "Python.scan_dark_pixels.executor": "Run",
+    "Python.singal (1).executor": "Run",
+    "Python.singal.executor": "Run",
+    "Python.t1.executor": "Run",
+    "Python.template_match.executor": "Run",
+    "Python.template_matcher.executor": "Run",
+    "Python.test.executor": "Run",
+    "Python.test4.executor": "Run",
+    "Python.test5.executor": "Run",
+    "Python.visualize_micro_poly.executor": "Run",
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "git-widget-placeholder": "master",
+    "last_opened_file_path": "D:/work/ocr+Transformer",
+    "node.js.detected.package.eslint": "true",
+    "node.js.detected.package.tslint": "true",
+    "node.js.selected.package.eslint": "(autodetect)",
+    "node.js.selected.package.tslint": "(autodetect)",
+    "nodejs_package_manager_path": "npm",
+    "settings.editor.selected.configurable": "org.jetbrains.plugins.github.ui.GithubSettingsConfigurable",
+    "two.files.diff.last.used.file": "D:/work/ocr+Transformer/little_light/LW_detect.py",
+    "vue.rearranger.settings.migration": "true"
   }
-}</component>
+}]]></component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
       <recent name="D:\work\ocr+Transformer\little_light" />
@@ -304,6 +307,7 @@
       <workItem from="1776783330344" duration="1034000" />
       <workItem from="1776784381833" duration="249000" />
       <workItem from="1776784656779" duration="284000" />
+      <workItem from="1776785331047" duration="327000" />
     </task>
     <task id="LOCAL-00001" summary="init">
       <option name="closed" value="true" />

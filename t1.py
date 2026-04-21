@@ -4,6 +4,6 @@ def fun(a,b):
     return c
 a = 10
 b=100
-c = fun(a,b)
+c = fun(a,b)+b
 print(a,b,c)
 
