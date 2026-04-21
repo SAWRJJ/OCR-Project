@@ -1,0 +1,131 @@
+{
+  "micro_image_name": "micro_0079_D73.jpg",
+  "text": "D73",
+  "global_poly": [
+    [
+      10596,
+      992
+    ],
+    [
+      10723,
+      936
+    ],
+    [
+      10754,
+      1005
+    ],
+    [
+      10627,
+      1062
+    ]
+  ],
+  "micro_poly": [
+    [
+      229,
+      96
+    ],
+    [
+      356,
+      40
+    ],
+    [
+      387,
+      109
+    ],
+    [
+      260,
+      166
+    ]
+  ],
+  "source_split_image": "split_48_10500_700.jpg",
+  "split_poly": [
+    [
+      96,
+      292
+    ],
+    [
+      223,
+      236
+    ],
+    [
+      254,
+      305
+    ],
+    [
+      127,
+      362
+    ]
+  ],
+  "color_presence": {
+    "blue": true,
+    "green": false,
+    "yellow": false,
+    "red": false,
+    "white": true
+  },
+  "color_stats": {
+    "blue": {
+      "pixels": 371,
+      "ratio": 0.005362976668883171
+    },
+    "green": {
+      "pixels": 2,
+      "ratio": 2.8910925438723293e-05
+    },
+    "yellow": {
+      "pixels": 3,
+      "ratio": 4.336638815808494e-05
+    },
+    "red": {
+      "pixels": 0,
+      "ratio": 0.0
+    },
+    "white": {
+      "pixels": 68803,
+      "ratio": 0.9945792014802394
+    }
+  },
+  "color_valid_pixels": 69178,
+  "re_ocr_text": "D73",
+  "re_ocr_confidence": 1.0,
+  "re_ocr_details": [
+    {
+      "text": "D73",
+      "confidence": 1.0,
+      "color_info": null,
+      "matched_key": "D7",
+      "color_presence": {
+        "blue": true,
+        "green": false,
+        "yellow": false,
+        "red": false,
+        "white": true
+      },
+      "color_stats": {
+        "blue": {
+          "pixels": 371,
+          "ratio": 0.005362976668883171
+        },
+        "green": {
+          "pixels": 2,
+          "ratio": 2.8910925438723293e-05
+        },
+        "yellow": {
+          "pixels": 3,
+          "ratio": 4.336638815808494e-05
+        },
+        "red": {
+          "pixels": 0,
+          "ratio": 0.0
+        },
+        "white": {
+          "pixels": 68803,
+          "ratio": 0.9945792014802394
+        }
+      }
+    }
+  ],
+  "matched_keys": [
+    "D7"
+  ]
+}

@@ -1,0 +1,131 @@
+{
+  "micro_image_name": "micro_0012_D15.jpg",
+  "text": "D15",
+  "global_poly": [
+    [
+      2187,
+      745
+    ],
+    [
+      2240,
+      745
+    ],
+    [
+      2240,
+      777
+    ],
+    [
+      2187,
+      777
+    ]
+  ],
+  "micro_poly": [
+    [
+      70,
+      40
+    ],
+    [
+      123,
+      40
+    ],
+    [
+      123,
+      72
+    ],
+    [
+      70,
+      72
+    ]
+  ],
+  "source_split_image": "split_11_2100_700.jpg",
+  "split_poly": [
+    [
+      87,
+      45
+    ],
+    [
+      140,
+      45
+    ],
+    [
+      140,
+      77
+    ],
+    [
+      87,
+      77
+    ]
+  ],
+  "color_presence": {
+    "blue": true,
+    "green": false,
+    "yellow": false,
+    "red": false,
+    "white": true
+  },
+  "color_stats": {
+    "blue": {
+      "pixels": 166,
+      "ratio": 0.0037942857142857144
+    },
+    "green": {
+      "pixels": 1,
+      "ratio": 2.2857142857142858e-05
+    },
+    "yellow": {
+      "pixels": 2,
+      "ratio": 4.5714285714285716e-05
+    },
+    "red": {
+      "pixels": 0,
+      "ratio": 0.0
+    },
+    "white": {
+      "pixels": 43581,
+      "ratio": 0.9961371428571428
+    }
+  },
+  "color_valid_pixels": 43750,
+  "re_ocr_text": "D15",
+  "re_ocr_confidence": 1.0,
+  "re_ocr_details": [
+    {
+      "text": "D15",
+      "confidence": 1.0,
+      "color_info": null,
+      "matched_key": "D15",
+      "color_presence": {
+        "blue": true,
+        "green": false,
+        "yellow": false,
+        "red": false,
+        "white": true
+      },
+      "color_stats": {
+        "blue": {
+          "pixels": 166,
+          "ratio": 0.0037942857142857144
+        },
+        "green": {
+          "pixels": 1,
+          "ratio": 2.2857142857142858e-05
+        },
+        "yellow": {
+          "pixels": 2,
+          "ratio": 4.5714285714285716e-05
+        },
+        "red": {
+          "pixels": 0,
+          "ratio": 0.0
+        },
+        "white": {
+          "pixels": 43581,
+          "ratio": 0.9961371428571428
+        }
+      }
+    }
+  ],
+  "matched_keys": [
+    "D15"
+  ]
+}

@@ -1,0 +1,131 @@
+{
+  "micro_image_name": "micro_0005_D21.jpg",
+  "text": "D21",
+  "global_poly": [
+    [
+      4829,
+      1345
+    ],
+    [
+      4935,
+      1348
+    ],
+    [
+      4933,
+      1415
+    ],
+    [
+      4828,
+      1412
+    ]
+  ],
+  "micro_poly": [
+    [
+      1,
+      40
+    ],
+    [
+      107,
+      43
+    ],
+    [
+      105,
+      110
+    ],
+    [
+      0,
+      107
+    ]
+  ],
+  "source_split_image": "split_28_4200_700.jpg",
+  "split_poly": [
+    [
+      629,
+      645
+    ],
+    [
+      735,
+      648
+    ],
+    [
+      733,
+      715
+    ],
+    [
+      628,
+      712
+    ]
+  ],
+  "color_presence": {
+    "blue": true,
+    "green": false,
+    "yellow": false,
+    "red": false,
+    "white": true
+  },
+  "color_stats": {
+    "blue": {
+      "pixels": 365,
+      "ratio": 0.00648508430609598
+    },
+    "green": {
+      "pixels": 3,
+      "ratio": 5.330206278982997e-05
+    },
+    "yellow": {
+      "pixels": 3,
+      "ratio": 5.330206278982997e-05
+    },
+    "red": {
+      "pixels": 0,
+      "ratio": 0.0
+    },
+    "white": {
+      "pixels": 55913,
+      "ratio": 0.9934260789225876
+    }
+  },
+  "color_valid_pixels": 56283,
+  "re_ocr_text": "D21",
+  "re_ocr_confidence": 1.0,
+  "re_ocr_details": [
+    {
+      "text": "D21",
+      "confidence": 1.0,
+      "color_info": null,
+      "matched_key": "D21",
+      "color_presence": {
+        "blue": true,
+        "green": false,
+        "yellow": false,
+        "red": false,
+        "white": true
+      },
+      "color_stats": {
+        "blue": {
+          "pixels": 365,
+          "ratio": 0.00648508430609598
+        },
+        "green": {
+          "pixels": 3,
+          "ratio": 5.330206278982997e-05
+        },
+        "yellow": {
+          "pixels": 3,
+          "ratio": 5.330206278982997e-05
+        },
+        "red": {
+          "pixels": 0,
+          "ratio": 0.0
+        },
+        "white": {
+          "pixels": 55913,
+          "ratio": 0.9934260789225876
+        }
+      }
+    }
+  ],
+  "matched_keys": [
+    "D21"
+  ]
+}

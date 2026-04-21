@@ -1,0 +1,89 @@
+{
+  "micro_image_name": "micro_0009_S.jpg",
+  "text": "S",
+  "global_poly": [
+    [
+      4434,
+      973
+    ],
+    [
+      4455,
+      973
+    ],
+    [
+      4455,
+      1002
+    ],
+    [
+      4434,
+      1002
+    ]
+  ],
+  "micro_poly": [
+    [
+      300,
+      40
+    ],
+    [
+      321,
+      40
+    ],
+    [
+      321,
+      69
+    ],
+    [
+      300,
+      69
+    ]
+  ],
+  "source_split_image": "split_13_3500_700.jpg",
+  "split_poly": [
+    [
+      934,
+      273
+    ],
+    [
+      955,
+      273
+    ],
+    [
+      955,
+      302
+    ],
+    [
+      934,
+      302
+    ]
+  ],
+  "color_presence": {
+    "blue": true,
+    "green": true,
+    "yellow": true,
+    "red": true,
+    "white": true
+  },
+  "color_stats": {
+    "blue": {
+      "pixels": 138,
+      "ratio": 0.003954607977991747
+    },
+    "green": {
+      "pixels": 884,
+      "ratio": 0.025332416322787713
+    },
+    "yellow": {
+      "pixels": 1412,
+      "ratio": 0.04046309032553874
+    },
+    "red": {
+      "pixels": 889,
+      "ratio": 0.025475699220541038
+    },
+    "white": {
+      "pixels": 31573,
+      "ratio": 0.9047741861531408
+    }
+  },
+  "color_valid_pixels": 34896
+}

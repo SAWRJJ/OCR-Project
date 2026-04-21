@@ -1,0 +1,134 @@
+{
+  "micro_image_name": "micro_0157_X9.jpg",
+  "text": "X9",
+  "global_poly": [
+    [
+      14775,
+      2002
+    ],
+    [
+      14846,
+      2002
+    ],
+    [
+      14846,
+      2062
+    ],
+    [
+      14775,
+      2062
+    ]
+  ],
+  "micro_poly": [
+    [
+      70,
+      40
+    ],
+    [
+      141,
+      40
+    ],
+    [
+      141,
+      100
+    ],
+    [
+      70,
+      100
+    ]
+  ],
+  "source_split_image": "split_87_14700_1400.jpg",
+  "split_poly": [
+    [
+      75,
+      602
+    ],
+    [
+      146,
+      602
+    ],
+    [
+      146,
+      662
+    ],
+    [
+      75,
+      662
+    ]
+  ],
+  "color_presence": {
+    "blue": false,
+    "green": true,
+    "yellow": true,
+    "red": true,
+    "white": true
+  },
+  "color_stats": {
+    "blue": {
+      "pixels": 13,
+      "ratio": 0.0002677927695952209
+    },
+    "green": {
+      "pixels": 1533,
+      "ratio": 0.031578947368421054
+    },
+    "yellow": {
+      "pixels": 1237,
+      "ratio": 0.02548151199917602
+    },
+    "red": {
+      "pixels": 2205,
+      "ratio": 0.04542177361211247
+    },
+    "white": {
+      "pixels": 43541,
+      "ratio": 0.8969203831496549
+    }
+  },
+  "color_valid_pixels": 48545,
+  "re_ocr_text": "X9",
+  "re_ocr_confidence": 1.0,
+  "re_ocr_details": [
+    {
+      "text": "X9",
+      "confidence": 1.0,
+      "color_info": null,
+      "matched_key": "X9",
+      "template_match_res": true,
+      "template_match_score": 0.5839227437973022,
+      "template_name": "ll1_r",
+      "color_presence": {
+        "blue": false,
+        "green": true,
+        "yellow": true,
+        "red": true,
+        "white": true
+      },
+      "color_stats": {
+        "blue": {
+          "pixels": 13,
+          "ratio": 0.0002677927695952209
+        },
+        "green": {
+          "pixels": 1533,
+          "ratio": 0.031578947368421054
+        },
+        "yellow": {
+          "pixels": 1237,
+          "ratio": 0.02548151199917602
+        },
+        "red": {
+          "pixels": 2205,
+          "ratio": 0.04542177361211247
+        },
+        "white": {
+          "pixels": 43541,
+          "ratio": 0.8969203831496549
+        }
+      }
+    }
+  ],
+  "matched_keys": [
+    "X9"
+  ]
+}

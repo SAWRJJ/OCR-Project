@@ -1,0 +1,131 @@
+{
+  "micro_image_name": "micro_0018_D16.jpg",
+  "text": "D16",
+  "global_poly": [
+    [
+      3292,
+      817
+    ],
+    [
+      3344,
+      817
+    ],
+    [
+      3344,
+      848
+    ],
+    [
+      3292,
+      848
+    ]
+  ],
+  "micro_poly": [
+    [
+      300,
+      40
+    ],
+    [
+      352,
+      40
+    ],
+    [
+      352,
+      71
+    ],
+    [
+      300,
+      71
+    ]
+  ],
+  "source_split_image": "split_12_2800_700.jpg",
+  "split_poly": [
+    [
+      492,
+      117
+    ],
+    [
+      544,
+      117
+    ],
+    [
+      544,
+      148
+    ],
+    [
+      492,
+      148
+    ]
+  ],
+  "color_presence": {
+    "blue": true,
+    "green": false,
+    "yellow": false,
+    "red": false,
+    "white": true
+  },
+  "color_stats": {
+    "blue": {
+      "pixels": 150,
+      "ratio": 0.0035016457735135512
+    },
+    "green": {
+      "pixels": 1,
+      "ratio": 2.334430515675701e-05
+    },
+    "yellow": {
+      "pixels": 2,
+      "ratio": 4.668861031351402e-05
+    },
+    "red": {
+      "pixels": 0,
+      "ratio": 0.0
+    },
+    "white": {
+      "pixels": 42677,
+      "ratio": 0.9962649111749189
+    }
+  },
+  "color_valid_pixels": 42837,
+  "re_ocr_text": "D16",
+  "re_ocr_confidence": 1.0,
+  "re_ocr_details": [
+    {
+      "text": "D16",
+      "confidence": 1.0,
+      "color_info": null,
+      "matched_key": "D16",
+      "color_presence": {
+        "blue": true,
+        "green": false,
+        "yellow": false,
+        "red": false,
+        "white": true
+      },
+      "color_stats": {
+        "blue": {
+          "pixels": 150,
+          "ratio": 0.0035016457735135512
+        },
+        "green": {
+          "pixels": 1,
+          "ratio": 2.334430515675701e-05
+        },
+        "yellow": {
+          "pixels": 2,
+          "ratio": 4.668861031351402e-05
+        },
+        "red": {
+          "pixels": 0,
+          "ratio": 0.0
+        },
+        "white": {
+          "pixels": 42677,
+          "ratio": 0.9962649111749189
+        }
+      }
+    }
+  ],
+  "matched_keys": [
+    "D16"
+  ]
+}

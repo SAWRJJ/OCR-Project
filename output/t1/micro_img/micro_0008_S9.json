@@ -1,0 +1,134 @@
+{
+  "micro_image_name": "micro_0008_S9.jpg",
+  "text": "S9",
+  "global_poly": [
+    [
+      11280,
+      2139
+    ],
+    [
+      11359,
+      2139
+    ],
+    [
+      11359,
+      2209
+    ],
+    [
+      11280,
+      2209
+    ]
+  ],
+  "micro_poly": [
+    [
+      250,
+      40
+    ],
+    [
+      329,
+      40
+    ],
+    [
+      329,
+      110
+    ],
+    [
+      250,
+      110
+    ]
+  ],
+  "source_split_image": "split_115_11200_2100.jpg",
+  "split_poly": [
+    [
+      80,
+      39
+    ],
+    [
+      159,
+      39
+    ],
+    [
+      159,
+      109
+    ],
+    [
+      80,
+      109
+    ]
+  ],
+  "color_presence": {
+    "blue": false,
+    "green": true,
+    "yellow": true,
+    "red": true,
+    "white": true
+  },
+  "color_stats": {
+    "blue": {
+      "pixels": 12,
+      "ratio": 0.00022937095016916108
+    },
+    "green": {
+      "pixels": 1525,
+      "ratio": 0.029149224917330886
+    },
+    "yellow": {
+      "pixels": 1220,
+      "ratio": 0.02331937993386471
+    },
+    "red": {
+      "pixels": 2216,
+      "ratio": 0.042357168797905076
+    },
+    "white": {
+      "pixels": 47331,
+      "ratio": 0.9046963702047136
+    }
+  },
+  "color_valid_pixels": 52317,
+  "re_ocr_text": "S9",
+  "re_ocr_confidence": 1.0,
+  "re_ocr_details": [
+    {
+      "text": "S9",
+      "confidence": 1.0,
+      "color_info": null,
+      "matched_key": "S9",
+      "template_match_res": false,
+      "template_match_score": 0.5539116859436035,
+      "template_name": "ll1_l",
+      "color_presence": {
+        "blue": false,
+        "green": true,
+        "yellow": true,
+        "red": true,
+        "white": true
+      },
+      "color_stats": {
+        "blue": {
+          "pixels": 12,
+          "ratio": 0.00022937095016916108
+        },
+        "green": {
+          "pixels": 1525,
+          "ratio": 0.029149224917330886
+        },
+        "yellow": {
+          "pixels": 1220,
+          "ratio": 0.02331937993386471
+        },
+        "red": {
+          "pixels": 2216,
+          "ratio": 0.042357168797905076
+        },
+        "white": {
+          "pixels": 47331,
+          "ratio": 0.9046963702047136
+        }
+      }
+    }
+  ],
+  "matched_keys": [
+    "S9"
+  ]
+}

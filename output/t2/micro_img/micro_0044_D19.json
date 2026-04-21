@@ -1,0 +1,131 @@
+{
+  "micro_image_name": "micro_0044_D19.jpg",
+  "text": "D19",
+  "global_poly": [
+    [
+      4937,
+      1495
+    ],
+    [
+      5038,
+      1498
+    ],
+    [
+      5036,
+      1558
+    ],
+    [
+      4935,
+      1555
+    ]
+  ],
+  "micro_poly": [
+    [
+      300,
+      40
+    ],
+    [
+      401,
+      43
+    ],
+    [
+      399,
+      103
+    ],
+    [
+      298,
+      100
+    ]
+  ],
+  "source_split_image": "split_51_4900_1400.jpg",
+  "split_poly": [
+    [
+      37,
+      95
+    ],
+    [
+      138,
+      98
+    ],
+    [
+      136,
+      158
+    ],
+    [
+      35,
+      155
+    ]
+  ],
+  "color_presence": {
+    "blue": true,
+    "green": false,
+    "yellow": false,
+    "red": false,
+    "white": true
+  },
+  "color_stats": {
+    "blue": {
+      "pixels": 370,
+      "ratio": 0.00421321126407725
+    },
+    "green": {
+      "pixels": 3,
+      "ratio": 3.416117241143716e-05
+    },
+    "yellow": {
+      "pixels": 2,
+      "ratio": 2.2774114940958108e-05
+    },
+    "red": {
+      "pixels": 0,
+      "ratio": 0.0
+    },
+    "white": {
+      "pixels": 87445,
+      "ratio": 0.9957412405060408
+    }
+  },
+  "color_valid_pixels": 87819,
+  "re_ocr_text": "D19",
+  "re_ocr_confidence": 1.0,
+  "re_ocr_details": [
+    {
+      "text": "D19",
+      "confidence": 1.0,
+      "color_info": null,
+      "matched_key": "D19",
+      "color_presence": {
+        "blue": true,
+        "green": false,
+        "yellow": false,
+        "red": false,
+        "white": true
+      },
+      "color_stats": {
+        "blue": {
+          "pixels": 370,
+          "ratio": 0.00421321126407725
+        },
+        "green": {
+          "pixels": 3,
+          "ratio": 3.416117241143716e-05
+        },
+        "yellow": {
+          "pixels": 2,
+          "ratio": 2.2774114940958108e-05
+        },
+        "red": {
+          "pixels": 0,
+          "ratio": 0.0
+        },
+        "white": {
+          "pixels": 87445,
+          "ratio": 0.9957412405060408
+        }
+      }
+    }
+  ],
+  "matched_keys": [
+    "D19"
+  ]
+}

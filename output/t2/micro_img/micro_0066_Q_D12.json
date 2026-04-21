@@ -1,0 +1,131 @@
+{
+  "micro_image_name": "micro_0066_Q_D12.jpg",
+  "text": "Q—D12",
+  "global_poly": [
+    [
+      11783,
+      1954
+    ],
+    [
+      12072,
+      1962
+    ],
+    [
+      12070,
+      2033
+    ],
+    [
+      11781,
+      2024
+    ]
+  ],
+  "micro_poly": [
+    [
+      300,
+      40
+    ],
+    [
+      589,
+      48
+    ],
+    [
+      587,
+      119
+    ],
+    [
+      298,
+      110
+    ]
+  ],
+  "source_split_image": "split_60_11200_1400.jpg",
+  "split_poly": [
+    [
+      583,
+      554
+    ],
+    [
+      872,
+      562
+    ],
+    [
+      870,
+      633
+    ],
+    [
+      581,
+      624
+    ]
+  ],
+  "color_presence": {
+    "blue": true,
+    "green": false,
+    "yellow": false,
+    "red": false,
+    "white": true
+  },
+  "color_stats": {
+    "blue": {
+      "pixels": 363,
+      "ratio": 0.00277130969194946
+    },
+    "green": {
+      "pixels": 1,
+      "ratio": 7.634461961293278e-06
+    },
+    "yellow": {
+      "pixels": 0,
+      "ratio": 0.0
+    },
+    "red": {
+      "pixels": 0,
+      "ratio": 0.0
+    },
+    "white": {
+      "pixels": 130620,
+      "ratio": 0.9972134213841279
+    }
+  },
+  "color_valid_pixels": 130985,
+  "re_ocr_text": "Q D12",
+  "re_ocr_confidence": 1.0,
+  "re_ocr_details": [
+    {
+      "text": "Q D12",
+      "confidence": 1.0,
+      "color_info": null,
+      "matched_key": "D12",
+      "color_presence": {
+        "blue": true,
+        "green": false,
+        "yellow": false,
+        "red": false,
+        "white": true
+      },
+      "color_stats": {
+        "blue": {
+          "pixels": 363,
+          "ratio": 0.00277130969194946
+        },
+        "green": {
+          "pixels": 1,
+          "ratio": 7.634461961293278e-06
+        },
+        "yellow": {
+          "pixels": 0,
+          "ratio": 0.0
+        },
+        "red": {
+          "pixels": 0,
+          "ratio": 0.0
+        },
+        "white": {
+          "pixels": 130620,
+          "ratio": 0.9972134213841279
+        }
+      }
+    }
+  ],
+  "matched_keys": [
+    "D12"
+  ]
+}

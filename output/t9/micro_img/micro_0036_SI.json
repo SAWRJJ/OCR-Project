@@ -1,0 +1,228 @@
+{
+  "micro_image_name": "micro_0036_SI.jpg",
+  "text": "SI",
+  "global_poly": [
+    [
+      1623,
+      570
+    ],
+    [
+      1683,
+      570
+    ],
+    [
+      1683,
+      615
+    ],
+    [
+      1623,
+      615
+    ]
+  ],
+  "micro_poly": [
+    [
+      300,
+      40
+    ],
+    [
+      360,
+      40
+    ],
+    [
+      360,
+      85
+    ],
+    [
+      300,
+      85
+    ]
+  ],
+  "source_split_image": "split_2_1400_0.jpg",
+  "split_poly": [
+    [
+      223,
+      570
+    ],
+    [
+      283,
+      570
+    ],
+    [
+      283,
+      615
+    ],
+    [
+      223,
+      615
+    ]
+  ],
+  "color_presence": {
+    "blue": false,
+    "green": true,
+    "yellow": true,
+    "red": true,
+    "white": true
+  },
+  "color_stats": {
+    "blue": {
+      "pixels": 5,
+      "ratio": 0.00010221813349688235
+    },
+    "green": {
+      "pixels": 493,
+      "ratio": 0.0100787079627926
+    },
+    "yellow": {
+      "pixels": 407,
+      "ratio": 0.008320556066646223
+    },
+    "red": {
+      "pixels": 477,
+      "ratio": 0.009751609935602576
+    },
+    "white": {
+      "pixels": 47521,
+      "ratio": 0.9715015843810691
+    }
+  },
+  "color_valid_pixels": 48915,
+  "polygon_total_pixels": 694,
+  "black_pixels_in_polygon": 128,
+  "left_black_pixels": 106,
+  "right_black_pixels": 22,
+  "re_ocr_text": "SI",
+  "re_ocr_confidence": 1.0,
+  "re_ocr_details": [
+    {
+      "text": "SI",
+      "confidence": 0.8398406505584717,
+      "color_info": null,
+      "matched_key": "SⅠ",
+      "template_match_res": 1,
+      "template_match_score": true,
+      "black_pixel_count": 128,
+      "black_radio": 18.443804034582133,
+      "template_name": "color_detection",
+      "color_centers_separate": {
+        "red": [
+          [
+            279,
+            50
+          ]
+        ],
+        "yellow": [
+          [
+            278,
+            64
+          ],
+          [
+            280,
+            74
+          ]
+        ],
+        "green": [
+          [
+            231,
+            74
+          ]
+        ]
+      },
+      "color_presence": {
+        "blue": false,
+        "green": true,
+        "yellow": true,
+        "red": true,
+        "white": true
+      },
+      "color_stats": {
+        "blue": {
+          "pixels": 5,
+          "ratio": 0.00010221813349688235
+        },
+        "green": {
+          "pixels": 493,
+          "ratio": 0.0100787079627926
+        },
+        "yellow": {
+          "pixels": 407,
+          "ratio": 0.008320556066646223
+        },
+        "red": {
+          "pixels": 477,
+          "ratio": 0.009751609935602576
+        },
+        "white": {
+          "pixels": 47521,
+          "ratio": 0.9715015843810691
+        }
+      }
+    },
+    {
+      "text": "SI",
+      "confidence": 1.0,
+      "color_info": null,
+      "matched_key": "SⅠ",
+      "template_match_res": 1,
+      "template_match_score": true,
+      "black_pixel_count": 128,
+      "black_radio": 18.443804034582133,
+      "template_name": "color_detection",
+      "color_centers_separate": {
+        "red": [
+          [
+            279,
+            50
+          ]
+        ],
+        "yellow": [
+          [
+            278,
+            64
+          ],
+          [
+            280,
+            74
+          ]
+        ],
+        "green": [
+          [
+            231,
+            74
+          ]
+        ]
+      },
+      "color_presence": {
+        "blue": false,
+        "green": true,
+        "yellow": true,
+        "red": true,
+        "white": true
+      },
+      "color_stats": {
+        "blue": {
+          "pixels": 5,
+          "ratio": 0.00010221813349688235
+        },
+        "green": {
+          "pixels": 493,
+          "ratio": 0.0100787079627926
+        },
+        "yellow": {
+          "pixels": 407,
+          "ratio": 0.008320556066646223
+        },
+        "red": {
+          "pixels": 477,
+          "ratio": 0.009751609935602576
+        },
+        "white": {
+          "pixels": 47521,
+          "ratio": 0.9715015843810691
+        }
+      }
+    }
+  ],
+  "matched_keys": [
+    "SⅠ"
+  ]
+}

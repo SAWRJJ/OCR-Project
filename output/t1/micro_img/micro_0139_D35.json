@@ -1,0 +1,131 @@
+{
+  "micro_image_name": "micro_0139_D35.jpg",
+  "text": "D35",
+  "global_poly": [
+    [
+      7994,
+      2340
+    ],
+    [
+      8099,
+      2351
+    ],
+    [
+      8093,
+      2400
+    ],
+    [
+      7988,
+      2397
+    ]
+  ],
+  "micro_poly": [
+    [
+      256,
+      40
+    ],
+    [
+      361,
+      51
+    ],
+    [
+      355,
+      100
+    ],
+    [
+      250,
+      97
+    ]
+  ],
+  "source_split_image": "split_77_7700_1400.jpg",
+  "split_poly": [
+    [
+      294,
+      940
+    ],
+    [
+      399,
+      951
+    ],
+    [
+      393,
+      1000
+    ],
+    [
+      288,
+      997
+    ]
+  ],
+  "color_presence": {
+    "blue": false,
+    "green": false,
+    "yellow": false,
+    "red": false,
+    "white": true
+  },
+  "color_stats": {
+    "blue": {
+      "pixels": 0,
+      "ratio": 0.0
+    },
+    "green": {
+      "pixels": 1,
+      "ratio": 2.0889473794155127e-05
+    },
+    "yellow": {
+      "pixels": 0,
+      "ratio": 0.0
+    },
+    "red": {
+      "pixels": 0,
+      "ratio": 0.0
+    },
+    "white": {
+      "pixels": 47870,
+      "ratio": 0.9999791105262058
+    }
+  },
+  "color_valid_pixels": 47871,
+  "re_ocr_text": "D35",
+  "re_ocr_confidence": 1.0,
+  "re_ocr_details": [
+    {
+      "text": "D35",
+      "confidence": 1.0,
+      "color_info": null,
+      "matched_key": "D35",
+      "color_presence": {
+        "blue": false,
+        "green": false,
+        "yellow": false,
+        "red": false,
+        "white": true
+      },
+      "color_stats": {
+        "blue": {
+          "pixels": 0,
+          "ratio": 0.0
+        },
+        "green": {
+          "pixels": 1,
+          "ratio": 2.0889473794155127e-05
+        },
+        "yellow": {
+          "pixels": 0,
+          "ratio": 0.0
+        },
+        "red": {
+          "pixels": 0,
+          "ratio": 0.0
+        },
+        "white": {
+          "pixels": 47870,
+          "ratio": 0.9999791105262058
+        }
+      }
+    }
+  ],
+  "matched_keys": [
+    "D35"
+  ]
+}

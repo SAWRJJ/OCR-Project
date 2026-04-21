@@ -1,0 +1,131 @@
+{
+  "micro_image_name": "micro_0019_D8.jpg",
+  "text": "D8",
+  "global_poly": [
+    [
+      3645,
+      701
+    ],
+    [
+      3683,
+      701
+    ],
+    [
+      3683,
+      729
+    ],
+    [
+      3645,
+      729
+    ]
+  ],
+  "micro_poly": [
+    [
+      300,
+      40
+    ],
+    [
+      338,
+      40
+    ],
+    [
+      338,
+      68
+    ],
+    [
+      300,
+      68
+    ]
+  ],
+  "source_split_image": "split_13_3500_700.jpg",
+  "split_poly": [
+    [
+      145,
+      1
+    ],
+    [
+      183,
+      1
+    ],
+    [
+      183,
+      29
+    ],
+    [
+      145,
+      29
+    ]
+  ],
+  "color_presence": {
+    "blue": true,
+    "green": true,
+    "yellow": true,
+    "red": true,
+    "white": true
+  },
+  "color_stats": {
+    "blue": {
+      "pixels": 139,
+      "ratio": 0.0022232885476647472
+    },
+    "green": {
+      "pixels": 499,
+      "ratio": 0.007981445937300064
+    },
+    "yellow": {
+      "pixels": 498,
+      "ratio": 0.007965451055662189
+    },
+    "red": {
+      "pixels": 488,
+      "ratio": 0.00780550223928343
+    },
+    "white": {
+      "pixels": 60892,
+      "ratio": 0.9739603326935381
+    }
+  },
+  "color_valid_pixels": 62520,
+  "re_ocr_text": "D8",
+  "re_ocr_confidence": 1.0,
+  "re_ocr_details": [
+    {
+      "text": "D8",
+      "confidence": 1.0,
+      "color_info": null,
+      "matched_key": "D8",
+      "color_presence": {
+        "blue": true,
+        "green": true,
+        "yellow": true,
+        "red": true,
+        "white": true
+      },
+      "color_stats": {
+        "blue": {
+          "pixels": 139,
+          "ratio": 0.0022232885476647472
+        },
+        "green": {
+          "pixels": 499,
+          "ratio": 0.007981445937300064
+        },
+        "yellow": {
+          "pixels": 498,
+          "ratio": 0.007965451055662189
+        },
+        "red": {
+          "pixels": 488,
+          "ratio": 0.00780550223928343
+        },
+        "white": {
+          "pixels": 60892,
+          "ratio": 0.9739603326935381
+        }
+      }
+    }
+  ],
+  "matched_keys": [
+    "D8"
+  ]
+}

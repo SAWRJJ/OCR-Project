@@ -1,0 +1,169 @@
+{
+  "micro_image_name": "micro_0113_SC.jpg",
+  "text": "SC",
+  "global_poly": [
+    [
+      20551,
+      1534
+    ],
+    [
+      20600,
+      1534
+    ],
+    [
+      20600,
+      1586
+    ],
+    [
+      20551,
+      1586
+    ]
+  ],
+  "micro_poly": [
+    [
+      250,
+      40
+    ],
+    [
+      299,
+      40
+    ],
+    [
+      299,
+      92
+    ],
+    [
+      250,
+      92
+    ]
+  ],
+  "source_split_image": "split_61_19600_700.jpg",
+  "split_poly": [
+    [
+      951,
+      834
+    ],
+    [
+      1000,
+      834
+    ],
+    [
+      1000,
+      886
+    ],
+    [
+      951,
+      886
+    ]
+  ],
+  "color_presence": {
+    "blue": false,
+    "green": false,
+    "yellow": true,
+    "red": true,
+    "white": true
+  },
+  "color_stats": {
+    "blue": {
+      "pixels": 9,
+      "ratio": 0.00022086431568872855
+    },
+    "green": {
+      "pixels": 6,
+      "ratio": 0.00014724287712581904
+    },
+    "yellow": {
+      "pixels": 2444,
+      "ratio": 0.05997693194925029
+    },
+    "red": {
+      "pixels": 1565,
+      "ratio": 0.0384058504503178
+    },
+    "white": {
+      "pixels": 36720,
+      "ratio": 0.9011264080100125
+    }
+  },
+  "color_valid_pixels": 40749,
+  "re_ocr_text": "BJ SC",
+  "re_ocr_confidence": 0.9928913116455078,
+  "re_ocr_details": [
+    {
+      "text": "BJ",
+      "confidence": 0.9928913116455078,
+      "color_info": null,
+      "matched_key": null,
+      "color_presence": {
+        "blue": false,
+        "green": false,
+        "yellow": true,
+        "red": true,
+        "white": true
+      },
+      "color_stats": {
+        "blue": {
+          "pixels": 9,
+          "ratio": 0.00022086431568872855
+        },
+        "green": {
+          "pixels": 6,
+          "ratio": 0.00014724287712581904
+        },
+        "yellow": {
+          "pixels": 2444,
+          "ratio": 0.05997693194925029
+        },
+        "red": {
+          "pixels": 1565,
+          "ratio": 0.0384058504503178
+        },
+        "white": {
+          "pixels": 36720,
+          "ratio": 0.9011264080100125
+        }
+      }
+    },
+    {
+      "text": "SC",
+      "confidence": 0.9629135131835938,
+      "color_info": null,
+      "matched_key": "S",
+      "template_match_res": true,
+      "template_match_score": 0.5698283910751343,
+      "template_name": "ll1_r",
+      "color_presence": {
+        "blue": false,
+        "green": false,
+        "yellow": true,
+        "red": true,
+        "white": true
+      },
+      "color_stats": {
+        "blue": {
+          "pixels": 9,
+          "ratio": 0.00022086431568872855
+        },
+        "green": {
+          "pixels": 6,
+          "ratio": 0.00014724287712581904
+        },
+        "yellow": {
+          "pixels": 2444,
+          "ratio": 0.05997693194925029
+        },
+        "red": {
+          "pixels": 1565,
+          "ratio": 0.0384058504503178
+        },
+        "white": {
+          "pixels": 36720,
+          "ratio": 0.9011264080100125
+        }
+      }
+    }
+  ],
+  "matched_keys": [
+    "S"
+  ]
+}

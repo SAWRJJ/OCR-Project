@@ -1,0 +1,131 @@
+{
+  "micro_image_name": "micro_0014_D.jpg",
+  "text": "D",
+  "global_poly": [
+    [
+      9344,
+      2800
+    ],
+    [
+      9396,
+      2800
+    ],
+    [
+      9395,
+      2818
+    ],
+    [
+      9343,
+      2816
+    ]
+  ],
+  "micro_poly": [
+    [
+      71,
+      40
+    ],
+    [
+      123,
+      40
+    ],
+    [
+      122,
+      58
+    ],
+    [
+      70,
+      56
+    ]
+  ],
+  "source_split_image": "split_144_8400_2800.jpg",
+  "split_poly": [
+    [
+      944,
+      0
+    ],
+    [
+      996,
+      0
+    ],
+    [
+      995,
+      18
+    ],
+    [
+      943,
+      16
+    ]
+  ],
+  "color_presence": {
+    "blue": true,
+    "green": false,
+    "yellow": false,
+    "red": false,
+    "white": true
+  },
+  "color_stats": {
+    "blue": {
+      "pixels": 366,
+      "ratio": 0.010890912337082663
+    },
+    "green": {
+      "pixels": 3,
+      "ratio": 8.926977325477593e-05
+    },
+    "yellow": {
+      "pixels": 1,
+      "ratio": 2.975659108492531e-05
+    },
+    "red": {
+      "pixels": 0,
+      "ratio": 0.0
+    },
+    "white": {
+      "pixels": 33236,
+      "ratio": 0.9889900612985776
+    }
+  },
+  "color_valid_pixels": 33606,
+  "re_ocr_text": "D55",
+  "re_ocr_confidence": 0.9979689717292786,
+  "re_ocr_details": [
+    {
+      "text": "D55",
+      "confidence": 0.9979689717292786,
+      "color_info": null,
+      "matched_key": "D55",
+      "color_presence": {
+        "blue": true,
+        "green": false,
+        "yellow": false,
+        "red": false,
+        "white": true
+      },
+      "color_stats": {
+        "blue": {
+          "pixels": 366,
+          "ratio": 0.010890912337082663
+        },
+        "green": {
+          "pixels": 3,
+          "ratio": 8.926977325477593e-05
+        },
+        "yellow": {
+          "pixels": 1,
+          "ratio": 2.975659108492531e-05
+        },
+        "red": {
+          "pixels": 0,
+          "ratio": 0.0
+        },
+        "white": {
+          "pixels": 33236,
+          "ratio": 0.9889900612985776
+        }
+      }
+    }
+  ],
+  "matched_keys": [
+    "D55"
+  ]
+}

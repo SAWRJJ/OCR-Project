@@ -1,0 +1,131 @@
+{
+  "micro_image_name": "micro_0067_D2.jpg",
+  "text": "D2",
+  "global_poly": [
+    [
+      12736,
+      1499
+    ],
+    [
+      12803,
+      1499
+    ],
+    [
+      12803,
+      1556
+    ],
+    [
+      12736,
+      1556
+    ]
+  ],
+  "micro_poly": [
+    [
+      300,
+      40
+    ],
+    [
+      367,
+      40
+    ],
+    [
+      367,
+      97
+    ],
+    [
+      300,
+      97
+    ]
+  ],
+  "source_split_image": "split_61_11900_1400.jpg",
+  "split_poly": [
+    [
+      836,
+      99
+    ],
+    [
+      903,
+      99
+    ],
+    [
+      903,
+      156
+    ],
+    [
+      836,
+      156
+    ]
+  ],
+  "color_presence": {
+    "blue": true,
+    "green": false,
+    "yellow": false,
+    "red": false,
+    "white": true
+  },
+  "color_stats": {
+    "blue": {
+      "pixels": 365,
+      "ratio": 0.004418565237391957
+    },
+    "green": {
+      "pixels": 4,
+      "ratio": 4.842263273854199e-05
+    },
+    "yellow": {
+      "pixels": 4,
+      "ratio": 4.842263273854199e-05
+    },
+    "red": {
+      "pixels": 0,
+      "ratio": 0.0
+    },
+    "white": {
+      "pixels": 82235,
+      "ratio": 0.9955088008135002
+    }
+  },
+  "color_valid_pixels": 82606,
+  "re_ocr_text": "D2",
+  "re_ocr_confidence": 1.0,
+  "re_ocr_details": [
+    {
+      "text": "D2",
+      "confidence": 1.0,
+      "color_info": null,
+      "matched_key": "D2",
+      "color_presence": {
+        "blue": true,
+        "green": false,
+        "yellow": false,
+        "red": false,
+        "white": true
+      },
+      "color_stats": {
+        "blue": {
+          "pixels": 365,
+          "ratio": 0.004418565237391957
+        },
+        "green": {
+          "pixels": 4,
+          "ratio": 4.842263273854199e-05
+        },
+        "yellow": {
+          "pixels": 4,
+          "ratio": 4.842263273854199e-05
+        },
+        "red": {
+          "pixels": 0,
+          "ratio": 0.0
+        },
+        "white": {
+          "pixels": 82235,
+          "ratio": 0.9955088008135002
+        }
+      }
+    }
+  ],
+  "matched_keys": [
+    "D2"
+  ]
+}

@@ -1,0 +1,131 @@
+{
+  "micro_image_name": "micro_0004_D5.jpg",
+  "text": "D5",
+  "global_poly": [
+    [
+      9342,
+      2763
+    ],
+    [
+      9400,
+      2771
+    ],
+    [
+      9400,
+      2828
+    ],
+    [
+      9335,
+      2819
+    ]
+  ],
+  "micro_poly": [
+    [
+      77,
+      40
+    ],
+    [
+      135,
+      48
+    ],
+    [
+      135,
+      105
+    ],
+    [
+      70,
+      96
+    ]
+  ],
+  "source_split_image": "split_111_8400_2100.jpg",
+  "split_poly": [
+    [
+      942,
+      663
+    ],
+    [
+      1000,
+      671
+    ],
+    [
+      1000,
+      728
+    ],
+    [
+      935,
+      719
+    ]
+  ],
+  "color_presence": {
+    "blue": true,
+    "green": false,
+    "yellow": false,
+    "red": false,
+    "white": true
+  },
+  "color_stats": {
+    "blue": {
+      "pixels": 366,
+      "ratio": 0.007102520812714677
+    },
+    "green": {
+      "pixels": 3,
+      "ratio": 5.821738371077604e-05
+    },
+    "yellow": {
+      "pixels": 1,
+      "ratio": 1.940579457025868e-05
+    },
+    "red": {
+      "pixels": 0,
+      "ratio": 0.0
+    },
+    "white": {
+      "pixels": 51161,
+      "ratio": 0.9928198560090042
+    }
+  },
+  "color_valid_pixels": 51531,
+  "re_ocr_text": "D5",
+  "re_ocr_confidence": 1.0,
+  "re_ocr_details": [
+    {
+      "text": "D5",
+      "confidence": 1.0,
+      "color_info": null,
+      "matched_key": "D5",
+      "color_presence": {
+        "blue": true,
+        "green": false,
+        "yellow": false,
+        "red": false,
+        "white": true
+      },
+      "color_stats": {
+        "blue": {
+          "pixels": 366,
+          "ratio": 0.007102520812714677
+        },
+        "green": {
+          "pixels": 3,
+          "ratio": 5.821738371077604e-05
+        },
+        "yellow": {
+          "pixels": 1,
+          "ratio": 1.940579457025868e-05
+        },
+        "red": {
+          "pixels": 0,
+          "ratio": 0.0
+        },
+        "white": {
+          "pixels": 51161,
+          "ratio": 0.9928198560090042
+        }
+      }
+    }
+  ],
+  "matched_keys": [
+    "D5"
+  ]
+}

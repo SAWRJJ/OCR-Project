@@ -1,0 +1,131 @@
+{
+  "micro_image_name": "micro_0071_D4.jpg",
+  "text": "D4",
+  "global_poly": [
+    [
+      12667,
+      1730
+    ],
+    [
+      12747,
+      1734
+    ],
+    [
+      12744,
+      1794
+    ],
+    [
+      12664,
+      1789
+    ]
+  ],
+  "micro_poly": [
+    [
+      73,
+      40
+    ],
+    [
+      153,
+      44
+    ],
+    [
+      150,
+      104
+    ],
+    [
+      70,
+      99
+    ]
+  ],
+  "source_split_image": "split_62_12600_1400.jpg",
+  "split_poly": [
+    [
+      67,
+      330
+    ],
+    [
+      147,
+      334
+    ],
+    [
+      144,
+      394
+    ],
+    [
+      64,
+      389
+    ]
+  ],
+  "color_presence": {
+    "blue": true,
+    "green": true,
+    "yellow": true,
+    "red": false,
+    "white": true
+  },
+  "color_stats": {
+    "blue": {
+      "pixels": 380,
+      "ratio": 0.006675450153711023
+    },
+    "green": {
+      "pixels": 1467,
+      "ratio": 0.025770750988142292
+    },
+    "yellow": {
+      "pixels": 1208,
+      "ratio": 0.021220904699165568
+    },
+    "red": {
+      "pixels": 2,
+      "ratio": 3.513394817742644e-05
+    },
+    "white": {
+      "pixels": 53869,
+      "ratio": 0.9463153271848924
+    }
+  },
+  "color_valid_pixels": 56925,
+  "re_ocr_text": "D4",
+  "re_ocr_confidence": 1.0,
+  "re_ocr_details": [
+    {
+      "text": "D4",
+      "confidence": 1.0,
+      "color_info": null,
+      "matched_key": "D4",
+      "color_presence": {
+        "blue": true,
+        "green": true,
+        "yellow": true,
+        "red": false,
+        "white": true
+      },
+      "color_stats": {
+        "blue": {
+          "pixels": 380,
+          "ratio": 0.006675450153711023
+        },
+        "green": {
+          "pixels": 1467,
+          "ratio": 0.025770750988142292
+        },
+        "yellow": {
+          "pixels": 1208,
+          "ratio": 0.021220904699165568
+        },
+        "red": {
+          "pixels": 2,
+          "ratio": 3.513394817742644e-05
+        },
+        "white": {
+          "pixels": 53869,
+          "ratio": 0.9463153271848924
+        }
+      }
+    }
+  ],
+  "matched_keys": [
+    "D4"
+  ]
+}

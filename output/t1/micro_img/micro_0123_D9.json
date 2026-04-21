@@ -1,0 +1,131 @@
+{
+  "micro_image_name": "micro_0123_D9.jpg",
+  "text": "D9",
+  "global_poly": [
+    [
+      4144,
+      1502
+    ],
+    [
+      4220,
+      1502
+    ],
+    [
+      4220,
+      1562
+    ],
+    [
+      4144,
+      1562
+    ]
+  ],
+  "micro_poly": [
+    [
+      70,
+      40
+    ],
+    [
+      146,
+      40
+    ],
+    [
+      146,
+      100
+    ],
+    [
+      70,
+      100
+    ]
+  ],
+  "source_split_image": "split_71_3500_1400.jpg",
+  "split_poly": [
+    [
+      644,
+      102
+    ],
+    [
+      720,
+      102
+    ],
+    [
+      720,
+      162
+    ],
+    [
+      644,
+      162
+    ]
+  ],
+  "color_presence": {
+    "blue": true,
+    "green": false,
+    "yellow": false,
+    "red": false,
+    "white": true
+  },
+  "color_stats": {
+    "blue": {
+      "pixels": 414,
+      "ratio": 0.007847448631435288
+    },
+    "green": {
+      "pixels": 0,
+      "ratio": 0.0
+    },
+    "yellow": {
+      "pixels": 0,
+      "ratio": 0.0
+    },
+    "red": {
+      "pixels": 0,
+      "ratio": 0.0
+    },
+    "white": {
+      "pixels": 52342,
+      "ratio": 0.9921525513685647
+    }
+  },
+  "color_valid_pixels": 52756,
+  "re_ocr_text": "D9",
+  "re_ocr_confidence": 1.0,
+  "re_ocr_details": [
+    {
+      "text": "D9",
+      "confidence": 1.0,
+      "color_info": null,
+      "matched_key": "D9",
+      "color_presence": {
+        "blue": true,
+        "green": false,
+        "yellow": false,
+        "red": false,
+        "white": true
+      },
+      "color_stats": {
+        "blue": {
+          "pixels": 414,
+          "ratio": 0.007847448631435288
+        },
+        "green": {
+          "pixels": 0,
+          "ratio": 0.0
+        },
+        "yellow": {
+          "pixels": 0,
+          "ratio": 0.0
+        },
+        "red": {
+          "pixels": 0,
+          "ratio": 0.0
+        },
+        "white": {
+          "pixels": 52342,
+          "ratio": 0.9921525513685647
+        }
+      }
+    }
+  ],
+  "matched_keys": [
+    "D9"
+  ]
+}

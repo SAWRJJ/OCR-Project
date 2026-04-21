@@ -1,0 +1,131 @@
+{
+  "micro_image_name": "micro_0073_D45.jpg",
+  "text": "D45",
+  "global_poly": [
+    [
+      8047,
+      1464
+    ],
+    [
+      8149,
+      1464
+    ],
+    [
+      8149,
+      1524
+    ],
+    [
+      8047,
+      1524
+    ]
+  ],
+  "micro_poly": [
+    [
+      250,
+      40
+    ],
+    [
+      352,
+      40
+    ],
+    [
+      352,
+      100
+    ],
+    [
+      250,
+      100
+    ]
+  ],
+  "source_split_image": "split_44_7700_700.jpg",
+  "split_poly": [
+    [
+      347,
+      764
+    ],
+    [
+      449,
+      764
+    ],
+    [
+      449,
+      824
+    ],
+    [
+      347,
+      824
+    ]
+  ],
+  "color_presence": {
+    "blue": true,
+    "green": false,
+    "yellow": false,
+    "red": false,
+    "white": true
+  },
+  "color_stats": {
+    "blue": {
+      "pixels": 456,
+      "ratio": 0.009705225071831436
+    },
+    "green": {
+      "pixels": 3,
+      "ratio": 6.385016494625944e-05
+    },
+    "yellow": {
+      "pixels": 1,
+      "ratio": 2.1283388315419814e-05
+    },
+    "red": {
+      "pixels": 0,
+      "ratio": 0.0
+    },
+    "white": {
+      "pixels": 46525,
+      "ratio": 0.9902096413749069
+    }
+  },
+  "color_valid_pixels": 46985,
+  "re_ocr_text": "D45",
+  "re_ocr_confidence": 1.0,
+  "re_ocr_details": [
+    {
+      "text": "D45",
+      "confidence": 1.0,
+      "color_info": null,
+      "matched_key": "D45",
+      "color_presence": {
+        "blue": true,
+        "green": false,
+        "yellow": false,
+        "red": false,
+        "white": true
+      },
+      "color_stats": {
+        "blue": {
+          "pixels": 456,
+          "ratio": 0.009705225071831436
+        },
+        "green": {
+          "pixels": 3,
+          "ratio": 6.385016494625944e-05
+        },
+        "yellow": {
+          "pixels": 1,
+          "ratio": 2.1283388315419814e-05
+        },
+        "red": {
+          "pixels": 0,
+          "ratio": 0.0
+        },
+        "white": {
+          "pixels": 46525,
+          "ratio": 0.9902096413749069
+        }
+      }
+    }
+  ],
+  "matched_keys": [
+    "D45"
+  ]
+}

@@ -1,0 +1,134 @@
+{
+  "micro_image_name": "micro_0037_S2.jpg",
+  "text": "S2",
+  "global_poly": [
+    [
+      12908,
+      488
+    ],
+    [
+      12985,
+      488
+    ],
+    [
+      12985,
+      554
+    ],
+    [
+      12908,
+      554
+    ]
+  ],
+  "micro_poly": [
+    [
+      250,
+      40
+    ],
+    [
+      327,
+      40
+    ],
+    [
+      327,
+      106
+    ],
+    [
+      250,
+      106
+    ]
+  ],
+  "source_split_image": "split_18_12600_0.jpg",
+  "split_poly": [
+    [
+      308,
+      488
+    ],
+    [
+      385,
+      488
+    ],
+    [
+      385,
+      554
+    ],
+    [
+      308,
+      554
+    ]
+  ],
+  "color_presence": {
+    "blue": false,
+    "green": true,
+    "yellow": true,
+    "red": true,
+    "white": true
+  },
+  "color_stats": {
+    "blue": {
+      "pixels": 12,
+      "ratio": 0.00023759082899400084
+    },
+    "green": {
+      "pixels": 1532,
+      "ratio": 0.030332429168234105
+    },
+    "yellow": {
+      "pixels": 1231,
+      "ratio": 0.024372859207634587
+    },
+    "red": {
+      "pixels": 2034,
+      "ratio": 0.04027164551448314
+    },
+    "white": {
+      "pixels": 45681,
+      "ratio": 0.9044488882729127
+    }
+  },
+  "color_valid_pixels": 50507,
+  "re_ocr_text": "S2",
+  "re_ocr_confidence": 0.9927995204925537,
+  "re_ocr_details": [
+    {
+      "text": "S2",
+      "confidence": 0.9927995204925537,
+      "color_info": null,
+      "matched_key": "S",
+      "template_match_res": false,
+      "template_match_score": 0.5539117455482483,
+      "template_name": "ll1_l",
+      "color_presence": {
+        "blue": false,
+        "green": true,
+        "yellow": true,
+        "red": true,
+        "white": true
+      },
+      "color_stats": {
+        "blue": {
+          "pixels": 12,
+          "ratio": 0.00023759082899400084
+        },
+        "green": {
+          "pixels": 1532,
+          "ratio": 0.030332429168234105
+        },
+        "yellow": {
+          "pixels": 1231,
+          "ratio": 0.024372859207634587
+        },
+        "red": {
+          "pixels": 2034,
+          "ratio": 0.04027164551448314
+        },
+        "white": {
+          "pixels": 45681,
+          "ratio": 0.9044488882729127
+        }
+      }
+    }
+  ],
+  "matched_keys": [
+    "S"
+  ]
+}

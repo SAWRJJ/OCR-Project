@@ -1,0 +1,89 @@
+{
+  "micro_image_name": "micro_0003_SII.jpg",
+  "text": "SII",
+  "global_poly": [
+    [
+      1994,
+      960
+    ],
+    [
+      2069,
+      960
+    ],
+    [
+      2069,
+      1013
+    ],
+    [
+      1994,
+      1013
+    ]
+  ],
+  "micro_poly": [
+    [
+      300,
+      40
+    ],
+    [
+      375,
+      40
+    ],
+    [
+      375,
+      93
+    ],
+    [
+      300,
+      93
+    ]
+  ],
+  "source_split_image": "split_10_1400_700.jpg",
+  "split_poly": [
+    [
+      594,
+      260
+    ],
+    [
+      669,
+      260
+    ],
+    [
+      669,
+      313
+    ],
+    [
+      594,
+      313
+    ]
+  ],
+  "color_presence": {
+    "blue": false,
+    "green": true,
+    "yellow": true,
+    "red": true,
+    "white": true
+  },
+  "color_stats": {
+    "blue": {
+      "pixels": 2,
+      "ratio": 3.7811472000604984e-05
+    },
+    "green": {
+      "pixels": 1026,
+      "ratio": 0.019397285136310356
+    },
+    "yellow": {
+      "pixels": 929,
+      "ratio": 0.017563428744281014
+    },
+    "red": {
+      "pixels": 1019,
+      "ratio": 0.019264944984308238
+    },
+    "white": {
+      "pixels": 49890,
+      "ratio": 0.9432071690550913
+    }
+  },
+  "color_valid_pixels": 52894
+}

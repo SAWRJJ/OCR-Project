@@ -1,0 +1,236 @@
+{
+  "micro_image_name": "micro_0026_S3.jpg",
+  "text": "S3",
+  "global_poly": [
+    [
+      1627,
+      453
+    ],
+    [
+      1672,
+      453
+    ],
+    [
+      1672,
+      492
+    ],
+    [
+      1627,
+      492
+    ]
+  ],
+  "micro_poly": [
+    [
+      300,
+      40
+    ],
+    [
+      345,
+      40
+    ],
+    [
+      345,
+      79
+    ],
+    [
+      300,
+      79
+    ]
+  ],
+  "source_split_image": "split_1_700_0.jpg",
+  "split_poly": [
+    [
+      927,
+      453
+    ],
+    [
+      972,
+      453
+    ],
+    [
+      972,
+      492
+    ],
+    [
+      927,
+      492
+    ]
+  ],
+  "color_presence": {
+    "blue": false,
+    "green": true,
+    "yellow": true,
+    "red": true,
+    "white": true
+  },
+  "color_stats": {
+    "blue": {
+      "pixels": 5,
+      "ratio": 0.0001089538253688087
+    },
+    "green": {
+      "pixels": 512,
+      "ratio": 0.01115687171776601
+    },
+    "yellow": {
+      "pixels": 391,
+      "ratio": 0.00852018914384084
+    },
+    "red": {
+      "pixels": 477,
+      "ratio": 0.01039419494018435
+    },
+    "white": {
+      "pixels": 44487,
+      "ratio": 0.9694057658364386
+    }
+  },
+  "color_valid_pixels": 45891,
+  "polygon_total_pixels": 1245,
+  "black_pixels_in_polygon": 188,
+  "left_black_pixels": 137,
+  "right_black_pixels": 51,
+  "re_ocr_text": "S3",
+  "re_ocr_confidence": 1.0,
+  "re_ocr_details": [
+    {
+      "text": "S3",
+      "confidence": 0.9872182011604309,
+      "color_info": null,
+      "matched_key": "S3",
+      "template_match_res": 1,
+      "template_match_score": true,
+      "black_pixel_count": 188,
+      "black_radio": 15.100401606425704,
+      "template_name": "color_detection",
+      "color_centers_separate": {
+        "red": [
+          [
+            275,
+            47
+          ]
+        ],
+        "yellow": [
+          [
+            272,
+            68
+          ],
+          [
+            276,
+            74
+          ],
+          [
+            281,
+            74
+          ]
+        ],
+        "green": [
+          [
+            227,
+            71
+          ]
+        ]
+      },
+      "color_presence": {
+        "blue": false,
+        "green": true,
+        "yellow": true,
+        "red": true,
+        "white": true
+      },
+      "color_stats": {
+        "blue": {
+          "pixels": 5,
+          "ratio": 0.0001089538253688087
+        },
+        "green": {
+          "pixels": 512,
+          "ratio": 0.01115687171776601
+        },
+        "yellow": {
+          "pixels": 391,
+          "ratio": 0.00852018914384084
+        },
+        "red": {
+          "pixels": 477,
+          "ratio": 0.01039419494018435
+        },
+        "white": {
+          "pixels": 44487,
+          "ratio": 0.9694057658364386
+        }
+      }
+    },
+    {
+      "text": "S3",
+      "confidence": 1.0,
+      "color_info": null,
+      "matched_key": "S3",
+      "template_match_res": 1,
+      "template_match_score": true,
+      "black_pixel_count": 188,
+      "black_radio": 15.100401606425704,
+      "template_name": "color_detection",
+      "color_centers_separate": {
+        "red": [
+          [
+            275,
+            47
+          ]
+        ],
+        "yellow": [
+          [
+            272,
+            68
+          ],
+          [
+            276,
+            74
+          ],
+          [
+            281,
+            74
+          ]
+        ],
+        "green": [
+          [
+            227,
+            71
+          ]
+        ]
+      },
+      "color_presence": {
+        "blue": false,
+        "green": true,
+        "yellow": true,
+        "red": true,
+        "white": true
+      },
+      "color_stats": {
+        "blue": {
+          "pixels": 5,
+          "ratio": 0.0001089538253688087
+        },
+        "green": {
+          "pixels": 512,
+          "ratio": 0.01115687171776601
+        },
+        "yellow": {
+          "pixels": 391,
+          "ratio": 0.00852018914384084
+        },
+        "red": {
+          "pixels": 477,
+          "ratio": 0.01039419494018435
+        },
+        "white": {
+          "pixels": 44487,
+          "ratio": 0.9694057658364386
+        }
+      }
+    }
+  ],
+  "matched_keys": [
+    "S3"
+  ]
+}

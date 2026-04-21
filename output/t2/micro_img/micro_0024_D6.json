@@ -1,0 +1,131 @@
+{
+  "micro_image_name": "micro_0024_D6.jpg",
+  "text": "D6",
+  "global_poly": [
+    [
+      12023,
+      1350
+    ],
+    [
+      12095,
+      1355
+    ],
+    [
+      12091,
+      1416
+    ],
+    [
+      12019,
+      1411
+    ]
+  ],
+  "micro_poly": [
+    [
+      74,
+      40
+    ],
+    [
+      146,
+      45
+    ],
+    [
+      142,
+      106
+    ],
+    [
+      70,
+      101
+    ]
+  ],
+  "source_split_image": "split_39_11900_700.jpg",
+  "split_poly": [
+    [
+      123,
+      650
+    ],
+    [
+      195,
+      655
+    ],
+    [
+      191,
+      716
+    ],
+    [
+      119,
+      711
+    ]
+  ],
+  "color_presence": {
+    "blue": true,
+    "green": false,
+    "yellow": false,
+    "red": false,
+    "white": true
+  },
+  "color_stats": {
+    "blue": {
+      "pixels": 364,
+      "ratio": 0.005985070209477457
+    },
+    "green": {
+      "pixels": 2,
+      "ratio": 3.288500115097504e-05
+    },
+    "yellow": {
+      "pixels": 0,
+      "ratio": 0.0
+    },
+    "red": {
+      "pixels": 0,
+      "ratio": 0.0
+    },
+    "white": {
+      "pixels": 60450,
+      "ratio": 0.9939491597882206
+    }
+  },
+  "color_valid_pixels": 60818,
+  "re_ocr_text": "D6",
+  "re_ocr_confidence": 1.0,
+  "re_ocr_details": [
+    {
+      "text": "D6",
+      "confidence": 1.0,
+      "color_info": null,
+      "matched_key": "D6",
+      "color_presence": {
+        "blue": true,
+        "green": false,
+        "yellow": false,
+        "red": false,
+        "white": true
+      },
+      "color_stats": {
+        "blue": {
+          "pixels": 364,
+          "ratio": 0.005985070209477457
+        },
+        "green": {
+          "pixels": 2,
+          "ratio": 3.288500115097504e-05
+        },
+        "yellow": {
+          "pixels": 0,
+          "ratio": 0.0
+        },
+        "red": {
+          "pixels": 0,
+          "ratio": 0.0
+        },
+        "white": {
+          "pixels": 60450,
+          "ratio": 0.9939491597882206
+        }
+      }
+    }
+  ],
+  "matched_keys": [
+    "D6"
+  ]
+}

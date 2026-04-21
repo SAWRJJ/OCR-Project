@@ -1,0 +1,130 @@
+{
+    "input_path": "splits/split_71_3500_2100.jpg",
+    "page_index": null,
+    "model_settings": {
+        "use_doc_preprocessor": true,
+        "use_textline_orientation": false
+    },
+    "doc_preprocessor_res": {
+        "input_path": null,
+        "page_index": null,
+        "model_settings": {
+            "use_doc_orientation_classify": false,
+            "use_doc_unwarping": false
+        },
+        "angle": -1
+    },
+    "dt_polys": [
+        [
+            [
+                195,
+                35
+            ],
+            [
+                592,
+                26
+            ],
+            [
+                593,
+                98
+            ],
+            [
+                197,
+                107
+            ]
+        ],
+        [
+            [
+                187,
+                86
+            ],
+            [
+                289,
+                89
+            ],
+            [
+                287,
+                152
+            ],
+            [
+                185,
+                149
+            ]
+        ]
+    ],
+    "text_det_params": {
+        "limit_side_len": 64,
+        "limit_type": "min",
+        "thresh": 0.3,
+        "max_side_limit": 4000,
+        "box_thresh": 0.6,
+        "unclip_ratio": 1.5
+    },
+    "text_type": "general",
+    "textline_orientation_angles": [
+        -1,
+        -1
+    ],
+    "text_rec_score_thresh": 0.0,
+    "return_word_box": false,
+    "rec_texts": [
+        "。[安全线",
+        "650"
+    ],
+    "rec_scores": [
+        0.8234621286392212,
+        0.9973013401031494
+    ],
+    "rec_polys": [
+        [
+            [
+                195,
+                35
+            ],
+            [
+                592,
+                26
+            ],
+            [
+                593,
+                98
+            ],
+            [
+                197,
+                107
+            ]
+        ],
+        [
+            [
+                187,
+                86
+            ],
+            [
+                289,
+                89
+            ],
+            [
+                287,
+                152
+            ],
+            [
+                185,
+                149
+            ]
+        ]
+    ],
+    "rec_boxes": [
+        [
+            195,
+            26,
+            593,
+            107
+        ],
+        [
+            185,
+            86,
+            289,
+            152
+        ]
+    ]
+}

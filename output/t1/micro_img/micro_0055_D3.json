@@ -1,0 +1,131 @@
+{
+  "micro_image_name": "micro_0055_D3.jpg",
+  "text": "D3",
+  "global_poly": [
+    [
+      2224,
+      1056
+    ],
+    [
+      2305,
+      1056
+    ],
+    [
+      2305,
+      1112
+    ],
+    [
+      2224,
+      1112
+    ]
+  ],
+  "micro_poly": [
+    [
+      70,
+      40
+    ],
+    [
+      151,
+      40
+    ],
+    [
+      151,
+      96
+    ],
+    [
+      70,
+      96
+    ]
+  ],
+  "source_split_image": "split_35_1400_700.jpg",
+  "split_poly": [
+    [
+      824,
+      356
+    ],
+    [
+      905,
+      356
+    ],
+    [
+      905,
+      412
+    ],
+    [
+      824,
+      412
+    ]
+  ],
+  "color_presence": {
+    "blue": true,
+    "green": false,
+    "yellow": false,
+    "red": false,
+    "white": true
+  },
+  "color_stats": {
+    "blue": {
+      "pixels": 363,
+      "ratio": 0.007040068267328653
+    },
+    "green": {
+      "pixels": 1,
+      "ratio": 1.9394127458205656e-05
+    },
+    "yellow": {
+      "pixels": 1,
+      "ratio": 1.9394127458205656e-05
+    },
+    "red": {
+      "pixels": 0,
+      "ratio": 0.0
+    },
+    "white": {
+      "pixels": 51196,
+      "ratio": 0.9929017493502967
+    }
+  },
+  "color_valid_pixels": 51562,
+  "re_ocr_text": "D3",
+  "re_ocr_confidence": 1.0,
+  "re_ocr_details": [
+    {
+      "text": "D3",
+      "confidence": 1.0,
+      "color_info": null,
+      "matched_key": "D3",
+      "color_presence": {
+        "blue": true,
+        "green": false,
+        "yellow": false,
+        "red": false,
+        "white": true
+      },
+      "color_stats": {
+        "blue": {
+          "pixels": 363,
+          "ratio": 0.007040068267328653
+        },
+        "green": {
+          "pixels": 1,
+          "ratio": 1.9394127458205656e-05
+        },
+        "yellow": {
+          "pixels": 1,
+          "ratio": 1.9394127458205656e-05
+        },
+        "red": {
+          "pixels": 0,
+          "ratio": 0.0
+        },
+        "white": {
+          "pixels": 51196,
+          "ratio": 0.9929017493502967
+        }
+      }
+    }
+  ],
+  "matched_keys": [
+    "D3"
+  ]
+}

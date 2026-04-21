@@ -1,0 +1,134 @@
+{
+  "micro_image_name": "micro_0094_X6.jpg",
+  "text": "X6",
+  "global_poly": [
+    [
+      14053,
+      1292
+    ],
+    [
+      14129,
+      1287
+    ],
+    [
+      14133,
+      1352
+    ],
+    [
+      14057,
+      1357
+    ]
+  ],
+  "micro_poly": [
+    [
+      70,
+      45
+    ],
+    [
+      146,
+      40
+    ],
+    [
+      150,
+      105
+    ],
+    [
+      74,
+      110
+    ]
+  ],
+  "source_split_image": "split_53_14000_700.jpg",
+  "split_poly": [
+    [
+      53,
+      592
+    ],
+    [
+      129,
+      587
+    ],
+    [
+      133,
+      652
+    ],
+    [
+      57,
+      657
+    ]
+  ],
+  "color_presence": {
+    "blue": false,
+    "green": true,
+    "yellow": true,
+    "red": true,
+    "white": true
+  },
+  "color_stats": {
+    "blue": {
+      "pixels": 16,
+      "ratio": 0.00029973211442273467
+    },
+    "green": {
+      "pixels": 1546,
+      "ratio": 0.028961615556096738
+    },
+    "yellow": {
+      "pixels": 1238,
+      "ratio": 0.023191772353459095
+    },
+    "red": {
+      "pixels": 1559,
+      "ratio": 0.029205147899065212
+    },
+    "white": {
+      "pixels": 49012,
+      "ratio": 0.918154399505442
+    }
+  },
+  "color_valid_pixels": 53381,
+  "re_ocr_text": "X6",
+  "re_ocr_confidence": 1.0,
+  "re_ocr_details": [
+    {
+      "text": "X6",
+      "confidence": 1.0,
+      "color_info": null,
+      "matched_key": "X6",
+      "template_match_res": true,
+      "template_match_score": 0.5698283910751343,
+      "template_name": "ll1_r",
+      "color_presence": {
+        "blue": false,
+        "green": true,
+        "yellow": true,
+        "red": true,
+        "white": true
+      },
+      "color_stats": {
+        "blue": {
+          "pixels": 16,
+          "ratio": 0.00029973211442273467
+        },
+        "green": {
+          "pixels": 1546,
+          "ratio": 0.028961615556096738
+        },
+        "yellow": {
+          "pixels": 1238,
+          "ratio": 0.023191772353459095
+        },
+        "red": {
+          "pixels": 1559,
+          "ratio": 0.029205147899065212
+        },
+        "white": {
+          "pixels": 49012,
+          "ratio": 0.918154399505442
+        }
+      }
+    }
+  ],
+  "matched_keys": [
+    "X6"
+  ]
+}

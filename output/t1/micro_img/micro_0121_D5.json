@@ -1,0 +1,131 @@
+{
+  "micro_image_name": "micro_0121_D5.jpg",
+  "text": "D5",
+  "global_poly": [
+    [
+      3152,
+      1467
+    ],
+    [
+      3226,
+      1464
+    ],
+    [
+      3228,
+      1523
+    ],
+    [
+      3154,
+      1527
+    ]
+  ],
+  "micro_poly": [
+    [
+      250,
+      43
+    ],
+    [
+      324,
+      40
+    ],
+    [
+      326,
+      99
+    ],
+    [
+      252,
+      103
+    ]
+  ],
+  "source_split_image": "split_70_2800_1400.jpg",
+  "split_poly": [
+    [
+      352,
+      67
+    ],
+    [
+      426,
+      64
+    ],
+    [
+      428,
+      123
+    ],
+    [
+      354,
+      127
+    ]
+  ],
+  "color_presence": {
+    "blue": true,
+    "green": false,
+    "yellow": false,
+    "red": false,
+    "white": true
+  },
+  "color_stats": {
+    "blue": {
+      "pixels": 450,
+      "ratio": 0.0085927057475654
+    },
+    "green": {
+      "pixels": 2,
+      "ratio": 3.818980332251289e-05
+    },
+    "yellow": {
+      "pixels": 0,
+      "ratio": 0.0
+    },
+    "red": {
+      "pixels": 0,
+      "ratio": 0.0
+    },
+    "white": {
+      "pixels": 51918,
+      "ratio": 0.9913691044491121
+    }
+  },
+  "color_valid_pixels": 52370,
+  "re_ocr_text": "D5",
+  "re_ocr_confidence": 1.0,
+  "re_ocr_details": [
+    {
+      "text": "D5",
+      "confidence": 1.0,
+      "color_info": null,
+      "matched_key": "D5",
+      "color_presence": {
+        "blue": true,
+        "green": false,
+        "yellow": false,
+        "red": false,
+        "white": true
+      },
+      "color_stats": {
+        "blue": {
+          "pixels": 450,
+          "ratio": 0.0085927057475654
+        },
+        "green": {
+          "pixels": 2,
+          "ratio": 3.818980332251289e-05
+        },
+        "yellow": {
+          "pixels": 0,
+          "ratio": 0.0
+        },
+        "red": {
+          "pixels": 0,
+          "ratio": 0.0
+        },
+        "white": {
+          "pixels": 51918,
+          "ratio": 0.9913691044491121
+        }
+      }
+    }
+  ],
+  "matched_keys": [
+    "D5"
+  ]
+}

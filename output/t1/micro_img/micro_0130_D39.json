@@ -1,0 +1,131 @@
+{
+  "micro_image_name": "micro_0130_D39.jpg",
+  "text": "D39",
+  "global_poly": [
+    [
+      7884,
+      1769
+    ],
+    [
+      7990,
+      1769
+    ],
+    [
+      7990,
+      1827
+    ],
+    [
+      7884,
+      1827
+    ]
+  ],
+  "micro_poly": [
+    [
+      0,
+      40
+    ],
+    [
+      106,
+      40
+    ],
+    [
+      106,
+      98
+    ],
+    [
+      0,
+      98
+    ]
+  ],
+  "source_split_image": "split_76_7000_1400.jpg",
+  "split_poly": [
+    [
+      884,
+      369
+    ],
+    [
+      990,
+      369
+    ],
+    [
+      990,
+      427
+    ],
+    [
+      884,
+      427
+    ]
+  ],
+  "color_presence": {
+    "blue": true,
+    "green": false,
+    "yellow": false,
+    "red": false,
+    "white": true
+  },
+  "color_stats": {
+    "blue": {
+      "pixels": 368,
+      "ratio": 0.008069113713107924
+    },
+    "green": {
+      "pixels": 3,
+      "ratio": 6.578081831337982e-05
+    },
+    "yellow": {
+      "pixels": 1,
+      "ratio": 2.1926939437793273e-05
+    },
+    "red": {
+      "pixels": 0,
+      "ratio": 0.0
+    },
+    "white": {
+      "pixels": 45234,
+      "ratio": 0.991843178529141
+    }
+  },
+  "color_valid_pixels": 45606,
+  "re_ocr_text": "D39",
+  "re_ocr_confidence": 1.0,
+  "re_ocr_details": [
+    {
+      "text": "D39",
+      "confidence": 1.0,
+      "color_info": null,
+      "matched_key": "D39",
+      "color_presence": {
+        "blue": true,
+        "green": false,
+        "yellow": false,
+        "red": false,
+        "white": true
+      },
+      "color_stats": {
+        "blue": {
+          "pixels": 368,
+          "ratio": 0.008069113713107924
+        },
+        "green": {
+          "pixels": 3,
+          "ratio": 6.578081831337982e-05
+        },
+        "yellow": {
+          "pixels": 1,
+          "ratio": 2.1926939437793273e-05
+        },
+        "red": {
+          "pixels": 0,
+          "ratio": 0.0
+        },
+        "white": {
+          "pixels": 45234,
+          "ratio": 0.991843178529141
+        }
+      }
+    }
+  ],
+  "matched_keys": [
+    "D39"
+  ]
+}

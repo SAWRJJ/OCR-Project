@@ -1,0 +1,134 @@
+{
+  "micro_image_name": "micro_0054_HSBII.jpg",
+  "text": "HSBII",
+  "global_poly": [
+    [
+      1419,
+      951
+    ],
+    [
+      1564,
+      951
+    ],
+    [
+      1564,
+      1014
+    ],
+    [
+      1419,
+      1014
+    ]
+  ],
+  "micro_poly": [
+    [
+      250,
+      40
+    ],
+    [
+      395,
+      40
+    ],
+    [
+      395,
+      103
+    ],
+    [
+      250,
+      103
+    ]
+  ],
+  "source_split_image": "split_35_1400_700.jpg",
+  "split_poly": [
+    [
+      19,
+      251
+    ],
+    [
+      164,
+      251
+    ],
+    [
+      164,
+      314
+    ],
+    [
+      19,
+      314
+    ]
+  ],
+  "color_presence": {
+    "blue": false,
+    "green": false,
+    "yellow": false,
+    "red": false,
+    "white": true
+  },
+  "color_stats": {
+    "blue": {
+      "pixels": 0,
+      "ratio": 0.0
+    },
+    "green": {
+      "pixels": 0,
+      "ratio": 0.0
+    },
+    "yellow": {
+      "pixels": 0,
+      "ratio": 0.0
+    },
+    "red": {
+      "pixels": 0,
+      "ratio": 0.0
+    },
+    "white": {
+      "pixels": 50832,
+      "ratio": 1.0
+    }
+  },
+  "color_valid_pixels": 50832,
+  "re_ocr_text": "HSBII",
+  "re_ocr_confidence": 0.7589542269706726,
+  "re_ocr_details": [
+    {
+      "text": "HSBII",
+      "confidence": 0.7589542269706726,
+      "color_info": null,
+      "matched_key": "S",
+      "template_match_res": true,
+      "template_match_score": 0.5846846103668213,
+      "template_name": "ll1_l",
+      "color_presence": {
+        "blue": false,
+        "green": false,
+        "yellow": false,
+        "red": false,
+        "white": true
+      },
+      "color_stats": {
+        "blue": {
+          "pixels": 0,
+          "ratio": 0.0
+        },
+        "green": {
+          "pixels": 0,
+          "ratio": 0.0
+        },
+        "yellow": {
+          "pixels": 0,
+          "ratio": 0.0
+        },
+        "red": {
+          "pixels": 0,
+          "ratio": 0.0
+        },
+        "white": {
+          "pixels": 50832,
+          "ratio": 1.0
+        }
+      }
+    }
+  ],
+  "matched_keys": [
+    "S"
+  ]
+}

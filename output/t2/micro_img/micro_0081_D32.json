@@ -1,0 +1,131 @@
+{
+  "micro_image_name": "micro_0081_D32.jpg",
+  "text": "D32",
+  "global_poly": [
+    [
+      8132,
+      2675
+    ],
+    [
+      8246,
+      2675
+    ],
+    [
+      8246,
+      2731
+    ],
+    [
+      8132,
+      2731
+    ]
+  ],
+  "micro_poly": [
+    [
+      0,
+      40
+    ],
+    [
+      114,
+      40
+    ],
+    [
+      114,
+      96
+    ],
+    [
+      0,
+      96
+    ]
+  ],
+  "source_split_image": "split_77_7700_2100.jpg",
+  "split_poly": [
+    [
+      432,
+      575
+    ],
+    [
+      546,
+      575
+    ],
+    [
+      546,
+      631
+    ],
+    [
+      432,
+      631
+    ]
+  ],
+  "color_presence": {
+    "blue": true,
+    "green": false,
+    "yellow": false,
+    "red": false,
+    "white": true
+  },
+  "color_stats": {
+    "blue": {
+      "pixels": 365,
+      "ratio": 0.007181505164781112
+    },
+    "green": {
+      "pixels": 4,
+      "ratio": 7.870142646335465e-05
+    },
+    "yellow": {
+      "pixels": 3,
+      "ratio": 5.902606984751599e-05
+    },
+    "red": {
+      "pixels": 0,
+      "ratio": 0.0
+    },
+    "white": {
+      "pixels": 50454,
+      "ratio": 0.9927004426955238
+    }
+  },
+  "color_valid_pixels": 50825,
+  "re_ocr_text": "D32",
+  "re_ocr_confidence": 1.0,
+  "re_ocr_details": [
+    {
+      "text": "D32",
+      "confidence": 1.0,
+      "color_info": null,
+      "matched_key": "D32",
+      "color_presence": {
+        "blue": true,
+        "green": false,
+        "yellow": false,
+        "red": false,
+        "white": true
+      },
+      "color_stats": {
+        "blue": {
+          "pixels": 365,
+          "ratio": 0.007181505164781112
+        },
+        "green": {
+          "pixels": 4,
+          "ratio": 7.870142646335465e-05
+        },
+        "yellow": {
+          "pixels": 3,
+          "ratio": 5.902606984751599e-05
+        },
+        "red": {
+          "pixels": 0,
+          "ratio": 0.0
+        },
+        "white": {
+          "pixels": 50454,
+          "ratio": 0.9927004426955238
+        }
+      }
+    }
+  ],
+  "matched_keys": [
+    "D32"
+  ]
+}

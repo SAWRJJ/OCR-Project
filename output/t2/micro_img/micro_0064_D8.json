@@ -1,0 +1,131 @@
+{
+  "micro_image_name": "micro_0064_D8.jpg",
+  "text": "D8",
+  "global_poly": [
+    [
+      11782,
+      1593
+    ],
+    [
+      11858,
+      1593
+    ],
+    [
+      11858,
+      1647
+    ],
+    [
+      11782,
+      1647
+    ]
+  ],
+  "micro_poly": [
+    [
+      70,
+      40
+    ],
+    [
+      146,
+      40
+    ],
+    [
+      146,
+      94
+    ],
+    [
+      70,
+      94
+    ]
+  ],
+  "source_split_image": "split_60_11200_1400.jpg",
+  "split_poly": [
+    [
+      582,
+      193
+    ],
+    [
+      658,
+      193
+    ],
+    [
+      658,
+      247
+    ],
+    [
+      582,
+      247
+    ]
+  ],
+  "color_presence": {
+    "blue": true,
+    "green": false,
+    "yellow": false,
+    "red": false,
+    "white": true
+  },
+  "color_stats": {
+    "blue": {
+      "pixels": 371,
+      "ratio": 0.006681554587040305
+    },
+    "green": {
+      "pixels": 2,
+      "ratio": 3.601916219428736e-05
+    },
+    "yellow": {
+      "pixels": 2,
+      "ratio": 3.601916219428736e-05
+    },
+    "red": {
+      "pixels": 1,
+      "ratio": 1.800958109714368e-05
+    },
+    "white": {
+      "pixels": 55150,
+      "ratio": 0.9932283975074739
+    }
+  },
+  "color_valid_pixels": 55526,
+  "re_ocr_text": "D8",
+  "re_ocr_confidence": 1.0,
+  "re_ocr_details": [
+    {
+      "text": "D8",
+      "confidence": 1.0,
+      "color_info": null,
+      "matched_key": "D8",
+      "color_presence": {
+        "blue": true,
+        "green": false,
+        "yellow": false,
+        "red": false,
+        "white": true
+      },
+      "color_stats": {
+        "blue": {
+          "pixels": 371,
+          "ratio": 0.006681554587040305
+        },
+        "green": {
+          "pixels": 2,
+          "ratio": 3.601916219428736e-05
+        },
+        "yellow": {
+          "pixels": 2,
+          "ratio": 3.601916219428736e-05
+        },
+        "red": {
+          "pixels": 1,
+          "ratio": 1.800958109714368e-05
+        },
+        "white": {
+          "pixels": 55150,
+          "ratio": 0.9932283975074739
+        }
+      }
+    }
+  ],
+  "matched_keys": [
+    "D8"
+  ]
+}

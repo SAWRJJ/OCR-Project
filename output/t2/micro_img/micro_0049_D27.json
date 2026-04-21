@@ -1,0 +1,131 @@
+{
+  "micro_image_name": "micro_0049_D27.jpg",
+  "text": "D27",
+  "global_poly": [
+    [
+      5891,
+      1822
+    ],
+    [
+      6000,
+      1822
+    ],
+    [
+      6000,
+      1885
+    ],
+    [
+      5891,
+      1885
+    ]
+  ],
+  "micro_poly": [
+    [
+      0,
+      40
+    ],
+    [
+      109,
+      40
+    ],
+    [
+      109,
+      103
+    ],
+    [
+      0,
+      103
+    ]
+  ],
+  "source_split_image": "split_52_5600_1400.jpg",
+  "split_poly": [
+    [
+      291,
+      422
+    ],
+    [
+      400,
+      422
+    ],
+    [
+      400,
+      485
+    ],
+    [
+      291,
+      485
+    ]
+  ],
+  "color_presence": {
+    "blue": true,
+    "green": false,
+    "yellow": false,
+    "red": false,
+    "white": true
+  },
+  "color_stats": {
+    "blue": {
+      "pixels": 366,
+      "ratio": 0.006817800793547306
+    },
+    "green": {
+      "pixels": 1,
+      "ratio": 1.8627871020621053e-05
+    },
+    "yellow": {
+      "pixels": 5,
+      "ratio": 9.313935510310526e-05
+    },
+    "red": {
+      "pixels": 0,
+      "ratio": 0.0
+    },
+    "white": {
+      "pixels": 53312,
+      "ratio": 0.9930890598513495
+    }
+  },
+  "color_valid_pixels": 53683,
+  "re_ocr_text": "D27",
+  "re_ocr_confidence": 1.0,
+  "re_ocr_details": [
+    {
+      "text": "D27",
+      "confidence": 1.0,
+      "color_info": null,
+      "matched_key": "D27",
+      "color_presence": {
+        "blue": true,
+        "green": false,
+        "yellow": false,
+        "red": false,
+        "white": true
+      },
+      "color_stats": {
+        "blue": {
+          "pixels": 366,
+          "ratio": 0.006817800793547306
+        },
+        "green": {
+          "pixels": 1,
+          "ratio": 1.8627871020621053e-05
+        },
+        "yellow": {
+          "pixels": 5,
+          "ratio": 9.313935510310526e-05
+        },
+        "red": {
+          "pixels": 0,
+          "ratio": 0.0
+        },
+        "white": {
+          "pixels": 53312,
+          "ratio": 0.9930890598513495
+        }
+      }
+    }
+  ],
+  "matched_keys": [
+    "D27"
+  ]
+}

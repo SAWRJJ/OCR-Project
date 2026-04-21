@@ -1,0 +1,134 @@
+{
+  "micro_image_name": "micro_0048_HSBII.jpg",
+  "text": "HSBII",
+  "global_poly": [
+    [
+      1437,
+      955
+    ],
+    [
+      1559,
+      955
+    ],
+    [
+      1559,
+      1000
+    ],
+    [
+      1437,
+      1000
+    ]
+  ],
+  "micro_poly": [
+    [
+      250,
+      40
+    ],
+    [
+      372,
+      40
+    ],
+    [
+      372,
+      85
+    ],
+    [
+      250,
+      85
+    ]
+  ],
+  "source_split_image": "split_2_1400_0.jpg",
+  "split_poly": [
+    [
+      37,
+      955
+    ],
+    [
+      159,
+      955
+    ],
+    [
+      159,
+      1000
+    ],
+    [
+      37,
+      1000
+    ]
+  ],
+  "color_presence": {
+    "blue": false,
+    "green": false,
+    "yellow": false,
+    "red": false,
+    "white": true
+  },
+  "color_stats": {
+    "blue": {
+      "pixels": 0,
+      "ratio": 0.0
+    },
+    "green": {
+      "pixels": 0,
+      "ratio": 0.0
+    },
+    "yellow": {
+      "pixels": 0,
+      "ratio": 0.0
+    },
+    "red": {
+      "pixels": 0,
+      "ratio": 0.0
+    },
+    "white": {
+      "pixels": 41190,
+      "ratio": 1.0
+    }
+  },
+  "color_valid_pixels": 41190,
+  "re_ocr_text": "人人八SBII",
+  "re_ocr_confidence": 0.8535125851631165,
+  "re_ocr_details": [
+    {
+      "text": "人人八SBII",
+      "confidence": 0.8535125851631165,
+      "color_info": null,
+      "matched_key": "S",
+      "template_match_res": true,
+      "template_match_score": 0.5846846103668213,
+      "template_name": "ll1_l",
+      "color_presence": {
+        "blue": false,
+        "green": false,
+        "yellow": false,
+        "red": false,
+        "white": true
+      },
+      "color_stats": {
+        "blue": {
+          "pixels": 0,
+          "ratio": 0.0
+        },
+        "green": {
+          "pixels": 0,
+          "ratio": 0.0
+        },
+        "yellow": {
+          "pixels": 0,
+          "ratio": 0.0
+        },
+        "red": {
+          "pixels": 0,
+          "ratio": 0.0
+        },
+        "white": {
+          "pixels": 41190,
+          "ratio": 1.0
+        }
+      }
+    }
+  ],
+  "matched_keys": [
+    "S"
+  ]
+}

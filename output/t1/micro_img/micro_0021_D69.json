@@ -1,0 +1,131 @@
+{
+  "micro_image_name": "micro_0021_D69.jpg",
+  "text": "D69",
+  "global_poly": [
+    [
+      11255,
+      3675
+    ],
+    [
+      11358,
+      3675
+    ],
+    [
+      11358,
+      3733
+    ],
+    [
+      11255,
+      3733
+    ]
+  ],
+  "micro_poly": [
+    [
+      250,
+      40
+    ],
+    [
+      353,
+      40
+    ],
+    [
+      353,
+      98
+    ],
+    [
+      250,
+      98
+    ]
+  ],
+  "source_split_image": "split_148_11200_2800.jpg",
+  "split_poly": [
+    [
+      55,
+      875
+    ],
+    [
+      158,
+      875
+    ],
+    [
+      158,
+      933
+    ],
+    [
+      55,
+      933
+    ]
+  ],
+  "color_presence": {
+    "blue": true,
+    "green": false,
+    "yellow": false,
+    "red": false,
+    "white": true
+  },
+  "color_stats": {
+    "blue": {
+      "pixels": 456,
+      "ratio": 0.00570434956654449
+    },
+    "green": {
+      "pixels": 0,
+      "ratio": 0.0
+    },
+    "yellow": {
+      "pixels": 0,
+      "ratio": 0.0
+    },
+    "red": {
+      "pixels": 0,
+      "ratio": 0.0
+    },
+    "white": {
+      "pixels": 79482,
+      "ratio": 0.9942831408949324
+    }
+  },
+  "color_valid_pixels": 79939,
+  "re_ocr_text": "D69",
+  "re_ocr_confidence": 1.0,
+  "re_ocr_details": [
+    {
+      "text": "D69",
+      "confidence": 1.0,
+      "color_info": null,
+      "matched_key": "D6",
+      "color_presence": {
+        "blue": true,
+        "green": false,
+        "yellow": false,
+        "red": false,
+        "white": true
+      },
+      "color_stats": {
+        "blue": {
+          "pixels": 456,
+          "ratio": 0.00570434956654449
+        },
+        "green": {
+          "pixels": 0,
+          "ratio": 0.0
+        },
+        "yellow": {
+          "pixels": 0,
+          "ratio": 0.0
+        },
+        "red": {
+          "pixels": 0,
+          "ratio": 0.0
+        },
+        "white": {
+          "pixels": 79482,
+          "ratio": 0.9942831408949324
+        }
+      }
+    }
+  ],
+  "matched_keys": [
+    "D6"
+  ]
+}

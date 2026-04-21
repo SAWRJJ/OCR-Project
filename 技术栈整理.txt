@@ -1,0 +1,172 @@
+================================================================================
+                        OCR+Transformer 项目技术栈详细整理
+================================================================================
+
+一、核心 OCR 引擎
+--------------------------------------------------------------------------------
+
+1. PaddlePaddle (飞桨)
+   - 百度开源的深度学习平台
+   - 官方网站: https://www.paddlepaddle.org.cn/
+   - 本项目作为核心推理框架
+
+2. PaddleOCR
+   - 基于 PaddlePaddle 的 OCR 工具包
+   - 官方文档: https://github.com/PaddlePaddle/PaddleOCR
+   - 本项目使用的版本: PP-OCRv5_mobile
+
+   2.1 文本检测模型 (Detection)
+        - 模型名称: PP-OCRv5_mobile_det
+        - 功能: 检测图像中的文字区域位置
+        - 输出: 文字的边框坐标 (dt_polys)
+
+   2.2 文本识别模型 (Recognition)
+        - 模型名称: PP-OCRv5_mobile_rec
+        - 功能: 识别文字区域中的具体文字内容
+        - 输出: 识别文本、置信度分数
+
+   2.3 方向分类器 (可选，本项目未启用)
+        - USE_DOC_ORIENTATION_CLASSIFY = False
+        - USE_DOC_UNWARPING = False
+        - USE_TEXTLINE_ORIENTATION = False
+
+
+二、图像处理与计算机视觉
+--------------------------------------------------------------------------------
+
+1. OpenCV (cv2)
+   - 开源计算机视觉库
+   - 官方网站: https://opencv.org/
+   - pip 安装: pip install opencv-python
+
+   主要功能:
+   - 图像读取与保存 (cv2.imread, cv2.imwrite)
+   - 图像切分与裁剪
+   - 图像边界扩展 (cv2.copyMakeBorder)
+   - 绘制图形 (cv2.line, cv2.polylines, cv2.rectangle)
+   - 颜色空间转换 (BGR to HSV)
+   - 颜色阈值检测与掩膜操作
+   - 图像编码处理 (cv2.imencode, cv2.imdecode) - 支持中文路径
+
+2. NumPy
+   - Python 数值计算库
+   - 官方网站: https://numpy.org/
+   - pip 安装: pip install numpy
+
+   主要功能:
+   - 多维数组操作
+   - 图像数据处理
+   - 数学运算 (sqrt, sum, etc.)
+   - 布尔掩膜操作
+
+
+三、数据处理与文件操作
+--------------------------------------------------------------------------------
+
+1. Pandas
+   - 数据分析库
+   - 官方网站: https://pandas.pydata.org/
+   - pip 安装: pip install pandas openpyxl
+
+   主要功能:
+   - 创建 DataFrame 数据结构
+   - 数据排序与筛选
+   - Excel 文件导出 (df.to_excel)
+
+2. JSON
+   - Python 内置模块
+   - 主要功能:
+     * OCR 结果序列化存储
+     * 读取/写入 JSON 格式文件
+     * 跨模块数据交换
+
+3. 标准库模块
+   - os: 文件路径操作、目录创建与删除
+   - time: 性能计时、程序执行时间统计
+   - logging: 日志记录与输出
+   - math: 数学计算
+
+
+四、项目核心模块架构
+--------------------------------------------------------------------------------
+
+1. main.py (主程序入口)
+   - 负责整体流程调度
+   - 包含: 图像切分 → OCR识别 → 结果合并 → 可视化 → 二次OCR → Excel导出
+
+2. ocr_engine.py (OCR 引擎封装)
+   - 单例模式设计
+   - PaddleOCR 初始化与推理调用
+   - 结果解析与格式化
+
+3. image_processor.py (图像处理器)
+   - split_image(): 大图像滑动窗口切分 (window=1000, overlap=300)
+   - choose_one_sided_extension(): 边缘扩展算法
+   - extend_opposite_side_for_small_box(): 小框对侧扩展
+
+4. data_handler.py (数据处理器)
+   - load_rec_polys_from_json(): 从 JSON 加载识别结果
+   - merge_all_json(): 合并多个切分图像的 OCR 结果
+   - cleanup_output_dir(): 清理临时文件
+   - IOU 计算用于去重
+
+5. visualizer.py (可视化模块)
+   - draw_red_lines(): 在原图上绘制红线标记
+   - detect_color_presence_bgr(): HSV 颜色空间检测
+     * 支持颜色: 蓝色(blue)、绿色(green)、黄色(yellow)、红色(red)、白色(white)
+   - 保存小方格图像与对应 JSON 文件
+
+6. micro_ocr.py (微图二次识别)
+   - process_micro_images(): 对小方格进行二次 OCR
+   - detect_colors(): 颜色检测 (调用 LW_detect)
+   - adjust_textbox_edge(): 文本框边缘调整
+   - save_results_to_excel(): 导出结果到 Excel
+
+7. config.py (配置文件)
+   - OCR 模型配置
+   - 环境变量设置 (OMP_NUM_THREADS, CPU_NUM_THREADS 等)
+   - 可视化参数配置
+
+8. utils.py (工具函数)
+   - 日志配置 (setup_logging)
+   - 文本过滤与筛选
+   - 文件名安全处理
+
+
+五、典型应用场景
+--------------------------------------------------------------------------------
+
+本项目为铁路信号灯/指示灯识别系统，主要功能:
+
+1. 铁路图像自动切分
+   - 处理大幅面铁路线路图像
+   - 滑动窗口 + 重叠区域策略
+
+2. 文字识别 (OCR)
+   - 识别图像中的文字标识 (如 S、X、D 等)
+   - 支持多语言文字检测与识别
+
+3. 颜色检测与分析
+   - HSV 颜色空间识别信号灯颜色
+   - 支持: 红、黄、绿、蓝、白 五种颜色
+
+4. 结果导出
+   - JSON 格式存储中间结果
+   - Excel 报表导出最终识别结果
+
+
+六、环境依赖 (推荐)
+--------------------------------------------------------------------------------
+
+Python 3.8+
+paddlepaddle (CPU版本)
+paddleocr
+opencv-python
+numpy
+pandas
+openpyxl
+
+
+================================================================================
+                                  整理完毕
+================================================================================

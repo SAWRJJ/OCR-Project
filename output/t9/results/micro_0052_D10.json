@@ -1,0 +1,131 @@
+{
+  "micro_image_name": "micro_0052_D10.jpg",
+  "text": "D10",
+  "global_poly": [
+    [
+      3642,
+      589
+    ],
+    [
+      3695,
+      589
+    ],
+    [
+      3695,
+      620
+    ],
+    [
+      3642,
+      620
+    ]
+  ],
+  "micro_poly": [
+    [
+      300,
+      40
+    ],
+    [
+      353,
+      40
+    ],
+    [
+      353,
+      71
+    ],
+    [
+      300,
+      71
+    ]
+  ],
+  "source_split_image": "split_4_2800_0.jpg",
+  "split_poly": [
+    [
+      842,
+      589
+    ],
+    [
+      895,
+      589
+    ],
+    [
+      895,
+      620
+    ],
+    [
+      842,
+      620
+    ]
+  ],
+  "color_presence": {
+    "blue": true,
+    "green": false,
+    "yellow": false,
+    "red": false,
+    "white": true
+  },
+  "color_stats": {
+    "blue": {
+      "pixels": 135,
+      "ratio": 0.0032252669804333804
+    },
+    "green": {
+      "pixels": 2,
+      "ratio": 4.778173304345749e-05
+    },
+    "yellow": {
+      "pixels": 2,
+      "ratio": 4.778173304345749e-05
+    },
+    "red": {
+      "pixels": 0,
+      "ratio": 0.0
+    },
+    "white": {
+      "pixels": 41719,
+      "ratio": 0.9967030604200015
+    }
+  },
+  "color_valid_pixels": 41857,
+  "re_ocr_text": "D10",
+  "re_ocr_confidence": 1.0,
+  "re_ocr_details": [
+    {
+      "text": "D10",
+      "confidence": 1.0,
+      "color_info": null,
+      "matched_key": "D10",
+      "color_presence": {
+        "blue": true,
+        "green": false,
+        "yellow": false,
+        "red": false,
+        "white": true
+      },
+      "color_stats": {
+        "blue": {
+          "pixels": 135,
+          "ratio": 0.0032252669804333804
+        },
+        "green": {
+          "pixels": 2,
+          "ratio": 4.778173304345749e-05
+        },
+        "yellow": {
+          "pixels": 2,
+          "ratio": 4.778173304345749e-05
+        },
+        "red": {
+          "pixels": 0,
+          "ratio": 0.0
+        },
+        "white": {
+          "pixels": 41719,
+          "ratio": 0.9967030604200015
+        }
+      }
+    }
+  ],
+  "matched_keys": [
+    "D10"
+  ]
+}

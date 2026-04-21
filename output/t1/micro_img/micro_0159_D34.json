@@ -1,0 +1,131 @@
+{
+  "micro_image_name": "micro_0159_D34.jpg",
+  "text": "D34",
+  "global_poly": [
+    [
+      16381,
+      1470
+    ],
+    [
+      16482,
+      1470
+    ],
+    [
+      16482,
+      1524
+    ],
+    [
+      16381,
+      1524
+    ]
+  ],
+  "micro_poly": [
+    [
+      250,
+      40
+    ],
+    [
+      351,
+      40
+    ],
+    [
+      351,
+      94
+    ],
+    [
+      250,
+      94
+    ]
+  ],
+  "source_split_image": "split_89_16100_1400.jpg",
+  "split_poly": [
+    [
+      281,
+      70
+    ],
+    [
+      382,
+      70
+    ],
+    [
+      382,
+      124
+    ],
+    [
+      281,
+      124
+    ]
+  ],
+  "color_presence": {
+    "blue": true,
+    "green": false,
+    "yellow": false,
+    "red": false,
+    "white": true
+  },
+  "color_stats": {
+    "blue": {
+      "pixels": 447,
+      "ratio": 0.009856018344982691
+    },
+    "green": {
+      "pixels": 1,
+      "ratio": 2.2049258042466872e-05
+    },
+    "yellow": {
+      "pixels": 0,
+      "ratio": 0.0
+    },
+    "red": {
+      "pixels": 0,
+      "ratio": 0.0
+    },
+    "white": {
+      "pixels": 44905,
+      "ratio": 0.9901219323969749
+    }
+  },
+  "color_valid_pixels": 45353,
+  "re_ocr_text": "D34",
+  "re_ocr_confidence": 1.0,
+  "re_ocr_details": [
+    {
+      "text": "D34",
+      "confidence": 1.0,
+      "color_info": null,
+      "matched_key": "D34",
+      "color_presence": {
+        "blue": true,
+        "green": false,
+        "yellow": false,
+        "red": false,
+        "white": true
+      },
+      "color_stats": {
+        "blue": {
+          "pixels": 447,
+          "ratio": 0.009856018344982691
+        },
+        "green": {
+          "pixels": 1,
+          "ratio": 2.2049258042466872e-05
+        },
+        "yellow": {
+          "pixels": 0,
+          "ratio": 0.0
+        },
+        "red": {
+          "pixels": 0,
+          "ratio": 0.0
+        },
+        "white": {
+          "pixels": 44905,
+          "ratio": 0.9901219323969749
+        }
+      }
+    }
+  ],
+  "matched_keys": [
+    "D34"
+  ]
+}

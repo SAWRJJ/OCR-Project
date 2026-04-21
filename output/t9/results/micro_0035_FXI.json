@@ -1,0 +1,146 @@
+{
+  "micro_image_name": "micro_0035_FXI.jpg",
+  "text": "FXI",
+  "global_poly": [
+    [
+      1983,
+      502
+    ],
+    [
+      2051,
+      502
+    ],
+    [
+      2051,
+      541
+    ],
+    [
+      1983,
+      541
+    ]
+  ],
+  "micro_poly": [
+    [
+      300,
+      40
+    ],
+    [
+      368,
+      40
+    ],
+    [
+      368,
+      79
+    ],
+    [
+      300,
+      79
+    ]
+  ],
+  "source_split_image": "split_2_1400_0.jpg",
+  "split_poly": [
+    [
+      583,
+      502
+    ],
+    [
+      651,
+      502
+    ],
+    [
+      651,
+      541
+    ],
+    [
+      583,
+      541
+    ]
+  ],
+  "color_presence": {
+    "blue": false,
+    "green": true,
+    "yellow": false,
+    "red": false,
+    "white": true
+  },
+  "color_stats": {
+    "blue": {
+      "pixels": 0,
+      "ratio": 0.0
+    },
+    "green": {
+      "pixels": 298,
+      "ratio": 0.003971479976011195
+    },
+    "yellow": {
+      "pixels": 4,
+      "ratio": 5.330845605384154e-05
+    },
+    "red": {
+      "pixels": 0,
+      "ratio": 0.0
+    },
+    "white": {
+      "pixels": 74731,
+      "ratio": 0.9959485573399081
+    }
+  },
+  "color_valid_pixels": 75035,
+  "re_ocr_text": "FXI",
+  "re_ocr_confidence": 1.0,
+  "re_ocr_details": [
+    {
+      "text": "FXI",
+      "confidence": 1.0,
+      "color_info": null,
+      "matched_key": "FXⅠ",
+      "template_match_res": 0,
+      "template_match_score": false,
+      "black_pixel_count": 0,
+      "black_radio": 0,
+      "template_name": "color_detection",
+      "color_centers_separate": {
+        "red": [],
+        "yellow": [],
+        "green": [
+          [
+            397,
+            63
+          ]
+        ]
+      },
+      "color_presence": {
+        "blue": false,
+        "green": true,
+        "yellow": false,
+        "red": false,
+        "white": true
+      },
+      "color_stats": {
+        "blue": {
+          "pixels": 0,
+          "ratio": 0.0
+        },
+        "green": {
+          "pixels": 298,
+          "ratio": 0.003971479976011195
+        },
+        "yellow": {
+          "pixels": 4,
+          "ratio": 5.330845605384154e-05
+        },
+        "red": {
+          "pixels": 0,
+          "ratio": 0.0
+        },
+        "white": {
+          "pixels": 74731,
+          "ratio": 0.9959485573399081
+        }
+      }
+    }
+  ],
+  "matched_keys": [
+    "FXⅠ"
+  ]
+}

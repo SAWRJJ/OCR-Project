@@ -1,0 +1,129 @@
+{
+  "micro_image_name": "micro_0084_D.jpg",
+  "text": "D",
+  "global_poly": [
+    [
+      3532,
+      821
+    ],
+    [
+      3577,
+      821
+    ],
+    [
+      3577,
+      860
+    ],
+    [
+      3532,
+      860
+    ]
+  ],
+  "micro_poly": [
+    [
+      70,
+      40
+    ],
+    [
+      115,
+      40
+    ],
+    [
+      115,
+      79
+    ],
+    [
+      70,
+      79
+    ]
+  ],
+  "source_split_image": "split_4_2800_0.jpg",
+  "split_poly": [
+    [
+      732,
+      821
+    ],
+    [
+      777,
+      821
+    ],
+    [
+      777,
+      860
+    ],
+    [
+      732,
+      860
+    ]
+  ],
+  "color_presence": {
+    "blue": false,
+    "green": false,
+    "yellow": true,
+    "red": true,
+    "white": true
+  },
+  "color_stats": {
+    "blue": {
+      "pixels": 13,
+      "ratio": 0.0003522653370908303
+    },
+    "green": {
+      "pixels": 13,
+      "ratio": 0.0003522653370908303
+    },
+    "yellow": {
+      "pixels": 2428,
+      "ratio": 0.06579232603511814
+    },
+    "red": {
+      "pixels": 1360,
+      "ratio": 0.036852373726425317
+    },
+    "white": {
+      "pixels": 33093,
+      "ratio": 0.896732061565142
+    }
+  },
+  "color_valid_pixels": 36904,
+  "re_ocr_text": "Ⅱ",
+  "re_ocr_confidence": 0.9813170433044434,
+  "re_ocr_details": [
+    {
+      "text": "Ⅱ",
+      "confidence": 0.9813170433044434,
+      "color_info": null,
+      "matched_key": null,
+      "color_presence": {
+        "blue": false,
+        "green": false,
+        "yellow": true,
+        "red": true,
+        "white": true
+      },
+      "color_stats": {
+        "blue": {
+          "pixels": 13,
+          "ratio": 0.0003522653370908303
+        },
+        "green": {
+          "pixels": 13,
+          "ratio": 0.0003522653370908303
+        },
+        "yellow": {
+          "pixels": 2428,
+          "ratio": 0.06579232603511814
+        },
+        "red": {
+          "pixels": 1360,
+          "ratio": 0.036852373726425317
+        },
+        "white": {
+          "pixels": 33093,
+          "ratio": 0.896732061565142
+        }
+      }
+    }
+  ],
+  "matched_keys": []
+}

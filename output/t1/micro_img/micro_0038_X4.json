@@ -1,0 +1,134 @@
+{
+  "micro_image_name": "micro_0038_X4.jpg",
+  "text": "X4",
+  "global_poly": [
+    [
+      14116,
+      824
+    ],
+    [
+      14189,
+      824
+    ],
+    [
+      14189,
+      883
+    ],
+    [
+      14116,
+      883
+    ]
+  ],
+  "micro_poly": [
+    [
+      70,
+      40
+    ],
+    [
+      143,
+      40
+    ],
+    [
+      143,
+      99
+    ],
+    [
+      70,
+      99
+    ]
+  ],
+  "source_split_image": "split_19_13300_0.jpg",
+  "split_poly": [
+    [
+      816,
+      824
+    ],
+    [
+      889,
+      824
+    ],
+    [
+      889,
+      883
+    ],
+    [
+      816,
+      883
+    ]
+  ],
+  "color_presence": {
+    "blue": false,
+    "green": true,
+    "yellow": true,
+    "red": true,
+    "white": true
+  },
+  "color_stats": {
+    "blue": {
+      "pixels": 16,
+      "ratio": 0.00033057851239669424
+    },
+    "green": {
+      "pixels": 1523,
+      "ratio": 0.03146694214876033
+    },
+    "yellow": {
+      "pixels": 1207,
+      "ratio": 0.02493801652892562
+    },
+    "red": {
+      "pixels": 2703,
+      "ratio": 0.055847107438016526
+    },
+    "white": {
+      "pixels": 42930,
+      "ratio": 0.8869834710743801
+    }
+  },
+  "color_valid_pixels": 48400,
+  "re_ocr_text": "X4",
+  "re_ocr_confidence": 1.0,
+  "re_ocr_details": [
+    {
+      "text": "X4",
+      "confidence": 1.0,
+      "color_info": null,
+      "matched_key": "X4",
+      "template_match_res": true,
+      "template_match_score": 0.5839227437973022,
+      "template_name": "ll1_r",
+      "color_presence": {
+        "blue": false,
+        "green": true,
+        "yellow": true,
+        "red": true,
+        "white": true
+      },
+      "color_stats": {
+        "blue": {
+          "pixels": 16,
+          "ratio": 0.00033057851239669424
+        },
+        "green": {
+          "pixels": 1523,
+          "ratio": 0.03146694214876033
+        },
+        "yellow": {
+          "pixels": 1207,
+          "ratio": 0.02493801652892562
+        },
+        "red": {
+          "pixels": 2703,
+          "ratio": 0.055847107438016526
+        },
+        "white": {
+          "pixels": 42930,
+          "ratio": 0.8869834710743801
+        }
+      }
+    }
+  ],
+  "matched_keys": [
+    "X4"
+  ]
+}

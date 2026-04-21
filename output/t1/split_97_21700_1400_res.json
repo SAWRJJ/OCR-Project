@@ -1,0 +1,130 @@
+{
+    "input_path": "splits/split_97_21700_1400.jpg",
+    "page_index": null,
+    "model_settings": {
+        "use_doc_preprocessor": true,
+        "use_textline_orientation": false
+    },
+    "doc_preprocessor_res": {
+        "input_path": null,
+        "page_index": null,
+        "model_settings": {
+            "use_doc_orientation_classify": false,
+            "use_doc_unwarping": false
+        },
+        "angle": -1
+    },
+    "dt_polys": [
+        [
+            [
+                482,
+                0
+            ],
+            [
+                602,
+                0
+            ],
+            [
+                602,
+                470
+            ],
+            [
+                482,
+                470
+            ]
+        ],
+        [
+            [
+                84,
+                406
+            ],
+            [
+                171,
+                403
+            ],
+            [
+                173,
+                459
+            ],
+            [
+                86,
+                462
+            ]
+        ]
+    ],
+    "text_det_params": {
+        "limit_side_len": 64,
+        "limit_type": "min",
+        "thresh": 0.3,
+        "max_side_limit": 4000,
+        "box_thresh": 0.6,
+        "unclip_ratio": 1.5
+    },
+    "text_type": "general",
+    "textline_orientation_angles": [
+        -1,
+        -1
+    ],
+    "text_rec_score_thresh": 0.0,
+    "return_word_box": false,
+    "rec_texts": [
+        "天水方面",
+        "3JG"
+    ],
+    "rec_scores": [
+        0.9996346831321716,
+        0.9993041157722473
+    ],
+    "rec_polys": [
+        [
+            [
+                482,
+                0
+            ],
+            [
+                602,
+                0
+            ],
+            [
+                602,
+                470
+            ],
+            [
+                482,
+                470
+            ]
+        ],
+        [
+            [
+                84,
+                406
+            ],
+            [
+                171,
+                403
+            ],
+            [
+                173,
+                459
+            ],
+            [
+                86,
+                462
+            ]
+        ]
+    ],
+    "rec_boxes": [
+        [
+            482,
+            0,
+            602,
+            470
+        ],
+        [
+            84,
+            403,
+            173,
+            462
+        ]
+    ]
+}

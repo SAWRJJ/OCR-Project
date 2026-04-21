@@ -1,0 +1,172 @@
+{
+  "micro_image_name": "micro_0003_XF.jpg",
+  "text": "XF",
+  "global_poly": [
+    [
+      580,
+      698
+    ],
+    [
+      647,
+      698
+    ],
+    [
+      647,
+      728
+    ],
+    [
+      580,
+      728
+    ]
+  ],
+  "micro_poly": [
+    [
+      70,
+      40
+    ],
+    [
+      137,
+      40
+    ],
+    [
+      137,
+      70
+    ],
+    [
+      70,
+      70
+    ]
+  ],
+  "source_split_image": "split_0_0_0.jpg",
+  "split_poly": [
+    [
+      580,
+      698
+    ],
+    [
+      647,
+      698
+    ],
+    [
+      647,
+      728
+    ],
+    [
+      580,
+      728
+    ]
+  ],
+  "color_presence": {
+    "blue": true,
+    "green": true,
+    "yellow": true,
+    "red": true,
+    "white": true
+  },
+  "color_stats": {
+    "blue": {
+      "pixels": 76,
+      "ratio": 0.0017645693057812863
+    },
+    "green": {
+      "pixels": 500,
+      "ratio": 0.011609008590666357
+    },
+    "yellow": {
+      "pixels": 834,
+      "ratio": 0.019363826329231483
+    },
+    "red": {
+      "pixels": 475,
+      "ratio": 0.01102855816113304
+    },
+    "white": {
+      "pixels": 41178,
+      "ratio": 0.9560715114929185
+    }
+  },
+  "color_valid_pixels": 43070,
+  "re_ocr_text": "XF",
+  "re_ocr_confidence": 1.0,
+  "re_ocr_details": [
+    {
+      "text": "XF",
+      "confidence": 1.0,
+      "color_info": null,
+      "matched_key": "XF",
+      "template_match_res": 0,
+      "template_match_score": false,
+      "black_pixel_count": 0,
+      "black_radio": 0,
+      "template_name": "color_detection",
+      "color_centers_separate": {
+        "red": [
+          [
+            208,
+            51
+          ]
+        ],
+        "yellow": [
+          [
+            185,
+            49
+          ],
+          [
+            262,
+            49
+          ],
+          [
+            256,
+            52
+          ],
+          [
+            182,
+            58
+          ],
+          [
+            253,
+            59
+          ]
+        ],
+        "green": [
+          [
+            232,
+            51
+          ]
+        ]
+      },
+      "color_presence": {
+        "blue": true,
+        "green": true,
+        "yellow": true,
+        "red": true,
+        "white": true
+      },
+      "color_stats": {
+        "blue": {
+          "pixels": 76,
+          "ratio": 0.0017645693057812863
+        },
+        "green": {
+          "pixels": 500,
+          "ratio": 0.011609008590666357
+        },
+        "yellow": {
+          "pixels": 834,
+          "ratio": 0.019363826329231483
+        },
+        "red": {
+          "pixels": 475,
+          "ratio": 0.01102855816113304
+        },
+        "white": {
+          "pixels": 41178,
+          "ratio": 0.9560715114929185
+        }
+      }
+    }
+  ],
+  "matched_keys": [
+    "XF"
+  ]
+}

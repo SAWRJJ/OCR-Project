@@ -1,0 +1,134 @@
+{
+  "micro_image_name": "micro_0086_S4.jpg",
+  "text": "S4",
+  "global_poly": [
+    [
+      13218,
+      964
+    ],
+    [
+      13293,
+      964
+    ],
+    [
+      13293,
+      1025
+    ],
+    [
+      13218,
+      1025
+    ]
+  ],
+  "micro_poly": [
+    [
+      250,
+      40
+    ],
+    [
+      325,
+      40
+    ],
+    [
+      325,
+      101
+    ],
+    [
+      250,
+      101
+    ]
+  ],
+  "source_split_image": "split_51_12600_700.jpg",
+  "split_poly": [
+    [
+      618,
+      264
+    ],
+    [
+      693,
+      264
+    ],
+    [
+      693,
+      325
+    ],
+    [
+      618,
+      325
+    ]
+  ],
+  "color_presence": {
+    "blue": false,
+    "green": true,
+    "yellow": true,
+    "red": true,
+    "white": true
+  },
+  "color_stats": {
+    "blue": {
+      "pixels": 10,
+      "ratio": 0.00021033148241628806
+    },
+    "green": {
+      "pixels": 1518,
+      "ratio": 0.03192831903079253
+    },
+    "yellow": {
+      "pixels": 1242,
+      "ratio": 0.02612317011610298
+    },
+    "red": {
+      "pixels": 2075,
+      "ratio": 0.04364378260137977
+    },
+    "white": {
+      "pixels": 42684,
+      "ratio": 0.897778899545684
+    }
+  },
+  "color_valid_pixels": 47544,
+  "re_ocr_text": "S4",
+  "re_ocr_confidence": 1.0,
+  "re_ocr_details": [
+    {
+      "text": "S4",
+      "confidence": 1.0,
+      "color_info": null,
+      "matched_key": "S4",
+      "template_match_res": true,
+      "template_match_score": 0.5846846103668213,
+      "template_name": "ll1_l",
+      "color_presence": {
+        "blue": false,
+        "green": true,
+        "yellow": true,
+        "red": true,
+        "white": true
+      },
+      "color_stats": {
+        "blue": {
+          "pixels": 10,
+          "ratio": 0.00021033148241628806
+        },
+        "green": {
+          "pixels": 1518,
+          "ratio": 0.03192831903079253
+        },
+        "yellow": {
+          "pixels": 1242,
+          "ratio": 0.02612317011610298
+        },
+        "red": {
+          "pixels": 2075,
+          "ratio": 0.04364378260137977
+        },
+        "white": {
+          "pixels": 42684,
+          "ratio": 0.897778899545684
+        }
+      }
+    }
+  ],
+  "matched_keys": [
+    "S4"
+  ]
+}

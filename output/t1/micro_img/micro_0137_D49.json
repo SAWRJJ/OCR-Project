@@ -1,0 +1,131 @@
+{
+  "micro_image_name": "micro_0137_D49.jpg",
+  "text": "D49",
+  "global_poly": [
+    [
+      8609,
+      2003
+    ],
+    [
+      8700,
+      2003
+    ],
+    [
+      8700,
+      2062
+    ],
+    [
+      8609,
+      2062
+    ]
+  ],
+  "micro_poly": [
+    [
+      70,
+      40
+    ],
+    [
+      161,
+      40
+    ],
+    [
+      161,
+      99
+    ],
+    [
+      70,
+      99
+    ]
+  ],
+  "source_split_image": "split_77_7700_1400.jpg",
+  "split_poly": [
+    [
+      909,
+      603
+    ],
+    [
+      1000,
+      603
+    ],
+    [
+      1000,
+      662
+    ],
+    [
+      909,
+      662
+    ]
+  ],
+  "color_presence": {
+    "blue": true,
+    "green": false,
+    "yellow": false,
+    "red": false,
+    "white": true
+  },
+  "color_stats": {
+    "blue": {
+      "pixels": 362,
+      "ratio": 0.007012378203513938
+    },
+    "green": {
+      "pixels": 4,
+      "ratio": 7.748484202777832e-05
+    },
+    "yellow": {
+      "pixels": 4,
+      "ratio": 7.748484202777832e-05
+    },
+    "red": {
+      "pixels": 0,
+      "ratio": 0.0
+    },
+    "white": {
+      "pixels": 51254,
+      "ratio": 0.9928520233229374
+    }
+  },
+  "color_valid_pixels": 51623,
+  "re_ocr_text": "D49",
+  "re_ocr_confidence": 1.0,
+  "re_ocr_details": [
+    {
+      "text": "D49",
+      "confidence": 1.0,
+      "color_info": null,
+      "matched_key": "D49",
+      "color_presence": {
+        "blue": true,
+        "green": false,
+        "yellow": false,
+        "red": false,
+        "white": true
+      },
+      "color_stats": {
+        "blue": {
+          "pixels": 362,
+          "ratio": 0.007012378203513938
+        },
+        "green": {
+          "pixels": 4,
+          "ratio": 7.748484202777832e-05
+        },
+        "yellow": {
+          "pixels": 4,
+          "ratio": 7.748484202777832e-05
+        },
+        "red": {
+          "pixels": 0,
+          "ratio": 0.0
+        },
+        "white": {
+          "pixels": 51254,
+          "ratio": 0.9928520233229374
+        }
+      }
+    }
+  ],
+  "matched_keys": [
+    "D49"
+  ]
+}

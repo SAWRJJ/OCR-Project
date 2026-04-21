@@ -1,0 +1,175 @@
+{
+    "input_path": "splits/split_0_0_0.jpg",
+    "page_index": null,
+    "model_settings": {
+        "use_doc_preprocessor": true,
+        "use_textline_orientation": false
+    },
+    "doc_preprocessor_res": {
+        "input_path": null,
+        "page_index": null,
+        "model_settings": {
+            "use_doc_orientation_classify": false,
+            "use_doc_unwarping": false
+        },
+        "angle": -1
+    },
+    "dt_polys": [
+        [
+            [
+                483,
+                539
+            ],
+            [
+                555,
+                538
+            ],
+            [
+                558,
+                793
+            ],
+            [
+                485,
+                794
+            ]
+        ],
+        [
+            [
+                381,
+                588
+            ],
+            [
+                454,
+                586
+            ],
+            [
+                457,
+                718
+            ],
+            [
+                383,
+                719
+            ]
+        ],
+        [
+            [
+                806,
+                684
+            ],
+            [
+                920,
+                684
+            ],
+            [
+                920,
+                742
+            ],
+            [
+                806,
+                742
+            ]
+        ]
+    ],
+    "text_det_params": {
+        "limit_side_len": 64,
+        "limit_type": "min",
+        "thresh": 0.3,
+        "max_side_limit": 4000,
+        "box_thresh": 0.6,
+        "unclip_ratio": 1.5
+    },
+    "text_type": "general",
+    "textline_orientation_angles": [
+        -1,
+        -1,
+        -1
+    ],
+    "text_rec_score_thresh": 0.0,
+    "return_word_box": false,
+    "rec_texts": [
+        "9",
+        "",
+        "1400"
+    ],
+    "rec_scores": [
+        0.1313374638557434,
+        0.0,
+        0.9983828663825989
+    ],
+    "rec_polys": [
+        [
+            [
+                483,
+                539
+            ],
+            [
+                555,
+                538
+            ],
+            [
+                558,
+                793
+            ],
+            [
+                485,
+                794
+            ]
+        ],
+        [
+            [
+                381,
+                588
+            ],
+            [
+                454,
+                586
+            ],
+            [
+                457,
+                718
+            ],
+            [
+                383,
+                719
+            ]
+        ],
+        [
+            [
+                806,
+                684
+            ],
+            [
+                920,
+                684
+            ],
+            [
+                920,
+                742
+            ],
+            [
+                806,
+                742
+            ]
+        ]
+    ],
+    "rec_boxes": [
+        [
+            483,
+            538,
+            558,
+            794
+        ],
+        [
+            381,
+            586,
+            457,
+            719
+        ],
+        [
+            806,
+            684,
+            920,
+            742
+        ]
+    ]
+}

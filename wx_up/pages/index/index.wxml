@@ -1,0 +1,18 @@
+<view class="container">
+  <view class="upload-section">
+    <text class="title">图片上传</text>
+    <button type="primary" bindtap="chooseImage" class="upload-btn">选择图片</button>
+    <button type="default" bindtap="uploadImage" class="upload-btn" disabled="{{!tempFilePath}}">上传到服务器</button>
+  </view>
+  
+  <view class="preview-section" wx:if="{{tempFilePath}}">
+    <text class="subtitle">图片预览</text>
+    <image src="{{tempFilePath}}" mode="aspectFit" class="preview-image"></image>
+    <text class="image-info">{{imageInfo}}</text>
+  </view>
+  
+  <view class="result-section" wx:if="{{uploadResult}}">
+    <text class="subtitle">上传结果</text>
+    <text class="result-text">{{uploadResult}}</text>
+  </view>
+</view>

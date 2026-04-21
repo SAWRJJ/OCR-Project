@@ -1,0 +1,178 @@
+{
+  "micro_image_name": "micro_0012_S.jpg",
+  "text": "S",
+  "global_poly": [
+    [
+      4433,
+      970
+    ],
+    [
+      4456,
+      970
+    ],
+    [
+      4456,
+      1005
+    ],
+    [
+      4433,
+      1005
+    ]
+  ],
+  "micro_poly": [
+    [
+      300,
+      39
+    ],
+    [
+      326,
+      39
+    ],
+    [
+      326,
+      74
+    ],
+    [
+      300,
+      74
+    ]
+  ],
+  "source_split_image": "split_14_4200_700.jpg",
+  "split_poly": [
+    [
+      233,
+      270
+    ],
+    [
+      256,
+      270
+    ],
+    [
+      256,
+      305
+    ],
+    [
+      233,
+      305
+    ]
+  ],
+  "color_presence": {
+    "blue": true,
+    "green": true,
+    "yellow": true,
+    "red": true,
+    "white": true
+  },
+  "color_stats": {
+    "blue": {
+      "pixels": 157,
+      "ratio": 0.004217255828945955
+    },
+    "green": {
+      "pixels": 884,
+      "ratio": 0.023745567852154294
+    },
+    "yellow": {
+      "pixels": 1412,
+      "ratio": 0.037928440958418394
+    },
+    "red": {
+      "pixels": 889,
+      "ratio": 0.02387987536263028
+    },
+    "white": {
+      "pixels": 33886,
+      "ratio": 0.9102288599978511
+    }
+  },
+  "color_valid_pixels": 37228,
+  "polygon_total_pixels": 8503,
+  "black_pixels_in_polygon": 671,
+  "left_black_pixels": 205,
+  "right_black_pixels": 466,
+  "re_ocr_text": "",
+  "re_ocr_confidence": 0.0,
+  "re_ocr_details": [
+    {
+      "text": "S",
+      "confidence": 0.9845949411392212,
+      "color_info": null,
+      "matched_key": "S",
+      "template_match_res": 1,
+      "template_match_score": true,
+      "black_pixel_count": 671,
+      "black_radio": 7.891332470892626,
+      "template_name": "color_detection",
+      "color_centers_separate": {
+        "red": [
+          [
+            171,
+            39
+          ]
+        ],
+        "yellow": [
+          [
+            197,
+            67
+          ],
+          [
+            265,
+            68
+          ],
+          [
+            274,
+            74
+          ],
+          [
+            205,
+            74
+          ],
+          [
+            213,
+            80
+          ],
+          [
+            282,
+            82
+          ]
+        ],
+        "green": [
+          [
+            171,
+            74
+          ]
+        ]
+      },
+      "color_presence": {
+        "blue": true,
+        "green": true,
+        "yellow": true,
+        "red": true,
+        "white": true
+      },
+      "color_stats": {
+        "blue": {
+          "pixels": 157,
+          "ratio": 0.004217255828945955
+        },
+        "green": {
+          "pixels": 884,
+          "ratio": 0.023745567852154294
+        },
+        "yellow": {
+          "pixels": 1412,
+          "ratio": 0.037928440958418394
+        },
+        "red": {
+          "pixels": 889,
+          "ratio": 0.02387987536263028
+        },
+        "white": {
+          "pixels": 33886,
+          "ratio": 0.9102288599978511
+        }
+      }
+    }
+  ],
+  "matched_keys": []
+}

@@ -1,0 +1,131 @@
+{
+  "micro_image_name": "micro_0048_D15.jpg",
+  "text": "D15",
+  "global_poly": [
+    [
+      2187,
+      742
+    ],
+    [
+      2241,
+      744
+    ],
+    [
+      2239,
+      777
+    ],
+    [
+      2185,
+      774
+    ]
+  ],
+  "micro_poly": [
+    [
+      300,
+      40
+    ],
+    [
+      354,
+      42
+    ],
+    [
+      352,
+      75
+    ],
+    [
+      298,
+      72
+    ]
+  ],
+  "source_split_image": "split_3_2100_0.jpg",
+  "split_poly": [
+    [
+      87,
+      742
+    ],
+    [
+      141,
+      744
+    ],
+    [
+      139,
+      777
+    ],
+    [
+      85,
+      774
+    ]
+  ],
+  "color_presence": {
+    "blue": true,
+    "green": true,
+    "yellow": false,
+    "red": true,
+    "white": true
+  },
+  "color_stats": {
+    "blue": {
+      "pixels": 167,
+      "ratio": 0.002404953917050691
+    },
+    "green": {
+      "pixels": 281,
+      "ratio": 0.004046658986175115
+    },
+    "yellow": {
+      "pixels": 3,
+      "ratio": 4.3202764976958525e-05
+    },
+    "red": {
+      "pixels": 159,
+      "ratio": 0.002289746543778802
+    },
+    "white": {
+      "pixels": 68824,
+      "ratio": 0.9911290322580645
+    }
+  },
+  "color_valid_pixels": 69440,
+  "re_ocr_text": "D15",
+  "re_ocr_confidence": 1.0,
+  "re_ocr_details": [
+    {
+      "text": "D15",
+      "confidence": 1.0,
+      "color_info": null,
+      "matched_key": "D15",
+      "color_presence": {
+        "blue": true,
+        "green": true,
+        "yellow": false,
+        "red": true,
+        "white": true
+      },
+      "color_stats": {
+        "blue": {
+          "pixels": 167,
+          "ratio": 0.002404953917050691
+        },
+        "green": {
+          "pixels": 281,
+          "ratio": 0.004046658986175115
+        },
+        "yellow": {
+          "pixels": 3,
+          "ratio": 4.3202764976958525e-05
+        },
+        "red": {
+          "pixels": 159,
+          "ratio": 0.002289746543778802
+        },
+        "white": {
+          "pixels": 68824,
+          "ratio": 0.9911290322580645
+        }
+      }
+    }
+  ],
+  "matched_keys": [
+    "D15"
+  ]
+}

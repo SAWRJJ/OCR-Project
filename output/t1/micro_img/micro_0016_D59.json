@@ -1,0 +1,131 @@
+{
+  "micro_image_name": "micro_0016_D59.jpg",
+  "text": "D59",
+  "global_poly": [
+    [
+      10580,
+      3095
+    ],
+    [
+      10686,
+      3105
+    ],
+    [
+      10680,
+      3171
+    ],
+    [
+      10574,
+      3161
+    ]
+  ],
+  "micro_poly": [
+    [
+      249,
+      40
+    ],
+    [
+      355,
+      50
+    ],
+    [
+      349,
+      116
+    ],
+    [
+      243,
+      106
+    ]
+  ],
+  "source_split_image": "split_147_10500_2800.jpg",
+  "split_poly": [
+    [
+      80,
+      295
+    ],
+    [
+      186,
+      305
+    ],
+    [
+      180,
+      371
+    ],
+    [
+      74,
+      361
+    ]
+  ],
+  "color_presence": {
+    "blue": true,
+    "green": false,
+    "yellow": false,
+    "red": false,
+    "white": true
+  },
+  "color_stats": {
+    "blue": {
+      "pixels": 449,
+      "ratio": 0.008880889275683373
+    },
+    "green": {
+      "pixels": 0,
+      "ratio": 0.0
+    },
+    "yellow": {
+      "pixels": 0,
+      "ratio": 0.0
+    },
+    "red": {
+      "pixels": 0,
+      "ratio": 0.0
+    },
+    "white": {
+      "pixels": 50109,
+      "ratio": 0.9911191107243166
+    }
+  },
+  "color_valid_pixels": 50558,
+  "re_ocr_text": "D59",
+  "re_ocr_confidence": 1.0,
+  "re_ocr_details": [
+    {
+      "text": "D59",
+      "confidence": 1.0,
+      "color_info": null,
+      "matched_key": "D59",
+      "color_presence": {
+        "blue": true,
+        "green": false,
+        "yellow": false,
+        "red": false,
+        "white": true
+      },
+      "color_stats": {
+        "blue": {
+          "pixels": 449,
+          "ratio": 0.008880889275683373
+        },
+        "green": {
+          "pixels": 0,
+          "ratio": 0.0
+        },
+        "yellow": {
+          "pixels": 0,
+          "ratio": 0.0
+        },
+        "red": {
+          "pixels": 0,
+          "ratio": 0.0
+        },
+        "white": {
+          "pixels": 50109,
+          "ratio": 0.9911191107243166
+        }
+      }
+    }
+  ],
+  "matched_keys": [
+    "D59"
+  ]
+}

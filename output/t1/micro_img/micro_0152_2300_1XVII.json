@@ -1,0 +1,169 @@
+{
+  "micro_image_name": "micro_0152_2300_1XVII.jpg",
+  "text": "2300-1XVII",
+  "global_poly": [
+    [
+      14095,
+      1547
+    ],
+    [
+      14361,
+      1528
+    ],
+    [
+      14365,
+      1594
+    ],
+    [
+      14100,
+      1613
+    ]
+  ],
+  "micro_poly": [
+    [
+      0,
+      59
+    ],
+    [
+      266,
+      40
+    ],
+    [
+      270,
+      106
+    ],
+    [
+      5,
+      125
+    ]
+  ],
+  "source_split_image": "split_86_14000_1400.jpg",
+  "split_poly": [
+    [
+      95,
+      147
+    ],
+    [
+      361,
+      128
+    ],
+    [
+      365,
+      194
+    ],
+    [
+      100,
+      213
+    ]
+  ],
+  "color_presence": {
+    "blue": false,
+    "green": true,
+    "yellow": true,
+    "red": true,
+    "white": true
+  },
+  "color_stats": {
+    "blue": {
+      "pixels": 7,
+      "ratio": 9.488051831871721e-05
+    },
+    "green": {
+      "pixels": 1530,
+      "ratio": 0.02073817043251962
+    },
+    "yellow": {
+      "pixels": 1214,
+      "ratio": 0.016454992748417527
+    },
+    "red": {
+      "pixels": 2162,
+      "ratio": 0.0293045258007238
+    },
+    "white": {
+      "pixels": 68847,
+      "ratio": 0.9331770063841035
+    }
+  },
+  "color_valid_pixels": 73777,
+  "re_ocr_text": "TIIO. 2300-1XVII",
+  "re_ocr_confidence": 0.42939138412475586,
+  "re_ocr_details": [
+    {
+      "text": "TIIO.",
+      "confidence": 0.42939138412475586,
+      "color_info": null,
+      "matched_key": null,
+      "color_presence": {
+        "blue": false,
+        "green": true,
+        "yellow": true,
+        "red": true,
+        "white": true
+      },
+      "color_stats": {
+        "blue": {
+          "pixels": 7,
+          "ratio": 9.488051831871721e-05
+        },
+        "green": {
+          "pixels": 1530,
+          "ratio": 0.02073817043251962
+        },
+        "yellow": {
+          "pixels": 1214,
+          "ratio": 0.016454992748417527
+        },
+        "red": {
+          "pixels": 2162,
+          "ratio": 0.0293045258007238
+        },
+        "white": {
+          "pixels": 68847,
+          "ratio": 0.9331770063841035
+        }
+      }
+    },
+    {
+      "text": "2300-1XVII",
+      "confidence": 0.9911775588989258,
+      "color_info": null,
+      "matched_key": "X",
+      "template_match_res": true,
+      "template_match_score": 0.5839227437973022,
+      "template_name": "ll1_r",
+      "color_presence": {
+        "blue": false,
+        "green": true,
+        "yellow": true,
+        "red": true,
+        "white": true
+      },
+      "color_stats": {
+        "blue": {
+          "pixels": 7,
+          "ratio": 9.488051831871721e-05
+        },
+        "green": {
+          "pixels": 1530,
+          "ratio": 0.02073817043251962
+        },
+        "yellow": {
+          "pixels": 1214,
+          "ratio": 0.016454992748417527
+        },
+        "red": {
+          "pixels": 2162,
+          "ratio": 0.0293045258007238
+        },
+        "white": {
+          "pixels": 68847,
+          "ratio": 0.9331770063841035
+        }
+      }
+    }
+  ],
+  "matched_keys": [
+    "X"
+  ]
+}

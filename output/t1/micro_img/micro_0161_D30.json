@@ -1,0 +1,131 @@
+{
+  "micro_image_name": "micro_0161_D30.jpg",
+  "text": "D30",
+  "global_poly": [
+    [
+      16720,
+      1904
+    ],
+    [
+      16823,
+      1909
+    ],
+    [
+      16821,
+      1970
+    ],
+    [
+      16717,
+      1966
+    ]
+  ],
+  "micro_poly": [
+    [
+      250,
+      40
+    ],
+    [
+      353,
+      45
+    ],
+    [
+      351,
+      106
+    ],
+    [
+      247,
+      102
+    ]
+  ],
+  "source_split_image": "split_89_16100_1400.jpg",
+  "split_poly": [
+    [
+      620,
+      504
+    ],
+    [
+      723,
+      509
+    ],
+    [
+      721,
+      570
+    ],
+    [
+      617,
+      566
+    ]
+  ],
+  "color_presence": {
+    "blue": true,
+    "green": false,
+    "yellow": false,
+    "red": false,
+    "white": true
+  },
+  "color_stats": {
+    "blue": {
+      "pixels": 442,
+      "ratio": 0.009405856315968675
+    },
+    "green": {
+      "pixels": 0,
+      "ratio": 0.0
+    },
+    "yellow": {
+      "pixels": 0,
+      "ratio": 0.0
+    },
+    "red": {
+      "pixels": 0,
+      "ratio": 0.0
+    },
+    "white": {
+      "pixels": 46550,
+      "ratio": 0.9905941436840313
+    }
+  },
+  "color_valid_pixels": 46992,
+  "re_ocr_text": "D30",
+  "re_ocr_confidence": 1.0,
+  "re_ocr_details": [
+    {
+      "text": "D30",
+      "confidence": 1.0,
+      "color_info": null,
+      "matched_key": "D30",
+      "color_presence": {
+        "blue": true,
+        "green": false,
+        "yellow": false,
+        "red": false,
+        "white": true
+      },
+      "color_stats": {
+        "blue": {
+          "pixels": 442,
+          "ratio": 0.009405856315968675
+        },
+        "green": {
+          "pixels": 0,
+          "ratio": 0.0
+        },
+        "yellow": {
+          "pixels": 0,
+          "ratio": 0.0
+        },
+        "red": {
+          "pixels": 0,
+          "ratio": 0.0
+        },
+        "white": {
+          "pixels": 46550,
+          "ratio": 0.9905941436840313
+        }
+      }
+    }
+  ],
+  "matched_keys": [
+    "D30"
+  ]
+}

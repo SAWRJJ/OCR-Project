@@ -1,0 +1,343 @@
+import json
+import cv2
+import os
+import math
+import numpy as np
+
+def expand_poly_vertical(poly, expand_pixels=5):
+    '''
+    将文本框沿上下方向外扩指定像素
+    
+    Args:
+        poly: 多边形坐标列表 [[x1,y1], [x2,y2], [x3,y3], [x4,y4]]
+        expand_pixels: 外扩像素数，上下各扩展这么多像素
+    
+    Returns:
+        扩展后的多边形坐标
+    '''
+    poly = np.array(poly, dtype=np.float64)
+    
+    y_coords = poly[:, 1]
+    y_min = np.min(y_coords)
+    y_max = np.max(y_coords)
+    
+    new_y_min = y_min - expand_pixels
+    new_y_max = y_max + expand_pixels
+    
+    new_poly = poly.copy()
+    
+    for i in range(len(poly)):
+        if poly[i][1] == y_min:
+            new_poly[i][1] = new_y_min
+        elif poly[i][1] == y_max:
+            new_poly[i][1] = new_y_max
+    
+    return new_poly.tolist()
+
+def count_dark_pixels_in_expanded_region(image, original_poly, expanded_poly, dark_threshold=128):
+    '''
+    统计外扩新增区域内的深色像素数量（外扩矩形内但不在原始矩形内的区域）
+    
+    Args:
+        image: OpenCV图像对象 (BGR格式)
+        original_poly: 原始多边形坐标列表 [[x1,y1], [x2,y2], [x3,y3], [x4,y4]]
+        expanded_poly: 外扩后多边形坐标列表 [[x1,y1], [x2,y2], [x3,y3], [x4,y4]]
+        dark_threshold: 深色像素阈值，灰度值低于此值为深色 (默认128)
+    
+    Returns:
+        dark_pixel_count: 新增区域内深色像素数量
+        total_pixel_count: 新增区域总像素数量
+        dark_ratio: 新增区域深色像素比例
+    '''
+    if image is None:
+        return 0, 0, 0.0
+    
+    gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
+    
+    original_poly = np.array(original_poly, dtype=np.int32)
+    expanded_poly = np.array(expanded_poly, dtype=np.int32)
+    
+    mask_original = np.zeros(gray.shape, dtype=np.uint8)
+    cv2.fillPoly(mask_original, [original_poly], 255)
+    
+    mask_expanded = np.zeros(gray.shape, dtype=np.uint8)
+    cv2.fillPoly(mask_expanded, [expanded_poly], 255)
+    
+    mask_new_region = cv2.subtract(mask_expanded, mask_original)
+    
+    total_pixel_count = np.sum(mask_new_region > 0)
+    
+    dark_pixel_count = np.sum((gray < dark_threshold) & (mask_new_region > 0))
+    
+    dark_ratio = dark_pixel_count / total_pixel_count if total_pixel_count > 0 else 0.0
+    
+    return dark_pixel_count, total_pixel_count, dark_ratio
+
+def draw_poly_comparison(json_path, output_dir, expand_pixels=5):
+    '''
+    可视化外扩前后的文本框对比
+    '''
+    with open(json_path, 'r', encoding='utf-8') as f:
+        data = json.load(f)
+    
+    image_name = data['micro_image_name']
+    image_path = os.path.join(os.path.dirname(json_path), image_name)
+    
+    img = cv2.imread(image_path)
+    if img is None:
+        print(f'无法读取图片: {image_path}')
+        return
+    
+    original_poly = data['micro_poly']
+    
+    expanded_poly = expand_poly_vertical(original_poly, expand_pixels)
+    
+    orig_points = [(int(x), int(y)) for x, y in original_poly]
+    for i in range(4):
+        cv2.line(img, orig_points[i], orig_points[(i+1)%4], (0, 255, 0), 2)
+    
+    exp_points = [(int(x), int(y)) for x, y in expanded_poly]
+    for i in range(4):
+        cv2.line(img, exp_points[i], exp_points[(i+1)%4], (0, 0, 255), 2)
+    
+    cv2.putText(img, 'Original (Green)', (10, 20), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 255, 0), 1)
+    cv2.putText(img, f'Expanded (Red, +{expand_pixels}px)', (10, 40), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 0, 255), 1)
+    
+    os.makedirs(output_dir, exist_ok=True)
+    output_path = os.path.join(output_dir, f'expanded_{image_name}')
+    cv2.imwrite(output_path, img)
+    
+    print(f'处理完成: {output_path}')
+    print(f'原始多边形: {original_poly}')
+    print(f'外扩后多边形: {expanded_poly}')
+
+def find_first_non_white_column_along_tilt(poly, gray_img, angle, debug_img=None, output_path=None):
+    """
+    利用文本框的横向倾斜角度，从图片最左侧开始沿着倾斜方向扫描
+    找到第一列（有非白色像素的列），然后向右外扩像素
+    
+    参数:
+        poly: 文本框四边形顶点
+        gray_img: 灰度图像
+        angle: 文本框倾斜角度
+        debug_img: 用于可视化的BGR图像，如果为None则从gray_img创建
+        output_path: 可视化图片保存路径
+    """
+    poly = np.array(poly, dtype=np.float64)
+
+    top_left = poly[0]
+    top_right = poly[1]
+
+    tilt_angle = angle
+
+    print(f"文本框倾斜角度: {math.degrees(tilt_angle):.2f} 度")
+    tilt_angle = -tilt_angle
+    poly_y_center = (np.min(poly[:, 1]) + np.max(poly[:, 1])) / 2
+    poly_x_min = np.min(poly[:, 0])
+
+    img_height = gray_img.shape[0]
+    y_min = 15
+    y_max = img_height - 15
+
+    first_non_white_col = None
+    non_white_pixels = []
+
+    start_x = 0
+    start_y = poly_y_center
+
+    step_size = 1
+    num_steps = max(gray_img.shape[1] * 2, 3000)
+
+    vis_img = None
+    if debug_img is not None:
+        vis_img = debug_img.copy()
+    else:
+        if len(gray_img.shape) == 2:
+            vis_img = cv2.cvtColor(gray_img, cv2.COLOR_GRAY2BGR)
+        else:
+            vis_img = gray_img.copy()
+
+    scan_points = []
+    found_col_x = None
+    found_scan_line_start = None
+    found_scan_line_end = None
+
+    perp_angle = tilt_angle + math.pi / 2
+    perp_dx = math.cos(perp_angle)
+    perp_dy = math.sin(perp_angle)
+    scan_line_length = 52
+
+    for step in range(num_steps):
+        x = start_x + step * math.cos(tilt_angle) * step_size
+        y = start_y + step * math.sin(tilt_angle) * step_size
+
+        check_x = int(x)
+
+        if check_x < 0 or check_x >= gray_img.shape[1]:
+            continue
+
+        scan_line_start = (int(x - perp_dx * scan_line_length), int(y - perp_dy * scan_line_length))
+        scan_line_end = (int(x + perp_dx * scan_line_length), int(y + perp_dy * scan_line_length))
+
+        col_has_non_white = False
+
+        line_points = []
+        dx = scan_line_end[0] - scan_line_start[0]
+        dy = scan_line_end[1] - scan_line_start[1]
+        steps = max(abs(dx), abs(dy))
+        if steps == 0:
+            steps = 1
+        for i in range(steps + 1):
+            px = int(scan_line_start[0] + dx * i / steps)
+            py = int(scan_line_start[1] + dy * i / steps)
+            if 0 <= py < gray_img.shape[0] and 0 <= px < gray_img.shape[1]:
+                line_points.append((px, py))
+                if gray_img[py, px] < 128:
+                    col_has_non_white = True
+
+        if step % 10 == 0 and vis_img is not None:
+            cv2.line(vis_img, scan_line_start, scan_line_end, (200, 200, 200), 1)
+            cv2.circle(vis_img, (check_x, int(y)), 1, (0, 255, 255), -1)
+            scan_points.append((check_x, int(y)))
+
+        if first_non_white_col is None:
+            if col_has_non_white:
+                first_non_white_col = check_x
+                found_col_x = check_x
+                found_scan_line_start = scan_line_start
+                found_scan_line_end = scan_line_end
+                found_y = y
+                for px, py in line_points:
+                    if gray_img[py, px] < 128:
+                        non_white_pixels.append((px, py))
+                print(f"找到第一列有非白色像素: x={check_x}, 共{len(non_white_pixels)}个非白像素")
+                break
+
+        if x > poly_x_min + 50:
+            break
+
+    expand_line_start = None
+    expand_line_end = None
+    expand_x = None
+    expand_y = None
+    if first_non_white_col is not None:
+        expand_x = check_x + 70 * math.cos(tilt_angle)
+        expand_y = y + 70 * math.sin(tilt_angle)
+        expand_line_start = (int(expand_x - perp_dx * scan_line_length), int(expand_y - perp_dy * scan_line_length))
+        expand_line_end = (int(expand_x + perp_dx * scan_line_length), int(expand_y + perp_dy * scan_line_length))
+        print(f"向右外扩像素: x={expand_x}, y={expand_y}")
+
+    scan_end_point = (int(x), int(y)) if step > 0 else None
+
+    if vis_img is not None and output_path is not None:
+        cv2.polylines(vis_img, [np.array(poly, dtype=np.int32)], True, (0, 255, 0), 2)
+        
+        if scan_points and len(scan_points) > 1:
+            cv2.polylines(vis_img, [np.array(scan_points)], False, (255, 255, 0), 1)
+        
+        if found_scan_line_start is not None and found_scan_line_end is not None:
+            cv2.line(vis_img, found_scan_line_start, found_scan_line_end, (0, 0, 255), 2)
+        
+        if expand_line_start is not None and expand_line_end is not None:
+            cv2.line(vis_img, expand_line_start, expand_line_end, (255, 0, 0), 2)
+        
+        for px, py in non_white_pixels:
+            cv2.circle(vis_img, (px, py), 1, (0, 255, 0), -1)
+        
+        os.makedirs(os.path.dirname(output_path), exist_ok=True)
+        cv2.imwrite(output_path, vis_img)
+        print(f"可视化图片已保存到: {output_path}")
+
+    return first_non_white_col, found_scan_line_start, found_scan_line_end, non_white_pixels, expand_x, expand_y, expand_line_start, expand_line_end
+
+
+def calculate_horizontal_tilt_angle(poly):
+    """
+    计算文本框的水平倾斜角度
+    poly: 四边形四个点的坐标列表 [[x0,y0], [x1,y1], [x2,y2], [x3,y3]]
+          顺序为：左上、右上、右下、左下
+    返回：倾斜角度（度），正值表示右倾斜，负值表示左倾斜
+    """
+    poly = np.array(poly)
+    top_left = poly[0]
+    top_right = poly[1]
+    bottom_right = poly[2]
+    bottom_left = poly[3]
+
+    top_angle = math.degrees(math.atan2(top_right[1] - top_left[1], top_right[0] - top_left[0]))
+    bottom_angle = math.degrees(math.atan2(bottom_right[1] - bottom_left[1], bottom_right[0] - bottom_left[0]))
+
+    avg_angle = (top_angle + bottom_angle) / 2
+    return round(avg_angle, 2)
+
+
+def expand_poly(poly, expand_x=10, expand_y=5, angle=0):
+    """
+    扩展多边形
+    poly: 四边形四个点的坐标列表 [[x0,y0], [x1,y1], [x2,y2], [x3,y3]]
+          顺序为：左上、右上、右下、左下
+    expand_x: 水平方向右侧扩展像素数（左侧不变）
+    expand_y: 垂直方向上下扩展像素数
+    angle: 倾斜角度（度），正值右倾斜，负值左倾斜
+    返回：扩展后的多边形
+    """
+    poly = np.array(poly, dtype=np.float32)
+    angle_rad = math.radians(angle)
+
+    cos_a = math.cos(angle_rad)
+    sin_a = math.sin(angle_rad)
+
+    def rotate_point(point, center, cos_a, sin_a):
+        x, y = point[0] - center[0], point[1] - center[1]
+        new_x = x * cos_a - y * sin_a
+        new_y = x * sin_a + y * cos_a
+        return [new_x + center[0], new_y + center[1]]
+
+    center_x = (poly[0][0] + poly[2][0]) / 2
+    center_y = (poly[0][1] + poly[2][1]) / 2
+    center = [center_x, center_y]
+
+    rotated_poly = []
+    for p in poly:
+        rotated_poly.append(rotate_point(p, center, cos_a, -sin_a))
+
+    rotated_poly = np.array(rotated_poly, dtype=np.float32)
+
+    expanded = rotated_poly.copy()
+    expanded[0][0] = rotated_poly[0][0]
+    expanded[0][1] -= expand_y
+    expanded[1][0] = rotated_poly[1][0] + expand_x
+    expanded[1][1] -= expand_y
+    expanded[2][0] = rotated_poly[2][0] + expand_x
+    expanded[2][1] = rotated_poly[2][1] + expand_y
+    expanded[3][0] = rotated_poly[3][0]
+    expanded[3][1] = rotated_poly[3][1] + expand_y
+
+    final_poly = []
+    for p in expanded:
+        final_poly.append(rotate_point(p, center, cos_a, sin_a))
+
+    return [[int(p[0]), int(p[1])] for p in final_poly]
+
+
+if __name__ == '__main__':
+    json_path = r'd:\work\ocr+Transformer\test4\micro_0060_X.json'
+    output_dir = r'd:\work\ocr+Transformer\test4\output'
+    
+    with open(json_path, 'r', encoding='utf-8') as f:
+        data = json.load(f)
+    
+    image_name = data['micro_image_name']
+    image_path = os.path.join(os.path.dirname(json_path), image_name)
+    img = cv2.imread(image_path)
+    
+    original_poly = data['micro_poly']
+    expanded_poly = expand_poly_vertical(original_poly, expand_pixels=5)
+    
+    dark_count, total_count, dark_ratio = count_dark_pixels_in_expanded_region(img, original_poly, expanded_poly, dark_threshold=128)
+    print(f'外扩新增区域深色像素统计:')
+    print(f'  新增区域深色像素数量: {dark_count}')
+    print(f'  新增区域总像素数量: {total_count}')
+    print(f'  新增区域深色像素比例: {dark_ratio:.4f} ({dark_ratio*100:.2f}%)')
+    
+    draw_poly_comparison(json_path, output_dir, expand_pixels=5)

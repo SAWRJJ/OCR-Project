@@ -1,0 +1,169 @@
+{
+  "micro_image_name": "micro_0095_2300_1XVI.jpg",
+  "text": "2300-1XVI",
+  "global_poly": [
+    [
+      14092,
+      1544
+    ],
+    [
+      14362,
+      1523
+    ],
+    [
+      14368,
+      1597
+    ],
+    [
+      14098,
+      1618
+    ]
+  ],
+  "micro_poly": [
+    [
+      0,
+      61
+    ],
+    [
+      270,
+      40
+    ],
+    [
+      276,
+      114
+    ],
+    [
+      6,
+      135
+    ]
+  ],
+  "source_split_image": "split_53_14000_700.jpg",
+  "split_poly": [
+    [
+      92,
+      844
+    ],
+    [
+      362,
+      823
+    ],
+    [
+      368,
+      897
+    ],
+    [
+      98,
+      918
+    ]
+  ],
+  "color_presence": {
+    "blue": false,
+    "green": true,
+    "yellow": true,
+    "red": true,
+    "white": true
+  },
+  "color_stats": {
+    "blue": {
+      "pixels": 7,
+      "ratio": 8.760183713567022e-05
+    },
+    "green": {
+      "pixels": 1530,
+      "ratio": 0.01914725868822506
+    },
+    "yellow": {
+      "pixels": 1215,
+      "ratio": 0.015205176017119902
+    },
+    "red": {
+      "pixels": 2411,
+      "ratio": 0.03017257561915727
+    },
+    "white": {
+      "pixels": 74724,
+      "ratio": 0.9351370968751174
+    }
+  },
+  "color_valid_pixels": 79907,
+  "re_ocr_text": "N1Z40.0 2300-1XVII",
+  "re_ocr_confidence": 0.6512286067008972,
+  "re_ocr_details": [
+    {
+      "text": "N1Z40.0",
+      "confidence": 0.6512286067008972,
+      "color_info": null,
+      "matched_key": null,
+      "color_presence": {
+        "blue": false,
+        "green": true,
+        "yellow": true,
+        "red": true,
+        "white": true
+      },
+      "color_stats": {
+        "blue": {
+          "pixels": 7,
+          "ratio": 8.760183713567022e-05
+        },
+        "green": {
+          "pixels": 1530,
+          "ratio": 0.01914725868822506
+        },
+        "yellow": {
+          "pixels": 1215,
+          "ratio": 0.015205176017119902
+        },
+        "red": {
+          "pixels": 2411,
+          "ratio": 0.03017257561915727
+        },
+        "white": {
+          "pixels": 74724,
+          "ratio": 0.9351370968751174
+        }
+      }
+    },
+    {
+      "text": "2300-1XVII",
+      "confidence": 0.9843646883964539,
+      "color_info": null,
+      "matched_key": "X",
+      "template_match_res": true,
+      "template_match_score": 0.5839227437973022,
+      "template_name": "ll1_r",
+      "color_presence": {
+        "blue": false,
+        "green": true,
+        "yellow": true,
+        "red": true,
+        "white": true
+      },
+      "color_stats": {
+        "blue": {
+          "pixels": 7,
+          "ratio": 8.760183713567022e-05
+        },
+        "green": {
+          "pixels": 1530,
+          "ratio": 0.01914725868822506
+        },
+        "yellow": {
+          "pixels": 1215,
+          "ratio": 0.015205176017119902
+        },
+        "red": {
+          "pixels": 2411,
+          "ratio": 0.03017257561915727
+        },
+        "white": {
+          "pixels": 74724,
+          "ratio": 0.9351370968751174
+        }
+      }
+    }
+  ],
+  "matched_keys": [
+    "X"
+  ]
+}

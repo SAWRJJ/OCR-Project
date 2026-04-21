@@ -1,0 +1,131 @@
+{
+  "micro_image_name": "micro_0002_D3.jpg",
+  "text": "D3",
+  "global_poly": [
+    [
+      793,
+      624
+    ],
+    [
+      830,
+      624
+    ],
+    [
+      830,
+      656
+    ],
+    [
+      793,
+      656
+    ]
+  ],
+  "micro_poly": [
+    [
+      70,
+      40
+    ],
+    [
+      107,
+      40
+    ],
+    [
+      107,
+      72
+    ],
+    [
+      70,
+      72
+    ]
+  ],
+  "source_split_image": "split_0_0_0.jpg",
+  "split_poly": [
+    [
+      793,
+      624
+    ],
+    [
+      830,
+      624
+    ],
+    [
+      830,
+      656
+    ],
+    [
+      793,
+      656
+    ]
+  ],
+  "color_presence": {
+    "blue": true,
+    "green": false,
+    "yellow": false,
+    "red": false,
+    "white": true
+  },
+  "color_stats": {
+    "blue": {
+      "pixels": 155,
+      "ratio": 0.003853037685194392
+    },
+    "green": {
+      "pixels": 0,
+      "ratio": 0.0
+    },
+    "yellow": {
+      "pixels": 5,
+      "ratio": 0.00012429153823207716
+    },
+    "red": {
+      "pixels": 0,
+      "ratio": 0.0
+    },
+    "white": {
+      "pixels": 40065,
+      "ratio": 0.9959480958536343
+    }
+  },
+  "color_valid_pixels": 40228,
+  "re_ocr_text": "D3",
+  "re_ocr_confidence": 1.0,
+  "re_ocr_details": [
+    {
+      "text": "D3",
+      "confidence": 1.0,
+      "color_info": null,
+      "matched_key": "D3",
+      "color_presence": {
+        "blue": true,
+        "green": false,
+        "yellow": false,
+        "red": false,
+        "white": true
+      },
+      "color_stats": {
+        "blue": {
+          "pixels": 155,
+          "ratio": 0.003853037685194392
+        },
+        "green": {
+          "pixels": 0,
+          "ratio": 0.0
+        },
+        "yellow": {
+          "pixels": 5,
+          "ratio": 0.00012429153823207716
+        },
+        "red": {
+          "pixels": 0,
+          "ratio": 0.0
+        },
+        "white": {
+          "pixels": 40065,
+          "ratio": 0.9959480958536343
+        }
+      }
+    }
+  ],
+  "matched_keys": [
+    "D3"
+  ]
+}

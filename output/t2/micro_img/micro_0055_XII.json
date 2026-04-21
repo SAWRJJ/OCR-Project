@@ -1,0 +1,168 @@
+{
+  "micro_image_name": "micro_0055_XII.jpg",
+  "text": "XII",
+  "global_poly": [
+    [
+      9589,
+      1581
+    ],
+    [
+      9704,
+      1581
+    ],
+    [
+      9704,
+      1657
+    ],
+    [
+      9589,
+      1657
+    ]
+  ],
+  "micro_poly": [
+    [
+      0,
+      40
+    ],
+    [
+      115,
+      40
+    ],
+    [
+      115,
+      116
+    ],
+    [
+      0,
+      116
+    ]
+  ],
+  "source_split_image": "split_57_9100_1400.jpg",
+  "split_poly": [
+    [
+      489,
+      181
+    ],
+    [
+      604,
+      181
+    ],
+    [
+      604,
+      257
+    ],
+    [
+      489,
+      257
+    ]
+  ],
+  "color_presence": {
+    "blue": false,
+    "green": true,
+    "yellow": true,
+    "red": true,
+    "white": true
+  },
+  "color_stats": {
+    "blue": {
+      "pixels": 11,
+      "ratio": 0.0001959073180288162
+    },
+    "green": {
+      "pixels": 1526,
+      "ratio": 0.027177687937452136
+    },
+    "yellow": {
+      "pixels": 1240,
+      "ratio": 0.022084097668702916
+    },
+    "red": {
+      "pixels": 1555,
+      "ratio": 0.027694170866800833
+    },
+    "white": {
+      "pixels": 51813,
+      "ratio": 0.9227768971842776
+    }
+  },
+  "color_valid_pixels": 56149,
+  "polygon_total_pixels": 3298,
+  "black_pixels_in_polygon": 864,
+  "left_black_pixels": 367,
+  "right_black_pixels": 497,
+  "re_ocr_text": "XII",
+  "re_ocr_confidence": 1.0,
+  "re_ocr_details": [
+    {
+      "text": "XII",
+      "confidence": 1.0,
+      "color_info": null,
+      "matched_key": "XⅡ",
+      "template_match_res": 1,
+      "template_match_score": true,
+      "black_pixel_count": 864,
+      "black_radio": 26.197695573074594,
+      "template_name": "color_detection",
+      "color_centers_separate": {
+        "red": [
+          [
+            169,
+            112
+          ]
+        ],
+        "yellow": [
+          [
+            159,
+            53
+          ],
+          [
+            168,
+            64
+          ],
+          [
+            179,
+            75
+          ]
+        ],
+        "green": [
+          [
+            263,
+            64
+          ]
+        ]
+      },
+      "color_presence": {
+        "blue": false,
+        "green": true,
+        "yellow": true,
+        "red": true,
+        "white": true
+      },
+      "color_stats": {
+        "blue": {
+          "pixels": 11,
+          "ratio": 0.0001959073180288162
+        },
+        "green": {
+          "pixels": 1526,
+          "ratio": 0.027177687937452136
+        },
+        "yellow": {
+          "pixels": 1240,
+          "ratio": 0.022084097668702916
+        },
+        "red": {
+          "pixels": 1555,
+          "ratio": 0.027694170866800833
+        },
+        "white": {
+          "pixels": 51813,
+          "ratio": 0.9227768971842776
+        }
+      }
+    }
+  ],
+  "matched_keys": [
+    "XⅡ"
+  ]
+}

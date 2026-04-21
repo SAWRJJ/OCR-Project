@@ -1,0 +1,169 @@
+{
+  "micro_image_name": "micro_0115_SC.jpg",
+  "text": "SC",
+  "global_poly": [
+    [
+      20546,
+      1527
+    ],
+    [
+      20624,
+      1530
+    ],
+    [
+      20622,
+      1591
+    ],
+    [
+      20545,
+      1589
+    ]
+  ],
+  "micro_poly": [
+    [
+      251,
+      40
+    ],
+    [
+      329,
+      43
+    ],
+    [
+      327,
+      104
+    ],
+    [
+      250,
+      102
+    ]
+  ],
+  "source_split_image": "split_62_20300_700.jpg",
+  "split_poly": [
+    [
+      246,
+      827
+    ],
+    [
+      324,
+      830
+    ],
+    [
+      322,
+      891
+    ],
+    [
+      245,
+      889
+    ]
+  ],
+  "color_presence": {
+    "blue": false,
+    "green": false,
+    "yellow": true,
+    "red": true,
+    "white": true
+  },
+  "color_stats": {
+    "blue": {
+      "pixels": 9,
+      "ratio": 0.00018496824711757815
+    },
+    "green": {
+      "pixels": 6,
+      "ratio": 0.0001233121647450521
+    },
+    "yellow": {
+      "pixels": 2444,
+      "ratio": 0.050229155106151224
+    },
+    "red": {
+      "pixels": 1565,
+      "ratio": 0.03216392297100109
+    },
+    "white": {
+      "pixels": 44628,
+      "ratio": 0.9171958813736976
+    }
+  },
+  "color_valid_pixels": 48657,
+  "re_ocr_text": "BJ/4 SC",
+  "re_ocr_confidence": 0.9458545446395874,
+  "re_ocr_details": [
+    {
+      "text": "BJ/4",
+      "confidence": 0.9458545446395874,
+      "color_info": null,
+      "matched_key": null,
+      "color_presence": {
+        "blue": false,
+        "green": false,
+        "yellow": true,
+        "red": true,
+        "white": true
+      },
+      "color_stats": {
+        "blue": {
+          "pixels": 9,
+          "ratio": 0.00018496824711757815
+        },
+        "green": {
+          "pixels": 6,
+          "ratio": 0.0001233121647450521
+        },
+        "yellow": {
+          "pixels": 2444,
+          "ratio": 0.050229155106151224
+        },
+        "red": {
+          "pixels": 1565,
+          "ratio": 0.03216392297100109
+        },
+        "white": {
+          "pixels": 44628,
+          "ratio": 0.9171958813736976
+        }
+      }
+    },
+    {
+      "text": "SC",
+      "confidence": 0.9481792449951172,
+      "color_info": null,
+      "matched_key": "S",
+      "template_match_res": true,
+      "template_match_score": 0.5698283910751343,
+      "template_name": "ll1_r",
+      "color_presence": {
+        "blue": false,
+        "green": false,
+        "yellow": true,
+        "red": true,
+        "white": true
+      },
+      "color_stats": {
+        "blue": {
+          "pixels": 9,
+          "ratio": 0.00018496824711757815
+        },
+        "green": {
+          "pixels": 6,
+          "ratio": 0.0001233121647450521
+        },
+        "yellow": {
+          "pixels": 2444,
+          "ratio": 0.050229155106151224
+        },
+        "red": {
+          "pixels": 1565,
+          "ratio": 0.03216392297100109
+        },
+        "white": {
+          "pixels": 44628,
+          "ratio": 0.9171958813736976
+        }
+      }
+    }
+  ],
+  "matched_keys": [
+    "S"
+  ]
+}

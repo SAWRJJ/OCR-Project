@@ -1,0 +1,164 @@
+{
+  "micro_image_name": "micro_0052_DJ1.jpg",
+  "text": "DJ1",
+  "global_poly": [
+    [
+      1474,
+      1193
+    ],
+    [
+      1571,
+      1196
+    ],
+    [
+      1569,
+      1261
+    ],
+    [
+      1472,
+      1258
+    ]
+  ],
+  "micro_poly": [
+    [
+      250,
+      40
+    ],
+    [
+      347,
+      43
+    ],
+    [
+      345,
+      108
+    ],
+    [
+      248,
+      105
+    ]
+  ],
+  "source_split_image": "split_34_700_700.jpg",
+  "split_poly": [
+    [
+      774,
+      493
+    ],
+    [
+      871,
+      496
+    ],
+    [
+      869,
+      561
+    ],
+    [
+      772,
+      558
+    ]
+  ],
+  "color_presence": {
+    "blue": true,
+    "green": false,
+    "yellow": false,
+    "red": true,
+    "white": true
+  },
+  "color_stats": {
+    "blue": {
+      "pixels": 366,
+      "ratio": 0.004490742444877977
+    },
+    "green": {
+      "pixels": 0,
+      "ratio": 0.0
+    },
+    "yellow": {
+      "pixels": 6,
+      "ratio": 7.3618728604557e-05
+    },
+    "red": {
+      "pixels": 272,
+      "ratio": 0.0033373823634065838
+    },
+    "white": {
+      "pixels": 80854,
+      "ratio": 0.9920614470988086
+    }
+  },
+  "color_valid_pixels": 81501,
+  "re_ocr_text": "00 DJ1",
+  "re_ocr_confidence": 0.2756950557231903,
+  "re_ocr_details": [
+    {
+      "text": "00",
+      "confidence": 0.2756950557231903,
+      "color_info": null,
+      "matched_key": null,
+      "color_presence": {
+        "blue": true,
+        "green": false,
+        "yellow": false,
+        "red": true,
+        "white": true
+      },
+      "color_stats": {
+        "blue": {
+          "pixels": 366,
+          "ratio": 0.004490742444877977
+        },
+        "green": {
+          "pixels": 0,
+          "ratio": 0.0
+        },
+        "yellow": {
+          "pixels": 6,
+          "ratio": 7.3618728604557e-05
+        },
+        "red": {
+          "pixels": 272,
+          "ratio": 0.0033373823634065838
+        },
+        "white": {
+          "pixels": 80854,
+          "ratio": 0.9920614470988086
+        }
+      }
+    },
+    {
+      "text": "DJ1",
+      "confidence": 0.9995473027229309,
+      "color_info": null,
+      "matched_key": null,
+      "color_presence": {
+        "blue": true,
+        "green": false,
+        "yellow": false,
+        "red": true,
+        "white": true
+      },
+      "color_stats": {
+        "blue": {
+          "pixels": 366,
+          "ratio": 0.004490742444877977
+        },
+        "green": {
+          "pixels": 0,
+          "ratio": 0.0
+        },
+        "yellow": {
+          "pixels": 6,
+          "ratio": 7.3618728604557e-05
+        },
+        "red": {
+          "pixels": 272,
+          "ratio": 0.0033373823634065838
+        },
+        "white": {
+          "pixels": 80854,
+          "ratio": 0.9920614470988086
+        }
+      }
+    }
+  ],
+  "matched_keys": []
+}

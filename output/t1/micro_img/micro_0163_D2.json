@@ -1,0 +1,131 @@
+{
+  "micro_image_name": "micro_0163_D2.jpg",
+  "text": "D2",
+  "global_poly": [
+    [
+      17727,
+      1939
+    ],
+    [
+      17800,
+      1939
+    ],
+    [
+      17800,
+      1998
+    ],
+    [
+      17727,
+      1998
+    ]
+  ],
+  "micro_poly": [
+    [
+      250,
+      40
+    ],
+    [
+      323,
+      40
+    ],
+    [
+      323,
+      99
+    ],
+    [
+      250,
+      99
+    ]
+  ],
+  "source_split_image": "split_90_16800_1400.jpg",
+  "split_poly": [
+    [
+      927,
+      539
+    ],
+    [
+      1000,
+      539
+    ],
+    [
+      1000,
+      598
+    ],
+    [
+      927,
+      598
+    ]
+  ],
+  "color_presence": {
+    "blue": true,
+    "green": false,
+    "yellow": false,
+    "red": false,
+    "white": true
+  },
+  "color_stats": {
+    "blue": {
+      "pixels": 451,
+      "ratio": 0.008601945451077628
+    },
+    "green": {
+      "pixels": 0,
+      "ratio": 0.0
+    },
+    "yellow": {
+      "pixels": 0,
+      "ratio": 0.0
+    },
+    "red": {
+      "pixels": 0,
+      "ratio": 0.0
+    },
+    "white": {
+      "pixels": 51978,
+      "ratio": 0.9913789814991417
+    }
+  },
+  "color_valid_pixels": 52430,
+  "re_ocr_text": "D2",
+  "re_ocr_confidence": 1.0,
+  "re_ocr_details": [
+    {
+      "text": "D2",
+      "confidence": 1.0,
+      "color_info": null,
+      "matched_key": "D2",
+      "color_presence": {
+        "blue": true,
+        "green": false,
+        "yellow": false,
+        "red": false,
+        "white": true
+      },
+      "color_stats": {
+        "blue": {
+          "pixels": 451,
+          "ratio": 0.008601945451077628
+        },
+        "green": {
+          "pixels": 0,
+          "ratio": 0.0
+        },
+        "yellow": {
+          "pixels": 0,
+          "ratio": 0.0
+        },
+        "red": {
+          "pixels": 0,
+          "ratio": 0.0
+        },
+        "white": {
+          "pixels": 51978,
+          "ratio": 0.9913789814991417
+        }
+      }
+    }
+  ],
+  "matched_keys": [
+    "D2"
+  ]
+}

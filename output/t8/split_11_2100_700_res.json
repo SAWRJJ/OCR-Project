@@ -1,0 +1,175 @@
+{
+    "input_path": "splits/split_11_2100_700.jpg",
+    "page_index": null,
+    "model_settings": {
+        "use_doc_preprocessor": true,
+        "use_textline_orientation": false
+    },
+    "doc_preprocessor_res": {
+        "input_path": null,
+        "page_index": null,
+        "model_settings": {
+            "use_doc_orientation_classify": false,
+            "use_doc_unwarping": false
+        },
+        "angle": -1
+    },
+    "dt_polys": [
+        [
+            [
+                961,
+                44
+            ],
+            [
+                1000,
+                44
+            ],
+            [
+                1000,
+                86
+            ],
+            [
+                961,
+                86
+            ]
+        ],
+        [
+            [
+                0,
+                322
+            ],
+            [
+                101,
+                319
+            ],
+            [
+                102,
+                374
+            ],
+            [
+                0,
+                377
+            ]
+        ],
+        [
+            [
+                961,
+                390
+            ],
+            [
+                1000,
+                390
+            ],
+            [
+                1000,
+                432
+            ],
+            [
+                961,
+                432
+            ]
+        ]
+    ],
+    "text_det_params": {
+        "limit_side_len": 64,
+        "limit_type": "min",
+        "thresh": 0.3,
+        "max_side_limit": 4000,
+        "box_thresh": 0.6,
+        "unclip_ratio": 1.5
+    },
+    "text_type": "general",
+    "textline_orientation_angles": [
+        -1,
+        -1,
+        -1
+    ],
+    "text_rec_score_thresh": 0.0,
+    "return_word_box": false,
+    "rec_texts": [
+        "量",
+        ".114",
+        "D"
+    ],
+    "rec_scores": [
+        0.14141184091567993,
+        0.9320704340934753,
+        0.13774597644805908
+    ],
+    "rec_polys": [
+        [
+            [
+                961,
+                44
+            ],
+            [
+                1000,
+                44
+            ],
+            [
+                1000,
+                86
+            ],
+            [
+                961,
+                86
+            ]
+        ],
+        [
+            [
+                0,
+                322
+            ],
+            [
+                101,
+                319
+            ],
+            [
+                102,
+                374
+            ],
+            [
+                0,
+                377
+            ]
+        ],
+        [
+            [
+                961,
+                390
+            ],
+            [
+                1000,
+                390
+            ],
+            [
+                1000,
+                432
+            ],
+            [
+                961,
+                432
+            ]
+        ]
+    ],
+    "rec_boxes": [
+        [
+            961,
+            44,
+            1000,
+            86
+        ],
+        [
+            0,
+            319,
+            102,
+            377
+        ],
+        [
+            961,
+            390,
+            1000,
+            432
+        ]
+    ]
+}

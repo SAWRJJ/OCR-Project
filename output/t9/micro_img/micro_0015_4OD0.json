@@ -1,0 +1,272 @@
+{
+  "micro_image_name": "micro_0015_4OD0.jpg",
+  "text": "4OD0",
+  "global_poly": [
+    [
+      3421,
+      700
+    ],
+    [
+      3485,
+      700
+    ],
+    [
+      3485,
+      710
+    ],
+    [
+      3421,
+      710
+    ]
+  ],
+  "micro_poly": [
+    [
+      300,
+      40
+    ],
+    [
+      364,
+      40
+    ],
+    [
+      364,
+      50
+    ],
+    [
+      300,
+      50
+    ]
+  ],
+  "source_split_image": "split_12_2800_700.jpg",
+  "split_poly": [
+    [
+      621,
+      0
+    ],
+    [
+      685,
+      0
+    ],
+    [
+      685,
+      10
+    ],
+    [
+      621,
+      10
+    ]
+  ],
+  "color_presence": {
+    "blue": true,
+    "green": false,
+    "yellow": false,
+    "red": false,
+    "white": true
+  },
+  "color_stats": {
+    "blue": {
+      "pixels": 279,
+      "ratio": 0.005321076421337707
+    },
+    "green": {
+      "pixels": 4,
+      "ratio": 7.628783399767322e-05
+    },
+    "yellow": {
+      "pixels": 5,
+      "ratio": 9.535979249709153e-05
+    },
+    "red": {
+      "pixels": 0,
+      "ratio": 0.0
+    },
+    "white": {
+      "pixels": 52144,
+      "ratio": 0.9944882039936681
+    }
+  },
+  "color_valid_pixels": 52433,
+  "re_ocr_text": "4 4-6DG 6 D8 D12",
+  "re_ocr_confidence": 0.9973605275154114,
+  "re_ocr_details": [
+    {
+      "text": "4",
+      "confidence": 0.9973605275154114,
+      "color_info": null,
+      "matched_key": null,
+      "color_presence": {
+        "blue": true,
+        "green": false,
+        "yellow": false,
+        "red": false,
+        "white": true
+      },
+      "color_stats": {
+        "blue": {
+          "pixels": 279,
+          "ratio": 0.005321076421337707
+        },
+        "green": {
+          "pixels": 4,
+          "ratio": 7.628783399767322e-05
+        },
+        "yellow": {
+          "pixels": 5,
+          "ratio": 9.535979249709153e-05
+        },
+        "red": {
+          "pixels": 0,
+          "ratio": 0.0
+        },
+        "white": {
+          "pixels": 52144,
+          "ratio": 0.9944882039936681
+        }
+      }
+    },
+    {
+      "text": "4-6DG",
+      "confidence": 0.9952390789985657,
+      "color_info": null,
+      "matched_key": null,
+      "color_presence": {
+        "blue": true,
+        "green": false,
+        "yellow": false,
+        "red": false,
+        "white": true
+      },
+      "color_stats": {
+        "blue": {
+          "pixels": 279,
+          "ratio": 0.005321076421337707
+        },
+        "green": {
+          "pixels": 4,
+          "ratio": 7.628783399767322e-05
+        },
+        "yellow": {
+          "pixels": 5,
+          "ratio": 9.535979249709153e-05
+        },
+        "red": {
+          "pixels": 0,
+          "ratio": 0.0
+        },
+        "white": {
+          "pixels": 52144,
+          "ratio": 0.9944882039936681
+        }
+      }
+    },
+    {
+      "text": "6",
+      "confidence": 0.9983013868331909,
+      "color_info": null,
+      "matched_key": null,
+      "color_presence": {
+        "blue": true,
+        "green": false,
+        "yellow": false,
+        "red": false,
+        "white": true
+      },
+      "color_stats": {
+        "blue": {
+          "pixels": 279,
+          "ratio": 0.005321076421337707
+        },
+        "green": {
+          "pixels": 4,
+          "ratio": 7.628783399767322e-05
+        },
+        "yellow": {
+          "pixels": 5,
+          "ratio": 9.535979249709153e-05
+        },
+        "red": {
+          "pixels": 0,
+          "ratio": 0.0
+        },
+        "white": {
+          "pixels": 52144,
+          "ratio": 0.9944882039936681
+        }
+      }
+    },
+    {
+      "text": "D8",
+      "confidence": 0.997664213180542,
+      "color_info": null,
+      "matched_key": "D8",
+      "color_presence": {
+        "blue": true,
+        "green": false,
+        "yellow": false,
+        "red": false,
+        "white": true
+      },
+      "color_stats": {
+        "blue": {
+          "pixels": 279,
+          "ratio": 0.005321076421337707
+        },
+        "green": {
+          "pixels": 4,
+          "ratio": 7.628783399767322e-05
+        },
+        "yellow": {
+          "pixels": 5,
+          "ratio": 9.535979249709153e-05
+        },
+        "red": {
+          "pixels": 0,
+          "ratio": 0.0
+        },
+        "white": {
+          "pixels": 52144,
+          "ratio": 0.9944882039936681
+        }
+      }
+    },
+    {
+      "text": "D12",
+      "confidence": 0.9974533915519714,
+      "color_info": null,
+      "matched_key": "D12",
+      "color_presence": {
+        "blue": true,
+        "green": false,
+        "yellow": false,
+        "red": false,
+        "white": true
+      },
+      "color_stats": {
+        "blue": {
+          "pixels": 279,
+          "ratio": 0.005321076421337707
+        },
+        "green": {
+          "pixels": 4,
+          "ratio": 7.628783399767322e-05
+        },
+        "yellow": {
+          "pixels": 5,
+          "ratio": 9.535979249709153e-05
+        },
+        "red": {
+          "pixels": 0,
+          "ratio": 0.0
+        },
+        "white": {
+          "pixels": 52144,
+          "ratio": 0.9944882039936681
+        }
+      }
+    }
+  ],
+  "matched_keys": [
+    "D8",
+    "D12"
+  ]
+}

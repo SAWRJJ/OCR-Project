@@ -1,0 +1,106 @@
+from flask import Flask, request, jsonify
+from flask_sqlalchemy import SQLAlchemy
+from flask_cors import CORS
+import os
+from datetime import datetime
+
+app = Flask(__name__)
+CORS(app)
+
+# 配置数据库
+app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///images.db'
+app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+
+# 配置上传文件夹
+UPLOAD_FOLDER = 'uploads'
+app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
+
+# 创建上传文件夹
+if not os.path.exists(UPLOAD_FOLDER):
+    os.makedirs(UPLOAD_FOLDER)
+
+# 初始化数据库
+db = SQLAlchemy(app)
+
+# 定义图片模型
+class Image(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    filename = db.Column(db.String(255), nullable=False)
+    filepath = db.Column(db.String(255), nullable=False)
+    filesize = db.Column(db.Integer, nullable=False)
+    upload_time = db.Column(db.DateTime, nullable=False, default=datetime.utcnow)
+    original_filename = db.Column(db.String(255), nullable=False)
+
+    def __repr__(self):
+        return f'<Image {self.filename}>'
+
+# 创建数据库表
+with app.app_context():
+    db.create_all()
+
+@app.route('/upload', methods=['POST'])
+def upload_image():
+    if 'file' not in request.files:
+        return jsonify({'error': 'No file part'}), 400
+    
+    file = request.files['file']
+    
+    if file.filename == '':
+        return jsonify({'error': 'No selected file'}), 400
+    
+    if file:
+        # 保存文件
+        filename = f"{datetime.utcnow().strftime('%Y%m%d%H%M%S')}_{file.filename}"
+        filepath = os.path.join(app.config['UPLOAD_FOLDER'], filename)
+        file.save(filepath)
+        
+        # 获取文件大小
+        filesize = os.path.getsize(filepath)
+        
+        # 创建数据库记录
+        image = Image(
+            filename=filename,
+            filepath=filepath,
+            filesize=filesize,
+            original_filename=file.filename
+        )
+        db.session.add(image)
+        db.session.commit()
+        
+        return jsonify({
+            'success': True,
+            'message': 'File uploaded successfully',
+            'image_id': image.id,
+            'filename': image.filename,
+            'upload_time': image.upload_time.strftime('%Y-%m-%d %H:%M:%S')
+        }), 200
+
+@app.route('/images', methods=['GET'])
+def get_images():
+    images = Image.query.all()
+    result = []
+    for image in images:
+        result.append({
+            'id': image.id,
+            'filename': image.filename,
+            'original_filename': image.original_filename,
+            'filepath': image.filepath,
+            'filesize': image.filesize,
+            'upload_time': image.upload_time.strftime('%Y-%m-%d %H:%M:%S')
+        })
+    return jsonify(result), 200
+
+@app.route('/images/<int:image_id>', methods=['GET'])
+def get_image(image_id):
+    image = Image.query.get_or_404(image_id)
+    return jsonify({
+        'id': image.id,
+        'filename': image.filename,
+        'original_filename': image.original_filename,
+        'filepath': image.filepath,
+        'filesize': image.filesize,
+        'upload_time': image.upload_time.strftime('%Y-%m-%d %H:%M:%S')
+    }), 200
+
+if __name__ == '__main__':
+    app.run(debug=True, host='0.0.0.0', port=5000)

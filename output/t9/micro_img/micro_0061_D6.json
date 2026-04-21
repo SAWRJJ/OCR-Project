@@ -1,0 +1,131 @@
+{
+  "micro_image_name": "micro_0061_D6.jpg",
+  "text": "D6",
+  "global_poly": [
+    [
+      4604,
+      815
+    ],
+    [
+      4641,
+      815
+    ],
+    [
+      4641,
+      845
+    ],
+    [
+      4604,
+      845
+    ]
+  ],
+  "micro_poly": [
+    [
+      300,
+      40
+    ],
+    [
+      337,
+      40
+    ],
+    [
+      337,
+      70
+    ],
+    [
+      300,
+      70
+    ]
+  ],
+  "source_split_image": "split_6_4200_0.jpg",
+  "split_poly": [
+    [
+      404,
+      815
+    ],
+    [
+      441,
+      815
+    ],
+    [
+      441,
+      845
+    ],
+    [
+      404,
+      845
+    ]
+  ],
+  "color_presence": {
+    "blue": true,
+    "green": false,
+    "yellow": false,
+    "red": false,
+    "white": true
+  },
+  "color_stats": {
+    "blue": {
+      "pixels": 142,
+      "ratio": 0.003406174290580249
+    },
+    "green": {
+      "pixels": 4,
+      "ratio": 9.594857156564082e-05
+    },
+    "yellow": {
+      "pixels": 5,
+      "ratio": 0.00011993571445705103
+    },
+    "red": {
+      "pixels": 0,
+      "ratio": 0.0
+    },
+    "white": {
+      "pixels": 41542,
+      "ratio": 0.9964738899949627
+    }
+  },
+  "color_valid_pixels": 41689,
+  "re_ocr_text": "D6",
+  "re_ocr_confidence": 1.0,
+  "re_ocr_details": [
+    {
+      "text": "D6",
+      "confidence": 1.0,
+      "color_info": null,
+      "matched_key": "D6",
+      "color_presence": {
+        "blue": true,
+        "green": false,
+        "yellow": false,
+        "red": false,
+        "white": true
+      },
+      "color_stats": {
+        "blue": {
+          "pixels": 142,
+          "ratio": 0.003406174290580249
+        },
+        "green": {
+          "pixels": 4,
+          "ratio": 9.594857156564082e-05
+        },
+        "yellow": {
+          "pixels": 5,
+          "ratio": 0.00011993571445705103
+        },
+        "red": {
+          "pixels": 0,
+          "ratio": 0.0
+        },
+        "white": {
+          "pixels": 41542,
+          "ratio": 0.9964738899949627
+        }
+      }
+    }
+  ],
+  "matched_keys": [
+    "D6"
+  ]
+}

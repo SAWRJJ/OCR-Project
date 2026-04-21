@@ -1,0 +1,131 @@
+{
+  "micro_image_name": "micro_0007_D9.jpg",
+  "text": "D9",
+  "global_poly": [
+    [
+      1648,
+      757
+    ],
+    [
+      1683,
+      757
+    ],
+    [
+      1683,
+      785
+    ],
+    [
+      1648,
+      785
+    ]
+  ],
+  "micro_poly": [
+    [
+      300,
+      40
+    ],
+    [
+      335,
+      40
+    ],
+    [
+      335,
+      68
+    ],
+    [
+      300,
+      68
+    ]
+  ],
+  "source_split_image": "split_10_1400_700.jpg",
+  "split_poly": [
+    [
+      248,
+      57
+    ],
+    [
+      283,
+      57
+    ],
+    [
+      283,
+      85
+    ],
+    [
+      248,
+      85
+    ]
+  ],
+  "color_presence": {
+    "blue": true,
+    "green": true,
+    "yellow": true,
+    "red": true,
+    "white": true
+  },
+  "color_stats": {
+    "blue": {
+      "pixels": 138,
+      "ratio": 0.002232901315470123
+    },
+    "green": {
+      "pixels": 418,
+      "ratio": 0.006763425723670372
+    },
+    "yellow": {
+      "pixels": 357,
+      "ratio": 0.0057764186204553175
+    },
+    "red": {
+      "pixels": 344,
+      "ratio": 0.0055660728443603065
+    },
+    "white": {
+      "pixels": 60521,
+      "ratio": 0.9792566703881689
+    }
+  },
+  "color_valid_pixels": 61803,
+  "re_ocr_text": "D9",
+  "re_ocr_confidence": 1.0,
+  "re_ocr_details": [
+    {
+      "text": "D9",
+      "confidence": 1.0,
+      "color_info": null,
+      "matched_key": "D9",
+      "color_presence": {
+        "blue": true,
+        "green": true,
+        "yellow": true,
+        "red": true,
+        "white": true
+      },
+      "color_stats": {
+        "blue": {
+          "pixels": 138,
+          "ratio": 0.002232901315470123
+        },
+        "green": {
+          "pixels": 418,
+          "ratio": 0.006763425723670372
+        },
+        "yellow": {
+          "pixels": 357,
+          "ratio": 0.0057764186204553175
+        },
+        "red": {
+          "pixels": 344,
+          "ratio": 0.0055660728443603065
+        },
+        "white": {
+          "pixels": 60521,
+          "ratio": 0.9792566703881689
+        }
+      }
+    }
+  ],
+  "matched_keys": [
+    "D9"
+  ]
+}

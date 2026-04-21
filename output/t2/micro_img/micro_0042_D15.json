@@ -1,0 +1,131 @@
+{
+  "micro_image_name": "micro_0042_D15.jpg",
+  "text": "D15",
+  "global_poly": [
+    [
+      4936,
+      1730
+    ],
+    [
+      5038,
+      1733
+    ],
+    [
+      5036,
+      1796
+    ],
+    [
+      4934,
+      1793
+    ]
+  ],
+  "micro_poly": [
+    [
+      300,
+      40
+    ],
+    [
+      402,
+      43
+    ],
+    [
+      400,
+      106
+    ],
+    [
+      298,
+      103
+    ]
+  ],
+  "source_split_image": "split_50_4200_1400.jpg",
+  "split_poly": [
+    [
+      736,
+      330
+    ],
+    [
+      838,
+      333
+    ],
+    [
+      836,
+      396
+    ],
+    [
+      734,
+      393
+    ]
+  ],
+  "color_presence": {
+    "blue": true,
+    "green": false,
+    "yellow": false,
+    "red": false,
+    "white": true
+  },
+  "color_stats": {
+    "blue": {
+      "pixels": 372,
+      "ratio": 0.00415201741168592
+    },
+    "green": {
+      "pixels": 3,
+      "ratio": 3.348401138456387e-05
+    },
+    "yellow": {
+      "pixels": 0,
+      "ratio": 0.0
+    },
+    "red": {
+      "pixels": 0,
+      "ratio": 0.0
+    },
+    "white": {
+      "pixels": 89220,
+      "ratio": 0.9958144985769295
+    }
+  },
+  "color_valid_pixels": 89595,
+  "re_ocr_text": "D15",
+  "re_ocr_confidence": 1.0,
+  "re_ocr_details": [
+    {
+      "text": "D15",
+      "confidence": 1.0,
+      "color_info": null,
+      "matched_key": "D15",
+      "color_presence": {
+        "blue": true,
+        "green": false,
+        "yellow": false,
+        "red": false,
+        "white": true
+      },
+      "color_stats": {
+        "blue": {
+          "pixels": 372,
+          "ratio": 0.00415201741168592
+        },
+        "green": {
+          "pixels": 3,
+          "ratio": 3.348401138456387e-05
+        },
+        "yellow": {
+          "pixels": 0,
+          "ratio": 0.0
+        },
+        "red": {
+          "pixels": 0,
+          "ratio": 0.0
+        },
+        "white": {
+          "pixels": 89220,
+          "ratio": 0.9958144985769295
+        }
+      }
+    }
+  ],
+  "matched_keys": [
+    "D15"
+  ]
+}

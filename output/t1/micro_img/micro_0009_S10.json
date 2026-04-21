@@ -1,0 +1,134 @@
+{
+  "micro_image_name": "micro_0009_S10.jpg",
+  "text": "S10",
+  "global_poly": [
+    [
+      11258,
+      2378
+    ],
+    [
+      11361,
+      2378
+    ],
+    [
+      11361,
+      2442
+    ],
+    [
+      11258,
+      2442
+    ]
+  ],
+  "micro_poly": [
+    [
+      250,
+      40
+    ],
+    [
+      353,
+      40
+    ],
+    [
+      353,
+      104
+    ],
+    [
+      250,
+      104
+    ]
+  ],
+  "source_split_image": "split_115_11200_2100.jpg",
+  "split_poly": [
+    [
+      58,
+      278
+    ],
+    [
+      161,
+      278
+    ],
+    [
+      161,
+      342
+    ],
+    [
+      58,
+      342
+    ]
+  ],
+  "color_presence": {
+    "blue": false,
+    "green": true,
+    "yellow": true,
+    "red": true,
+    "white": true
+  },
+  "color_stats": {
+    "blue": {
+      "pixels": 8,
+      "ratio": 0.00018431905628643182
+    },
+    "green": {
+      "pixels": 1525,
+      "ratio": 0.03513582010460106
+    },
+    "yellow": {
+      "pixels": 1211,
+      "ratio": 0.027901297145358616
+    },
+    "red": {
+      "pixels": 1557,
+      "ratio": 0.03587309632974679
+    },
+    "white": {
+      "pixels": 39090,
+      "ratio": 0.9006289887795774
+    }
+  },
+  "color_valid_pixels": 43403,
+  "re_ocr_text": "S10",
+  "re_ocr_confidence": 1.0,
+  "re_ocr_details": [
+    {
+      "text": "S10",
+      "confidence": 1.0,
+      "color_info": null,
+      "matched_key": "S1",
+      "template_match_res": true,
+      "template_match_score": 0.5846846103668213,
+      "template_name": "ll1_l",
+      "color_presence": {
+        "blue": false,
+        "green": true,
+        "yellow": true,
+        "red": true,
+        "white": true
+      },
+      "color_stats": {
+        "blue": {
+          "pixels": 8,
+          "ratio": 0.00018431905628643182
+        },
+        "green": {
+          "pixels": 1525,
+          "ratio": 0.03513582010460106
+        },
+        "yellow": {
+          "pixels": 1211,
+          "ratio": 0.027901297145358616
+        },
+        "red": {
+          "pixels": 1557,
+          "ratio": 0.03587309632974679
+        },
+        "white": {
+          "pixels": 39090,
+          "ratio": 0.9006289887795774
+        }
+      }
+    }
+  ],
+  "matched_keys": [
+    "S1"
+  ]
+}

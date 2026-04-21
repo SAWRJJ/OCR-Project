@@ -1,0 +1,131 @@
+{
+  "micro_image_name": "micro_0171_D8.jpg",
+  "text": "D8",
+  "global_poly": [
+    [
+      19114,
+      1743
+    ],
+    [
+      19182,
+      1743
+    ],
+    [
+      19182,
+      1798
+    ],
+    [
+      19114,
+      1798
+    ]
+  ],
+  "micro_poly": [
+    [
+      250,
+      40
+    ],
+    [
+      318,
+      40
+    ],
+    [
+      318,
+      95
+    ],
+    [
+      250,
+      95
+    ]
+  ],
+  "source_split_image": "split_93_18900_1400.jpg",
+  "split_poly": [
+    [
+      214,
+      343
+    ],
+    [
+      282,
+      343
+    ],
+    [
+      282,
+      398
+    ],
+    [
+      214,
+      398
+    ]
+  ],
+  "color_presence": {
+    "blue": true,
+    "green": false,
+    "yellow": false,
+    "red": false,
+    "white": true
+  },
+  "color_stats": {
+    "blue": {
+      "pixels": 411,
+      "ratio": 0.005668809136299688
+    },
+    "green": {
+      "pixels": 1,
+      "ratio": 1.3792722959366637e-05
+    },
+    "yellow": {
+      "pixels": 0,
+      "ratio": 0.0
+    },
+    "red": {
+      "pixels": 0,
+      "ratio": 0.0
+    },
+    "white": {
+      "pixels": 72090,
+      "ratio": 0.9943173981407409
+    }
+  },
+  "color_valid_pixels": 72502,
+  "re_ocr_text": "D8",
+  "re_ocr_confidence": 1.0,
+  "re_ocr_details": [
+    {
+      "text": "D8",
+      "confidence": 1.0,
+      "color_info": null,
+      "matched_key": "D8",
+      "color_presence": {
+        "blue": true,
+        "green": false,
+        "yellow": false,
+        "red": false,
+        "white": true
+      },
+      "color_stats": {
+        "blue": {
+          "pixels": 411,
+          "ratio": 0.005668809136299688
+        },
+        "green": {
+          "pixels": 1,
+          "ratio": 1.3792722959366637e-05
+        },
+        "yellow": {
+          "pixels": 0,
+          "ratio": 0.0
+        },
+        "red": {
+          "pixels": 0,
+          "ratio": 0.0
+        },
+        "white": {
+          "pixels": 72090,
+          "ratio": 0.9943173981407409
+        }
+      }
+    }
+  ],
+  "matched_keys": [
+    "D8"
+  ]
+}

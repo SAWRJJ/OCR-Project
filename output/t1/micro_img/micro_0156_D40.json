@@ -1,0 +1,131 @@
+{
+  "micro_image_name": "micro_0156_D40.jpg",
+  "text": "D40",
+  "global_poly": [
+    [
+      15223,
+      1466
+    ],
+    [
+      15325,
+      1463
+    ],
+    [
+      15326,
+      1522
+    ],
+    [
+      15224,
+      1524
+    ]
+  ],
+  "micro_poly": [
+    [
+      250,
+      43
+    ],
+    [
+      352,
+      40
+    ],
+    [
+      353,
+      99
+    ],
+    [
+      251,
+      101
+    ]
+  ],
+  "source_split_image": "split_87_14700_1400.jpg",
+  "split_poly": [
+    [
+      523,
+      66
+    ],
+    [
+      625,
+      63
+    ],
+    [
+      626,
+      122
+    ],
+    [
+      524,
+      124
+    ]
+  ],
+  "color_presence": {
+    "blue": true,
+    "green": false,
+    "yellow": false,
+    "red": false,
+    "white": true
+  },
+  "color_stats": {
+    "blue": {
+      "pixels": 460,
+      "ratio": 0.009642797249706524
+    },
+    "green": {
+      "pixels": 0,
+      "ratio": 0.0
+    },
+    "yellow": {
+      "pixels": 0,
+      "ratio": 0.0
+    },
+    "red": {
+      "pixels": 0,
+      "ratio": 0.0
+    },
+    "white": {
+      "pixels": 47244,
+      "ratio": 0.9903572027502935
+    }
+  },
+  "color_valid_pixels": 47704,
+  "re_ocr_text": "D40",
+  "re_ocr_confidence": 1.0,
+  "re_ocr_details": [
+    {
+      "text": "D40",
+      "confidence": 1.0,
+      "color_info": null,
+      "matched_key": "D40",
+      "color_presence": {
+        "blue": true,
+        "green": false,
+        "yellow": false,
+        "red": false,
+        "white": true
+      },
+      "color_stats": {
+        "blue": {
+          "pixels": 460,
+          "ratio": 0.009642797249706524
+        },
+        "green": {
+          "pixels": 0,
+          "ratio": 0.0
+        },
+        "yellow": {
+          "pixels": 0,
+          "ratio": 0.0
+        },
+        "red": {
+          "pixels": 0,
+          "ratio": 0.0
+        },
+        "white": {
+          "pixels": 47244,
+          "ratio": 0.9903572027502935
+        }
+      }
+    }
+  ],
+  "matched_keys": [
+    "D40"
+  ]
+}

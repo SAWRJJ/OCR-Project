@@ -1,0 +1,169 @@
+{
+  "micro_image_name": "micro_0041_X2.jpg",
+  "text": "X2",
+  "global_poly": [
+    [
+      14646,
+      348
+    ],
+    [
+      14722,
+      348
+    ],
+    [
+      14722,
+      412
+    ],
+    [
+      14646,
+      412
+    ]
+  ],
+  "micro_poly": [
+    [
+      70,
+      40
+    ],
+    [
+      146,
+      40
+    ],
+    [
+      146,
+      104
+    ],
+    [
+      70,
+      104
+    ]
+  ],
+  "source_split_image": "split_20_14000_0.jpg",
+  "split_poly": [
+    [
+      646,
+      348
+    ],
+    [
+      722,
+      348
+    ],
+    [
+      722,
+      412
+    ],
+    [
+      646,
+      412
+    ]
+  ],
+  "color_presence": {
+    "blue": false,
+    "green": true,
+    "yellow": true,
+    "red": true,
+    "white": true
+  },
+  "color_stats": {
+    "blue": {
+      "pixels": 15,
+      "ratio": 0.00029506068414737296
+    },
+    "green": {
+      "pixels": 1530,
+      "ratio": 0.030096189783032044
+    },
+    "yellow": {
+      "pixels": 1217,
+      "ratio": 0.023939256840490194
+    },
+    "red": {
+      "pixels": 2559,
+      "ratio": 0.05033735271554183
+    },
+    "white": {
+      "pixels": 45502,
+      "ratio": 0.8950567500049177
+    }
+  },
+  "color_valid_pixels": 50837,
+  "re_ocr_text": "WIZIO.7UO X2",
+  "re_ocr_confidence": 0.4546554386615753,
+  "re_ocr_details": [
+    {
+      "text": "WIZIO.7UO",
+      "confidence": 0.4546554386615753,
+      "color_info": null,
+      "matched_key": null,
+      "color_presence": {
+        "blue": false,
+        "green": true,
+        "yellow": true,
+        "red": true,
+        "white": true
+      },
+      "color_stats": {
+        "blue": {
+          "pixels": 15,
+          "ratio": 0.00029506068414737296
+        },
+        "green": {
+          "pixels": 1530,
+          "ratio": 0.030096189783032044
+        },
+        "yellow": {
+          "pixels": 1217,
+          "ratio": 0.023939256840490194
+        },
+        "red": {
+          "pixels": 2559,
+          "ratio": 0.05033735271554183
+        },
+        "white": {
+          "pixels": 45502,
+          "ratio": 0.8950567500049177
+        }
+      }
+    },
+    {
+      "text": "X2",
+      "confidence": 0.9757987260818481,
+      "color_info": null,
+      "matched_key": "X",
+      "template_match_res": true,
+      "template_match_score": 0.5839226841926575,
+      "template_name": "ll1_r",
+      "color_presence": {
+        "blue": false,
+        "green": true,
+        "yellow": true,
+        "red": true,
+        "white": true
+      },
+      "color_stats": {
+        "blue": {
+          "pixels": 15,
+          "ratio": 0.00029506068414737296
+        },
+        "green": {
+          "pixels": 1530,
+          "ratio": 0.030096189783032044
+        },
+        "yellow": {
+          "pixels": 1217,
+          "ratio": 0.023939256840490194
+        },
+        "red": {
+          "pixels": 2559,
+          "ratio": 0.05033735271554183
+        },
+        "white": {
+          "pixels": 45502,
+          "ratio": 0.8950567500049177
+        }
+      }
+    }
+  ],
+  "matched_keys": [
+    "X"
+  ]
+}

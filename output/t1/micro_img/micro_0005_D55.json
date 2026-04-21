@@ -1,0 +1,131 @@
+{
+  "micro_image_name": "micro_0005_D55.jpg",
+  "text": "D55",
+  "global_poly": [
+    [
+      9344,
+      2761
+    ],
+    [
+      9445,
+      2777
+    ],
+    [
+      9436,
+      2835
+    ],
+    [
+      9335,
+      2819
+    ]
+  ],
+  "micro_poly": [
+    [
+      9,
+      40
+    ],
+    [
+      110,
+      56
+    ],
+    [
+      101,
+      114
+    ],
+    [
+      0,
+      98
+    ]
+  ],
+  "source_split_image": "split_112_9100_2100.jpg",
+  "split_poly": [
+    [
+      244,
+      661
+    ],
+    [
+      345,
+      677
+    ],
+    [
+      336,
+      735
+    ],
+    [
+      235,
+      719
+    ]
+  ],
+  "color_presence": {
+    "blue": true,
+    "green": false,
+    "yellow": false,
+    "red": false,
+    "white": true
+  },
+  "color_stats": {
+    "blue": {
+      "pixels": 366,
+      "ratio": 0.007379924990926321
+    },
+    "green": {
+      "pixels": 3,
+      "ratio": 6.0491188450215753e-05
+    },
+    "yellow": {
+      "pixels": 1,
+      "ratio": 2.016372948340525e-05
+    },
+    "red": {
+      "pixels": 0,
+      "ratio": 0.0
+    },
+    "white": {
+      "pixels": 49224,
+      "ratio": 0.99253942009114
+    }
+  },
+  "color_valid_pixels": 49594,
+  "re_ocr_text": "D55",
+  "re_ocr_confidence": 1.0,
+  "re_ocr_details": [
+    {
+      "text": "D55",
+      "confidence": 1.0,
+      "color_info": null,
+      "matched_key": "D55",
+      "color_presence": {
+        "blue": true,
+        "green": false,
+        "yellow": false,
+        "red": false,
+        "white": true
+      },
+      "color_stats": {
+        "blue": {
+          "pixels": 366,
+          "ratio": 0.007379924990926321
+        },
+        "green": {
+          "pixels": 3,
+          "ratio": 6.0491188450215753e-05
+        },
+        "yellow": {
+          "pixels": 1,
+          "ratio": 2.016372948340525e-05
+        },
+        "red": {
+          "pixels": 0,
+          "ratio": 0.0
+        },
+        "white": {
+          "pixels": 49224,
+          "ratio": 0.99253942009114
+        }
+      }
+    }
+  ],
+  "matched_keys": [
+    "D55"
+  ]
+}

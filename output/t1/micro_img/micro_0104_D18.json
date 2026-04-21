@@ -1,0 +1,131 @@
+{
+  "micro_image_name": "micro_0104_D18.jpg",
+  "text": "D18",
+  "global_poly": [
+    [
+      18052,
+      1467
+    ],
+    [
+      18157,
+      1461
+    ],
+    [
+      18160,
+      1524
+    ],
+    [
+      18055,
+      1530
+    ]
+  ],
+  "micro_poly": [
+    [
+      0,
+      46
+    ],
+    [
+      105,
+      40
+    ],
+    [
+      108,
+      103
+    ],
+    [
+      3,
+      109
+    ]
+  ],
+  "source_split_image": "split_58_17500_700.jpg",
+  "split_poly": [
+    [
+      552,
+      767
+    ],
+    [
+      657,
+      761
+    ],
+    [
+      660,
+      824
+    ],
+    [
+      555,
+      830
+    ]
+  ],
+  "color_presence": {
+    "blue": true,
+    "green": false,
+    "yellow": false,
+    "red": false,
+    "white": true
+  },
+  "color_stats": {
+    "blue": {
+      "pixels": 459,
+      "ratio": 0.008980981451044846
+    },
+    "green": {
+      "pixels": 0,
+      "ratio": 0.0
+    },
+    "yellow": {
+      "pixels": 0,
+      "ratio": 0.0
+    },
+    "red": {
+      "pixels": 0,
+      "ratio": 0.0
+    },
+    "white": {
+      "pixels": 50649,
+      "ratio": 0.9910190185489551
+    }
+  },
+  "color_valid_pixels": 51108,
+  "re_ocr_text": "D18",
+  "re_ocr_confidence": 1.0,
+  "re_ocr_details": [
+    {
+      "text": "D18",
+      "confidence": 1.0,
+      "color_info": null,
+      "matched_key": "D18",
+      "color_presence": {
+        "blue": true,
+        "green": false,
+        "yellow": false,
+        "red": false,
+        "white": true
+      },
+      "color_stats": {
+        "blue": {
+          "pixels": 459,
+          "ratio": 0.008980981451044846
+        },
+        "green": {
+          "pixels": 0,
+          "ratio": 0.0
+        },
+        "yellow": {
+          "pixels": 0,
+          "ratio": 0.0
+        },
+        "red": {
+          "pixels": 0,
+          "ratio": 0.0
+        },
+        "white": {
+          "pixels": 50649,
+          "ratio": 0.9910190185489551
+        }
+      }
+    }
+  ],
+  "matched_keys": [
+    "D18"
+  ]
+}

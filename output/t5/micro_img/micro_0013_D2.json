@@ -1,0 +1,131 @@
+{
+  "micro_image_name": "micro_0013_D2.jpg",
+  "text": "D2",
+  "global_poly": [
+    [
+      5154,
+      1235
+    ],
+    [
+      5194,
+      1235
+    ],
+    [
+      5194,
+      1278
+    ],
+    [
+      5154,
+      1278
+    ]
+  ],
+  "micro_poly": [
+    [
+      300,
+      40
+    ],
+    [
+      340,
+      40
+    ],
+    [
+      340,
+      83
+    ],
+    [
+      300,
+      83
+    ]
+  ],
+  "source_split_image": "split_17_4200_700.jpg",
+  "split_poly": [
+    [
+      954,
+      535
+    ],
+    [
+      994,
+      535
+    ],
+    [
+      994,
+      578
+    ],
+    [
+      954,
+      578
+    ]
+  ],
+  "color_presence": {
+    "blue": true,
+    "green": true,
+    "yellow": false,
+    "red": true,
+    "white": true
+  },
+  "color_stats": {
+    "blue": {
+      "pixels": 383,
+      "ratio": 0.005154014883395459
+    },
+    "green": {
+      "pixels": 478,
+      "ratio": 0.006432425885804255
+    },
+    "yellow": {
+      "pixels": 3,
+      "ratio": 4.037087376027775e-05
+    },
+    "red": {
+      "pixels": 488,
+      "ratio": 0.006566995465005181
+    },
+    "white": {
+      "pixels": 72952,
+      "ratio": 0.9817119941865942
+    }
+  },
+  "color_valid_pixels": 74311,
+  "re_ocr_text": "D2",
+  "re_ocr_confidence": 1.0,
+  "re_ocr_details": [
+    {
+      "text": "D2",
+      "confidence": 1.0,
+      "color_info": null,
+      "matched_key": "D2",
+      "color_presence": {
+        "blue": true,
+        "green": true,
+        "yellow": false,
+        "red": true,
+        "white": true
+      },
+      "color_stats": {
+        "blue": {
+          "pixels": 383,
+          "ratio": 0.005154014883395459
+        },
+        "green": {
+          "pixels": 478,
+          "ratio": 0.006432425885804255
+        },
+        "yellow": {
+          "pixels": 3,
+          "ratio": 4.037087376027775e-05
+        },
+        "red": {
+          "pixels": 488,
+          "ratio": 0.006566995465005181
+        },
+        "white": {
+          "pixels": 72952,
+          "ratio": 0.9817119941865942
+        }
+      }
+    }
+  ],
+  "matched_keys": [
+    "D2"
+  ]
+}

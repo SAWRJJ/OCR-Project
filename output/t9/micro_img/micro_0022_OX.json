@@ -1,0 +1,131 @@
+{
+  "micro_image_name": "micro_0022_OX.jpg",
+  "text": "OX",
+  "global_poly": [
+    [
+      4559,
+      814
+    ],
+    [
+      4582,
+      814
+    ],
+    [
+      4582,
+      829
+    ],
+    [
+      4559,
+      829
+    ]
+  ],
+  "micro_poly": [
+    [
+      70,
+      40
+    ],
+    [
+      93,
+      40
+    ],
+    [
+      93,
+      55
+    ],
+    [
+      70,
+      55
+    ]
+  ],
+  "source_split_image": "split_14_4200_700.jpg",
+  "split_poly": [
+    [
+      359,
+      114
+    ],
+    [
+      382,
+      114
+    ],
+    [
+      382,
+      129
+    ],
+    [
+      359,
+      129
+    ]
+  ],
+  "color_presence": {
+    "blue": true,
+    "green": false,
+    "yellow": false,
+    "red": false,
+    "white": true
+  },
+  "color_stats": {
+    "blue": {
+      "pixels": 142,
+      "ratio": 0.0040381060713777905
+    },
+    "green": {
+      "pixels": 4,
+      "ratio": 0.00011374946679937438
+    },
+    "yellow": {
+      "pixels": 5,
+      "ratio": 0.00014218683349921798
+    },
+    "red": {
+      "pixels": 0,
+      "ratio": 0.0
+    },
+    "white": {
+      "pixels": 35018,
+      "ratio": 0.995819707095123
+    }
+  },
+  "color_valid_pixels": 35165,
+  "re_ocr_text": "D6",
+  "re_ocr_confidence": 0.9969351291656494,
+  "re_ocr_details": [
+    {
+      "text": "D6",
+      "confidence": 0.9969351291656494,
+      "color_info": null,
+      "matched_key": "D6",
+      "color_presence": {
+        "blue": true,
+        "green": false,
+        "yellow": false,
+        "red": false,
+        "white": true
+      },
+      "color_stats": {
+        "blue": {
+          "pixels": 142,
+          "ratio": 0.0040381060713777905
+        },
+        "green": {
+          "pixels": 4,
+          "ratio": 0.00011374946679937438
+        },
+        "yellow": {
+          "pixels": 5,
+          "ratio": 0.00014218683349921798
+        },
+        "red": {
+          "pixels": 0,
+          "ratio": 0.0
+        },
+        "white": {
+          "pixels": 35018,
+          "ratio": 0.995819707095123
+        }
+      }
+    }
+  ],
+  "matched_keys": [
+    "D6"
+  ]
+}

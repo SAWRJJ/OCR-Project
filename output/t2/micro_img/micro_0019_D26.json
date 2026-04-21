@@ -1,0 +1,131 @@
+{
+  "micro_image_name": "micro_0019_D26.jpg",
+  "text": "D26",
+  "global_poly": [
+    [
+      10100,
+      1525
+    ],
+    [
+      10209,
+      1525
+    ],
+    [
+      10209,
+      1592
+    ],
+    [
+      10100,
+      1592
+    ]
+  ],
+  "micro_poly": [
+    [
+      300,
+      40
+    ],
+    [
+      409,
+      40
+    ],
+    [
+      409,
+      107
+    ],
+    [
+      300,
+      107
+    ]
+  ],
+  "source_split_image": "split_36_9800_700.jpg",
+  "split_poly": [
+    [
+      300,
+      825
+    ],
+    [
+      409,
+      825
+    ],
+    [
+      409,
+      892
+    ],
+    [
+      300,
+      892
+    ]
+  ],
+  "color_presence": {
+    "blue": true,
+    "green": true,
+    "yellow": false,
+    "red": false,
+    "white": true
+  },
+  "color_stats": {
+    "blue": {
+      "pixels": 374,
+      "ratio": 0.0037686416767432488
+    },
+    "green": {
+      "pixels": 1524,
+      "ratio": 0.015356711003627569
+    },
+    "yellow": {
+      "pixels": 3,
+      "ratio": 3.0229746070133012e-05
+    },
+    "red": {
+      "pixels": 0,
+      "ratio": 0.0
+    },
+    "white": {
+      "pixels": 97335,
+      "ratio": 0.9808041112454655
+    }
+  },
+  "color_valid_pixels": 99240,
+  "re_ocr_text": "D26",
+  "re_ocr_confidence": 1.0,
+  "re_ocr_details": [
+    {
+      "text": "D26",
+      "confidence": 1.0,
+      "color_info": null,
+      "matched_key": "D26",
+      "color_presence": {
+        "blue": true,
+        "green": true,
+        "yellow": false,
+        "red": false,
+        "white": true
+      },
+      "color_stats": {
+        "blue": {
+          "pixels": 374,
+          "ratio": 0.0037686416767432488
+        },
+        "green": {
+          "pixels": 1524,
+          "ratio": 0.015356711003627569
+        },
+        "yellow": {
+          "pixels": 3,
+          "ratio": 3.0229746070133012e-05
+        },
+        "red": {
+          "pixels": 0,
+          "ratio": 0.0
+        },
+        "white": {
+          "pixels": 97335,
+          "ratio": 0.9808041112454655
+        }
+      }
+    }
+  ],
+  "matched_keys": [
+    "D26"
+  ]
+}

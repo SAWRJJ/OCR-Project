@@ -1,0 +1,131 @@
+{
+  "micro_image_name": "micro_0065_D2.jpg",
+  "text": "D2",
+  "global_poly": [
+    [
+      6522,
+      1506
+    ],
+    [
+      6600,
+      1506
+    ],
+    [
+      6600,
+      1563
+    ],
+    [
+      6522,
+      1563
+    ]
+  ],
+  "micro_poly": [
+    [
+      70,
+      40
+    ],
+    [
+      148,
+      40
+    ],
+    [
+      148,
+      97
+    ],
+    [
+      70,
+      97
+    ]
+  ],
+  "source_split_image": "split_41_5600_700.jpg",
+  "split_poly": [
+    [
+      922,
+      806
+    ],
+    [
+      1000,
+      806
+    ],
+    [
+      1000,
+      863
+    ],
+    [
+      922,
+      863
+    ]
+  ],
+  "color_presence": {
+    "blue": true,
+    "green": false,
+    "yellow": false,
+    "red": false,
+    "white": true
+  },
+  "color_stats": {
+    "blue": {
+      "pixels": 427,
+      "ratio": 0.008215172095349867
+    },
+    "green": {
+      "pixels": 0,
+      "ratio": 0.0
+    },
+    "yellow": {
+      "pixels": 0,
+      "ratio": 0.0
+    },
+    "red": {
+      "pixels": 0,
+      "ratio": 0.0
+    },
+    "white": {
+      "pixels": 51550,
+      "ratio": 0.9917848279046502
+    }
+  },
+  "color_valid_pixels": 51977,
+  "re_ocr_text": "D2",
+  "re_ocr_confidence": 1.0,
+  "re_ocr_details": [
+    {
+      "text": "D2",
+      "confidence": 1.0,
+      "color_info": null,
+      "matched_key": "D2",
+      "color_presence": {
+        "blue": true,
+        "green": false,
+        "yellow": false,
+        "red": false,
+        "white": true
+      },
+      "color_stats": {
+        "blue": {
+          "pixels": 427,
+          "ratio": 0.008215172095349867
+        },
+        "green": {
+          "pixels": 0,
+          "ratio": 0.0
+        },
+        "yellow": {
+          "pixels": 0,
+          "ratio": 0.0
+        },
+        "red": {
+          "pixels": 0,
+          "ratio": 0.0
+        },
+        "white": {
+          "pixels": 51550,
+          "ratio": 0.9917848279046502
+        }
+      }
+    }
+  ],
+  "matched_keys": [
+    "D2"
+  ]
+}

@@ -1,0 +1,131 @@
+{
+  "micro_image_name": "micro_0007_D19.jpg",
+  "text": "D19",
+  "global_poly": [
+    [
+      4937,
+      1492
+    ],
+    [
+      5041,
+      1496
+    ],
+    [
+      5038,
+      1561
+    ],
+    [
+      4934,
+      1556
+    ]
+  ],
+  "micro_poly": [
+    [
+      303,
+      40
+    ],
+    [
+      407,
+      44
+    ],
+    [
+      404,
+      109
+    ],
+    [
+      300,
+      104
+    ]
+  ],
+  "source_split_image": "split_28_4200_700.jpg",
+  "split_poly": [
+    [
+      737,
+      792
+    ],
+    [
+      841,
+      796
+    ],
+    [
+      838,
+      861
+    ],
+    [
+      734,
+      856
+    ]
+  ],
+  "color_presence": {
+    "blue": true,
+    "green": false,
+    "yellow": false,
+    "red": false,
+    "white": true
+  },
+  "color_stats": {
+    "blue": {
+      "pixels": 370,
+      "ratio": 0.007111418631916815
+    },
+    "green": {
+      "pixels": 3,
+      "ratio": 5.7660151069595805e-05
+    },
+    "yellow": {
+      "pixels": 2,
+      "ratio": 3.844010071306387e-05
+    },
+    "red": {
+      "pixels": 0,
+      "ratio": 0.0
+    },
+    "white": {
+      "pixels": 51655,
+      "ratio": 0.9928117011666571
+    }
+  },
+  "color_valid_pixels": 52029,
+  "re_ocr_text": "D19",
+  "re_ocr_confidence": 1.0,
+  "re_ocr_details": [
+    {
+      "text": "D19",
+      "confidence": 1.0,
+      "color_info": null,
+      "matched_key": "D19",
+      "color_presence": {
+        "blue": true,
+        "green": false,
+        "yellow": false,
+        "red": false,
+        "white": true
+      },
+      "color_stats": {
+        "blue": {
+          "pixels": 370,
+          "ratio": 0.007111418631916815
+        },
+        "green": {
+          "pixels": 3,
+          "ratio": 5.7660151069595805e-05
+        },
+        "yellow": {
+          "pixels": 2,
+          "ratio": 3.844010071306387e-05
+        },
+        "red": {
+          "pixels": 0,
+          "ratio": 0.0
+        },
+        "white": {
+          "pixels": 51655,
+          "ratio": 0.9928117011666571
+        }
+      }
+    }
+  ],
+  "matched_keys": [
+    "D19"
+  ]
+}

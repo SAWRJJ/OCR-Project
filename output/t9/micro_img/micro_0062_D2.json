@@ -1,0 +1,131 @@
+{
+  "micro_image_name": "micro_0062_D2.jpg",
+  "text": "D2",
+  "global_poly": [
+    [
+      4861,
+      933
+    ],
+    [
+      4897,
+      933
+    ],
+    [
+      4897,
+      964
+    ],
+    [
+      4861,
+      964
+    ]
+  ],
+  "micro_poly": [
+    [
+      300,
+      40
+    ],
+    [
+      336,
+      40
+    ],
+    [
+      336,
+      71
+    ],
+    [
+      300,
+      71
+    ]
+  ],
+  "source_split_image": "split_6_4200_0.jpg",
+  "split_poly": [
+    [
+      661,
+      933
+    ],
+    [
+      697,
+      933
+    ],
+    [
+      697,
+      964
+    ],
+    [
+      661,
+      964
+    ]
+  ],
+  "color_presence": {
+    "blue": true,
+    "green": false,
+    "yellow": false,
+    "red": false,
+    "white": true
+  },
+  "color_stats": {
+    "blue": {
+      "pixels": 146,
+      "ratio": 0.003471809383397142
+    },
+    "green": {
+      "pixels": 2,
+      "ratio": 4.755903264927591e-05
+    },
+    "yellow": {
+      "pixels": 5,
+      "ratio": 0.00011889758162318978
+    },
+    "red": {
+      "pixels": 0,
+      "ratio": 0.0
+    },
+    "white": {
+      "pixels": 41901,
+      "ratio": 0.996385513518655
+    }
+  },
+  "color_valid_pixels": 42053,
+  "re_ocr_text": "D2",
+  "re_ocr_confidence": 1.0,
+  "re_ocr_details": [
+    {
+      "text": "D2",
+      "confidence": 1.0,
+      "color_info": null,
+      "matched_key": "D2",
+      "color_presence": {
+        "blue": true,
+        "green": false,
+        "yellow": false,
+        "red": false,
+        "white": true
+      },
+      "color_stats": {
+        "blue": {
+          "pixels": 146,
+          "ratio": 0.003471809383397142
+        },
+        "green": {
+          "pixels": 2,
+          "ratio": 4.755903264927591e-05
+        },
+        "yellow": {
+          "pixels": 5,
+          "ratio": 0.00011889758162318978
+        },
+        "red": {
+          "pixels": 0,
+          "ratio": 0.0
+        },
+        "white": {
+          "pixels": 41901,
+          "ratio": 0.996385513518655
+        }
+      }
+    }
+  ],
+  "matched_keys": [
+    "D2"
+  ]
+}

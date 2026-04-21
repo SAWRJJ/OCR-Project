@@ -1,0 +1,131 @@
+{
+  "micro_image_name": "micro_0034_D5.jpg",
+  "text": "D5—",
+  "global_poly": [
+    [
+      2755,
+      2055
+    ],
+    [
+      2921,
+      2068
+    ],
+    [
+      2916,
+      2138
+    ],
+    [
+      2750,
+      2125
+    ]
+  ],
+  "micro_poly": [
+    [
+      5,
+      40
+    ],
+    [
+      171,
+      53
+    ],
+    [
+      166,
+      123
+    ],
+    [
+      0,
+      110
+    ]
+  ],
+  "source_split_image": "split_47_2100_1400.jpg",
+  "split_poly": [
+    [
+      655,
+      655
+    ],
+    [
+      821,
+      668
+    ],
+    [
+      816,
+      738
+    ],
+    [
+      650,
+      725
+    ]
+  ],
+  "color_presence": {
+    "blue": true,
+    "green": false,
+    "yellow": false,
+    "red": false,
+    "white": true
+  },
+  "color_stats": {
+    "blue": {
+      "pixels": 366,
+      "ratio": 0.005293607173850159
+    },
+    "green": {
+      "pixels": 6,
+      "ratio": 8.678044547295343e-05
+    },
+    "yellow": {
+      "pixels": 3,
+      "ratio": 4.339022273647671e-05
+    },
+    "red": {
+      "pixels": 0,
+      "ratio": 0.0
+    },
+    "white": {
+      "pixels": 68766,
+      "ratio": 0.9945906855655192
+    }
+  },
+  "color_valid_pixels": 69140,
+  "re_ocr_text": "D5",
+  "re_ocr_confidence": 1.0,
+  "re_ocr_details": [
+    {
+      "text": "D5",
+      "confidence": 1.0,
+      "color_info": null,
+      "matched_key": "D5",
+      "color_presence": {
+        "blue": true,
+        "green": false,
+        "yellow": false,
+        "red": false,
+        "white": true
+      },
+      "color_stats": {
+        "blue": {
+          "pixels": 366,
+          "ratio": 0.005293607173850159
+        },
+        "green": {
+          "pixels": 6,
+          "ratio": 8.678044547295343e-05
+        },
+        "yellow": {
+          "pixels": 3,
+          "ratio": 4.339022273647671e-05
+        },
+        "red": {
+          "pixels": 0,
+          "ratio": 0.0
+        },
+        "white": {
+          "pixels": 68766,
+          "ratio": 0.9945906855655192
+        }
+      }
+    }
+  ],
+  "matched_keys": [
+    "D5"
+  ]
+}

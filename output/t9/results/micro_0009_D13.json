@@ -1,0 +1,131 @@
+{
+  "micro_image_name": "micro_0009_D13.jpg",
+  "text": "D13",
+  "global_poly": [
+    [
+      2192,
+      878
+    ],
+    [
+      2245,
+      878
+    ],
+    [
+      2245,
+      909
+    ],
+    [
+      2192,
+      909
+    ]
+  ],
+  "micro_poly": [
+    [
+      70,
+      40
+    ],
+    [
+      123,
+      40
+    ],
+    [
+      123,
+      71
+    ],
+    [
+      70,
+      71
+    ]
+  ],
+  "source_split_image": "split_10_1400_700.jpg",
+  "split_poly": [
+    [
+      792,
+      178
+    ],
+    [
+      845,
+      178
+    ],
+    [
+      845,
+      209
+    ],
+    [
+      792,
+      209
+    ]
+  ],
+  "color_presence": {
+    "blue": true,
+    "green": false,
+    "yellow": false,
+    "red": false,
+    "white": true
+  },
+  "color_stats": {
+    "blue": {
+      "pixels": 153,
+      "ratio": 0.0033965279936065355
+    },
+    "green": {
+      "pixels": 6,
+      "ratio": 0.00013319717621986413
+    },
+    "yellow": {
+      "pixels": 4,
+      "ratio": 8.879811747990943e-05
+    },
+    "red": {
+      "pixels": 0,
+      "ratio": 0.0
+    },
+    "white": {
+      "pixels": 44884,
+      "ratio": 0.9964036762420637
+    }
+  },
+  "color_valid_pixels": 45046,
+  "re_ocr_text": "D13",
+  "re_ocr_confidence": 1.0,
+  "re_ocr_details": [
+    {
+      "text": "D13",
+      "confidence": 1.0,
+      "color_info": null,
+      "matched_key": "D13",
+      "color_presence": {
+        "blue": true,
+        "green": false,
+        "yellow": false,
+        "red": false,
+        "white": true
+      },
+      "color_stats": {
+        "blue": {
+          "pixels": 153,
+          "ratio": 0.0033965279936065355
+        },
+        "green": {
+          "pixels": 6,
+          "ratio": 0.00013319717621986413
+        },
+        "yellow": {
+          "pixels": 4,
+          "ratio": 8.879811747990943e-05
+        },
+        "red": {
+          "pixels": 0,
+          "ratio": 0.0
+        },
+        "white": {
+          "pixels": 44884,
+          "ratio": 0.9964036762420637
+        }
+      }
+    }
+  ],
+  "matched_keys": [
+    "D13"
+  ]
+}

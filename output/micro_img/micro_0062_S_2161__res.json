@@ -1,0 +1,175 @@
+{
+    "input_path": "d:\\work\\ocr+Transformer\\test2\\micro_img\\micro_0062_S_2161_.jpg",
+    "page_index": null,
+    "model_settings": {
+        "use_doc_preprocessor": true,
+        "use_textline_orientation": false
+    },
+    "doc_preprocessor_res": {
+        "input_path": null,
+        "page_index": null,
+        "model_settings": {
+            "use_doc_orientation_classify": false,
+            "use_doc_unwarping": false
+        },
+        "angle": -1
+    },
+    "dt_polys": [
+        [
+            [
+                127,
+                25
+            ],
+            [
+                175,
+                23
+            ],
+            [
+                179,
+                119
+            ],
+            [
+                131,
+                121
+            ]
+        ],
+        [
+            [
+                253,
+                46
+            ],
+            [
+                341,
+                46
+            ],
+            [
+                341,
+                101
+            ],
+            [
+                253,
+                101
+            ]
+        ],
+        [
+            [
+                170,
+                94
+            ],
+            [
+                210,
+                71
+            ],
+            [
+                234,
+                106
+            ],
+            [
+                194,
+                130
+            ]
+        ]
+    ],
+    "text_det_params": {
+        "limit_side_len": 64,
+        "limit_type": "min",
+        "thresh": 0.3,
+        "max_side_limit": 4000,
+        "box_thresh": 0.6,
+        "unclip_ratio": 1.5
+    },
+    "text_type": "general",
+    "textline_orientation_angles": [
+        -1,
+        -1,
+        -1
+    ],
+    "text_rec_score_thresh": 0.0,
+    "return_word_box": false,
+    "rec_texts": [
+        "0",
+        "SⅡ",
+        "e"
+    ],
+    "rec_scores": [
+        0.3547828495502472,
+        0.9422200918197632,
+        0.43695536255836487
+    ],
+    "rec_polys": [
+        [
+            [
+                127,
+                25
+            ],
+            [
+                175,
+                23
+            ],
+            [
+                179,
+                119
+            ],
+            [
+                131,
+                121
+            ]
+        ],
+        [
+            [
+                253,
+                46
+            ],
+            [
+                341,
+                46
+            ],
+            [
+                341,
+                101
+            ],
+            [
+                253,
+                101
+            ]
+        ],
+        [
+            [
+                170,
+                94
+            ],
+            [
+                210,
+                71
+            ],
+            [
+                234,
+                106
+            ],
+            [
+                194,
+                130
+            ]
+        ]
+    ],
+    "rec_boxes": [
+        [
+            127,
+            23,
+            179,
+            121
+        ],
+        [
+            253,
+            46,
+            341,
+            101
+        ],
+        [
+            170,
+            71,
+            234,
+            130
+        ]
+    ]
+}

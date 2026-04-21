@@ -1,0 +1,175 @@
+{
+    "input_path": "splits/split_11_7700_0.jpg",
+    "page_index": null,
+    "model_settings": {
+        "use_doc_preprocessor": true,
+        "use_textline_orientation": false
+    },
+    "doc_preprocessor_res": {
+        "input_path": null,
+        "page_index": null,
+        "model_settings": {
+            "use_doc_orientation_classify": false,
+            "use_doc_unwarping": false
+        },
+        "angle": -1
+    },
+    "dt_polys": [
+        [
+            [
+                70,
+                5
+            ],
+            [
+                221,
+                8
+            ],
+            [
+                219,
+                98
+            ],
+            [
+                68,
+                95
+            ]
+        ],
+        [
+            [
+                5,
+                106
+            ],
+            [
+                131,
+                106
+            ],
+            [
+                131,
+                166
+            ],
+            [
+                5,
+                166
+            ]
+        ],
+        [
+            [
+                163,
+                105
+            ],
+            [
+                291,
+                102
+            ],
+            [
+                293,
+                162
+            ],
+            [
+                164,
+                165
+            ]
+        ]
+    ],
+    "text_det_params": {
+        "limit_side_len": 64,
+        "limit_type": "min",
+        "thresh": 0.3,
+        "max_side_limit": 4000,
+        "box_thresh": 0.6,
+        "unclip_ratio": 1.5
+    },
+    "text_type": "general",
+    "textline_orientation_angles": [
+        -1,
+        -1,
+        -1
+    ],
+    "text_rec_score_thresh": 0.0,
+    "return_word_box": false,
+    "rec_texts": [
+        "杨陵",
+        "1157",
+        "+963"
+    ],
+    "rec_scores": [
+        0.9999028444290161,
+        0.9996298551559448,
+        0.9948983192443848
+    ],
+    "rec_polys": [
+        [
+            [
+                70,
+                5
+            ],
+            [
+                221,
+                8
+            ],
+            [
+                219,
+                98
+            ],
+            [
+                68,
+                95
+            ]
+        ],
+        [
+            [
+                5,
+                106
+            ],
+            [
+                131,
+                106
+            ],
+            [
+                131,
+                166
+            ],
+            [
+                5,
+                166
+            ]
+        ],
+        [
+            [
+                163,
+                105
+            ],
+            [
+                291,
+                102
+            ],
+            [
+                293,
+                162
+            ],
+            [
+                164,
+                165
+            ]
+        ]
+    ],
+    "rec_boxes": [
+        [
+            68,
+            5,
+            221,
+            98
+        ],
+        [
+            5,
+            106,
+            131,
+            166
+        ],
+        [
+            163,
+            102,
+            293,
+            165
+        ]
+    ]
+}

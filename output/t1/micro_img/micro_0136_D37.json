@@ -1,0 +1,131 @@
+{
+  "micro_image_name": "micro_0136_D37.jpg",
+  "text": "D37",
+  "global_poly": [
+    [
+      7984,
+      1908
+    ],
+    [
+      8088,
+      1908
+    ],
+    [
+      8088,
+      1972
+    ],
+    [
+      7984,
+      1972
+    ]
+  ],
+  "micro_poly": [
+    [
+      250,
+      40
+    ],
+    [
+      354,
+      40
+    ],
+    [
+      354,
+      104
+    ],
+    [
+      250,
+      104
+    ]
+  ],
+  "source_split_image": "split_77_7700_1400.jpg",
+  "split_poly": [
+    [
+      284,
+      508
+    ],
+    [
+      388,
+      508
+    ],
+    [
+      388,
+      572
+    ],
+    [
+      284,
+      572
+    ]
+  ],
+  "color_presence": {
+    "blue": true,
+    "green": false,
+    "yellow": false,
+    "red": false,
+    "white": true
+  },
+  "color_stats": {
+    "blue": {
+      "pixels": 361,
+      "ratio": 0.008053721220774586
+    },
+    "green": {
+      "pixels": 2,
+      "ratio": 4.461895413171515e-05
+    },
+    "yellow": {
+      "pixels": 1,
+      "ratio": 2.2309477065857575e-05
+    },
+    "red": {
+      "pixels": 0,
+      "ratio": 0.0
+    },
+    "white": {
+      "pixels": 44460,
+      "ratio": 0.9918793503480279
+    }
+  },
+  "color_valid_pixels": 44824,
+  "re_ocr_text": "D37",
+  "re_ocr_confidence": 1.0,
+  "re_ocr_details": [
+    {
+      "text": "D37",
+      "confidence": 1.0,
+      "color_info": null,
+      "matched_key": "D37",
+      "color_presence": {
+        "blue": true,
+        "green": false,
+        "yellow": false,
+        "red": false,
+        "white": true
+      },
+      "color_stats": {
+        "blue": {
+          "pixels": 361,
+          "ratio": 0.008053721220774586
+        },
+        "green": {
+          "pixels": 2,
+          "ratio": 4.461895413171515e-05
+        },
+        "yellow": {
+          "pixels": 1,
+          "ratio": 2.2309477065857575e-05
+        },
+        "red": {
+          "pixels": 0,
+          "ratio": 0.0
+        },
+        "white": {
+          "pixels": 44460,
+          "ratio": 0.9918793503480279
+        }
+      }
+    }
+  ],
+  "matched_keys": [
+    "D37"
+  ]
+}

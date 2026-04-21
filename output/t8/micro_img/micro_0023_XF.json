@@ -1,0 +1,184 @@
+{
+  "micro_image_name": "micro_0023_XF.jpg",
+  "text": "XF",
+  "global_poly": [
+    [
+      745,
+      861
+    ],
+    [
+      799,
+      859
+    ],
+    [
+      802,
+      901
+    ],
+    [
+      747,
+      904
+    ]
+  ],
+  "micro_poly": [
+    [
+      70,
+      42
+    ],
+    [
+      124,
+      40
+    ],
+    [
+      127,
+      82
+    ],
+    [
+      72,
+      85
+    ]
+  ],
+  "source_split_image": "split_9_700_700.jpg",
+  "split_poly": [
+    [
+      45,
+      161
+    ],
+    [
+      99,
+      159
+    ],
+    [
+      102,
+      201
+    ],
+    [
+      47,
+      204
+    ]
+  ],
+  "color_presence": {
+    "blue": false,
+    "green": true,
+    "yellow": true,
+    "red": true,
+    "white": true
+  },
+  "color_stats": {
+    "blue": {
+      "pixels": 14,
+      "ratio": 0.0003097619258341446
+    },
+    "green": {
+      "pixels": 898,
+      "ratio": 0.019869014957075846
+    },
+    "yellow": {
+      "pixels": 1417,
+      "ratio": 0.031352332064784494
+    },
+    "red": {
+      "pixels": 906,
+      "ratio": 0.020046021771838216
+    },
+    "white": {
+      "pixels": 41951,
+      "ratio": 0.9282016107620144
+    }
+  },
+  "color_valid_pixels": 45196,
+  "polygon_total_pixels": 8699,
+  "black_pixels_in_polygon": 1050,
+  "left_black_pixels": 819,
+  "right_black_pixels": 231,
+  "re_ocr_text": "XF",
+  "re_ocr_confidence": 1.0,
+  "re_ocr_details": [
+    {
+      "text": "XF",
+      "confidence": 1.0,
+      "color_info": null,
+      "matched_key": "XF",
+      "template_match_res": 1,
+      "template_match_score": true,
+      "black_pixel_count": 1050,
+      "black_radio": 12.07035291412806,
+      "template_name": "color_detection",
+      "color_centers_separate": {
+        "red": [
+          [
+            249,
+            88
+          ]
+        ],
+        "yellow": [
+          [
+            207,
+            45
+          ],
+          [
+            144,
+            43
+          ],
+          [
+            214,
+            54
+          ],
+          [
+            144,
+            54
+          ],
+          [
+            134,
+            53
+          ],
+          [
+            222,
+            61
+          ],
+          [
+            154,
+            61
+          ]
+        ],
+        "green": [
+          [
+            249,
+            54
+          ]
+        ]
+      },
+      "color_presence": {
+        "blue": false,
+        "green": true,
+        "yellow": true,
+        "red": true,
+        "white": true
+      },
+      "color_stats": {
+        "blue": {
+          "pixels": 14,
+          "ratio": 0.0003097619258341446
+        },
+        "green": {
+          "pixels": 898,
+          "ratio": 0.019869014957075846
+        },
+        "yellow": {
+          "pixels": 1417,
+          "ratio": 0.031352332064784494
+        },
+        "red": {
+          "pixels": 906,
+          "ratio": 0.020046021771838216
+        },
+        "white": {
+          "pixels": 41951,
+          "ratio": 0.9282016107620144
+        }
+      }
+    }
+  ],
+  "matched_keys": [
+    "XF"
+  ]
+}

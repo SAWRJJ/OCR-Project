@@ -1,0 +1,244 @@
+{
+  "micro_image_name": "micro_0008_S4.jpg",
+  "text": "S4",
+  "global_poly": [
+    [
+      1967,
+      812
+    ],
+    [
+      2010,
+      812
+    ],
+    [
+      2010,
+      850
+    ],
+    [
+      1967,
+      850
+    ]
+  ],
+  "micro_poly": [
+    [
+      300,
+      40
+    ],
+    [
+      343,
+      40
+    ],
+    [
+      343,
+      78
+    ],
+    [
+      300,
+      78
+    ]
+  ],
+  "source_split_image": "split_10_1400_700.jpg",
+  "split_poly": [
+    [
+      567,
+      112
+    ],
+    [
+      610,
+      112
+    ],
+    [
+      610,
+      150
+    ],
+    [
+      567,
+      150
+    ]
+  ],
+  "color_presence": {
+    "blue": true,
+    "green": true,
+    "yellow": true,
+    "red": true,
+    "white": true
+  },
+  "color_stats": {
+    "blue": {
+      "pixels": 137,
+      "ratio": 0.0030866979091564526
+    },
+    "green": {
+      "pixels": 494,
+      "ratio": 0.01113013698630137
+    },
+    "yellow": {
+      "pixels": 407,
+      "ratio": 0.009169971160778658
+    },
+    "red": {
+      "pixels": 476,
+      "ratio": 0.010724585436193222
+    },
+    "white": {
+      "pixels": 42860,
+      "ratio": 0.9656633020908435
+    }
+  },
+  "color_valid_pixels": 44384,
+  "polygon_total_pixels": 1207,
+  "black_pixels_in_polygon": 228,
+  "left_black_pixels": 122,
+  "right_black_pixels": 106,
+  "re_ocr_text": "S4",
+  "re_ocr_confidence": 1.0,
+  "re_ocr_details": [
+    {
+      "text": "S4",
+      "confidence": 0.9976956844329834,
+      "color_info": null,
+      "matched_key": "S4",
+      "template_match_res": 1,
+      "template_match_score": true,
+      "black_pixel_count": 228,
+      "black_radio": 18.889809444904724,
+      "template_name": "color_detection",
+      "color_centers_separate": {
+        "red": [
+          [
+            273,
+            47
+          ]
+        ],
+        "yellow": [
+          [
+            272,
+            64
+          ],
+          [
+            272,
+            69
+          ],
+          [
+            277,
+            72
+          ],
+          [
+            276,
+            77
+          ]
+        ],
+        "green": [
+          [
+            225,
+            71
+          ]
+        ]
+      },
+      "color_presence": {
+        "blue": true,
+        "green": true,
+        "yellow": true,
+        "red": true,
+        "white": true
+      },
+      "color_stats": {
+        "blue": {
+          "pixels": 137,
+          "ratio": 0.0030866979091564526
+        },
+        "green": {
+          "pixels": 494,
+          "ratio": 0.01113013698630137
+        },
+        "yellow": {
+          "pixels": 407,
+          "ratio": 0.009169971160778658
+        },
+        "red": {
+          "pixels": 476,
+          "ratio": 0.010724585436193222
+        },
+        "white": {
+          "pixels": 42860,
+          "ratio": 0.9656633020908435
+        }
+      }
+    },
+    {
+      "text": "S4",
+      "confidence": 1.0,
+      "color_info": null,
+      "matched_key": "S4",
+      "template_match_res": 1,
+      "template_match_score": true,
+      "black_pixel_count": 228,
+      "black_radio": 18.889809444904724,
+      "template_name": "color_detection",
+      "color_centers_separate": {
+        "red": [
+          [
+            273,
+            47
+          ]
+        ],
+        "yellow": [
+          [
+            272,
+            64
+          ],
+          [
+            272,
+            69
+          ],
+          [
+            277,
+            72
+          ],
+          [
+            276,
+            77
+          ]
+        ],
+        "green": [
+          [
+            225,
+            71
+          ]
+        ]
+      },
+      "color_presence": {
+        "blue": true,
+        "green": true,
+        "yellow": true,
+        "red": true,
+        "white": true
+      },
+      "color_stats": {
+        "blue": {
+          "pixels": 137,
+          "ratio": 0.0030866979091564526
+        },
+        "green": {
+          "pixels": 494,
+          "ratio": 0.01113013698630137
+        },
+        "yellow": {
+          "pixels": 407,
+          "ratio": 0.009169971160778658
+        },
+        "red": {
+          "pixels": 476,
+          "ratio": 0.010724585436193222
+        },
+        "white": {
+          "pixels": 42860,
+          "ratio": 0.9656633020908435
+        }
+      }
+    }
+  ],
+  "matched_keys": [
+    "S4"
+  ]
+}

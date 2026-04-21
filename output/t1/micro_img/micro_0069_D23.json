@@ -1,0 +1,131 @@
+{
+  "micro_image_name": "micro_0069_D23.jpg",
+  "text": "D23",
+  "global_poly": [
+    [
+      6520,
+      1505
+    ],
+    [
+      6621,
+      1502
+    ],
+    [
+      6623,
+      1559
+    ],
+    [
+      6522,
+      1562
+    ]
+  ],
+  "micro_poly": [
+    [
+      0,
+      43
+    ],
+    [
+      101,
+      40
+    ],
+    [
+      103,
+      97
+    ],
+    [
+      2,
+      100
+    ]
+  ],
+  "source_split_image": "split_42_6300_700.jpg",
+  "split_poly": [
+    [
+      220,
+      805
+    ],
+    [
+      321,
+      802
+    ],
+    [
+      323,
+      859
+    ],
+    [
+      222,
+      862
+    ]
+  ],
+  "color_presence": {
+    "blue": true,
+    "green": false,
+    "yellow": false,
+    "red": false,
+    "white": true
+  },
+  "color_stats": {
+    "blue": {
+      "pixels": 412,
+      "ratio": 0.008893877903462568
+    },
+    "green": {
+      "pixels": 0,
+      "ratio": 0.0
+    },
+    "yellow": {
+      "pixels": 0,
+      "ratio": 0.0
+    },
+    "red": {
+      "pixels": 0,
+      "ratio": 0.0
+    },
+    "white": {
+      "pixels": 45912,
+      "ratio": 0.9911061220965375
+    }
+  },
+  "color_valid_pixels": 46324,
+  "re_ocr_text": "D23",
+  "re_ocr_confidence": 1.0,
+  "re_ocr_details": [
+    {
+      "text": "D23",
+      "confidence": 1.0,
+      "color_info": null,
+      "matched_key": "D23",
+      "color_presence": {
+        "blue": true,
+        "green": false,
+        "yellow": false,
+        "red": false,
+        "white": true
+      },
+      "color_stats": {
+        "blue": {
+          "pixels": 412,
+          "ratio": 0.008893877903462568
+        },
+        "green": {
+          "pixels": 0,
+          "ratio": 0.0
+        },
+        "yellow": {
+          "pixels": 0,
+          "ratio": 0.0
+        },
+        "red": {
+          "pixels": 0,
+          "ratio": 0.0
+        },
+        "white": {
+          "pixels": 45912,
+          "ratio": 0.9911061220965375
+        }
+      }
+    }
+  ],
+  "matched_keys": [
+    "D23"
+  ]
+}

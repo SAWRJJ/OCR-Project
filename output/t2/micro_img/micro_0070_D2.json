@@ -1,0 +1,131 @@
+{
+  "micro_image_name": "micro_0070_D2.jpg",
+  "text": "D2",
+  "global_poly": [
+    [
+      12734,
+      1498
+    ],
+    [
+      12803,
+      1498
+    ],
+    [
+      12803,
+      1555
+    ],
+    [
+      12734,
+      1555
+    ]
+  ],
+  "micro_poly": [
+    [
+      300,
+      40
+    ],
+    [
+      369,
+      40
+    ],
+    [
+      369,
+      97
+    ],
+    [
+      300,
+      97
+    ]
+  ],
+  "source_split_image": "split_62_12600_1400.jpg",
+  "split_poly": [
+    [
+      134,
+      98
+    ],
+    [
+      203,
+      98
+    ],
+    [
+      203,
+      155
+    ],
+    [
+      134,
+      155
+    ]
+  ],
+  "color_presence": {
+    "blue": true,
+    "green": false,
+    "yellow": false,
+    "red": false,
+    "white": true
+  },
+  "color_stats": {
+    "blue": {
+      "pixels": 365,
+      "ratio": 0.004440767461949315
+    },
+    "green": {
+      "pixels": 4,
+      "ratio": 4.8665944788485635e-05
+    },
+    "yellow": {
+      "pixels": 4,
+      "ratio": 4.8665944788485635e-05
+    },
+    "red": {
+      "pixels": 0,
+      "ratio": 0.0
+    },
+    "white": {
+      "pixels": 81822,
+      "ratio": 0.995486233620868
+    }
+  },
+  "color_valid_pixels": 82193,
+  "re_ocr_text": "D2",
+  "re_ocr_confidence": 1.0,
+  "re_ocr_details": [
+    {
+      "text": "D2",
+      "confidence": 1.0,
+      "color_info": null,
+      "matched_key": "D2",
+      "color_presence": {
+        "blue": true,
+        "green": false,
+        "yellow": false,
+        "red": false,
+        "white": true
+      },
+      "color_stats": {
+        "blue": {
+          "pixels": 365,
+          "ratio": 0.004440767461949315
+        },
+        "green": {
+          "pixels": 4,
+          "ratio": 4.8665944788485635e-05
+        },
+        "yellow": {
+          "pixels": 4,
+          "ratio": 4.8665944788485635e-05
+        },
+        "red": {
+          "pixels": 0,
+          "ratio": 0.0
+        },
+        "white": {
+          "pixels": 81822,
+          "ratio": 0.995486233620868
+        }
+      }
+    }
+  ],
+  "matched_keys": [
+    "D2"
+  ]
+}

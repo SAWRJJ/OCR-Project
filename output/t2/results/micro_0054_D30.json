@@ -1,0 +1,131 @@
+{
+  "micro_image_name": "micro_0054_D30.jpg",
+  "text": "D30",
+  "global_poly": [
+    [
+      8328,
+      2296
+    ],
+    [
+      8436,
+      2296
+    ],
+    [
+      8436,
+      2358
+    ],
+    [
+      8328,
+      2358
+    ]
+  ],
+  "micro_poly": [
+    [
+      0,
+      40
+    ],
+    [
+      108,
+      40
+    ],
+    [
+      108,
+      102
+    ],
+    [
+      0,
+      102
+    ]
+  ],
+  "source_split_image": "split_55_7700_1400.jpg",
+  "split_poly": [
+    [
+      628,
+      896
+    ],
+    [
+      736,
+      896
+    ],
+    [
+      736,
+      958
+    ],
+    [
+      628,
+      958
+    ]
+  ],
+  "color_presence": {
+    "blue": true,
+    "green": false,
+    "yellow": false,
+    "red": false,
+    "white": true
+  },
+  "color_stats": {
+    "blue": {
+      "pixels": 363,
+      "ratio": 0.006791520889071825
+    },
+    "green": {
+      "pixels": 6,
+      "ratio": 0.00011225654362102191
+    },
+    "yellow": {
+      "pixels": 2,
+      "ratio": 3.7418847873673967e-05
+    },
+    "red": {
+      "pixels": 0,
+      "ratio": 0.0
+    },
+    "white": {
+      "pixels": 53080,
+      "ratio": 0.9930962225673071
+    }
+  },
+  "color_valid_pixels": 53449,
+  "re_ocr_text": "D30",
+  "re_ocr_confidence": 1.0,
+  "re_ocr_details": [
+    {
+      "text": "D30",
+      "confidence": 1.0,
+      "color_info": null,
+      "matched_key": "D30",
+      "color_presence": {
+        "blue": true,
+        "green": false,
+        "yellow": false,
+        "red": false,
+        "white": true
+      },
+      "color_stats": {
+        "blue": {
+          "pixels": 363,
+          "ratio": 0.006791520889071825
+        },
+        "green": {
+          "pixels": 6,
+          "ratio": 0.00011225654362102191
+        },
+        "yellow": {
+          "pixels": 2,
+          "ratio": 3.7418847873673967e-05
+        },
+        "red": {
+          "pixels": 0,
+          "ratio": 0.0
+        },
+        "white": {
+          "pixels": 53080,
+          "ratio": 0.9930962225673071
+        }
+      }
+    }
+  ],
+  "matched_keys": [
+    "D30"
+  ]
+}

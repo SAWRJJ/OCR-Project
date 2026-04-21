@@ -1,0 +1,131 @@
+{
+  "micro_image_name": "micro_0043_D11.jpg",
+  "text": "D11",
+  "global_poly": [
+    [
+      1956,
+      932
+    ],
+    [
+      2003,
+      935
+    ],
+    [
+      2002,
+      963
+    ],
+    [
+      1954,
+      960
+    ]
+  ],
+  "micro_poly": [
+    [
+      302,
+      40
+    ],
+    [
+      349,
+      43
+    ],
+    [
+      348,
+      71
+    ],
+    [
+      300,
+      68
+    ]
+  ],
+  "source_split_image": "split_2_1400_0.jpg",
+  "split_poly": [
+    [
+      556,
+      932
+    ],
+    [
+      603,
+      935
+    ],
+    [
+      602,
+      963
+    ],
+    [
+      554,
+      960
+    ]
+  ],
+  "color_presence": {
+    "blue": true,
+    "green": false,
+    "yellow": false,
+    "red": false,
+    "white": true
+  },
+  "color_stats": {
+    "blue": {
+      "pixels": 141,
+      "ratio": 0.003171746710156338
+    },
+    "green": {
+      "pixels": 1,
+      "ratio": 2.2494657518839277e-05
+    },
+    "yellow": {
+      "pixels": 1,
+      "ratio": 2.2494657518839277e-05
+    },
+    "red": {
+      "pixels": 0,
+      "ratio": 0.0
+    },
+    "white": {
+      "pixels": 44311,
+      "ratio": 0.9967607693172872
+    }
+  },
+  "color_valid_pixels": 44455,
+  "re_ocr_text": "D11",
+  "re_ocr_confidence": 1.0,
+  "re_ocr_details": [
+    {
+      "text": "D11",
+      "confidence": 1.0,
+      "color_info": null,
+      "matched_key": "D11",
+      "color_presence": {
+        "blue": true,
+        "green": false,
+        "yellow": false,
+        "red": false,
+        "white": true
+      },
+      "color_stats": {
+        "blue": {
+          "pixels": 141,
+          "ratio": 0.003171746710156338
+        },
+        "green": {
+          "pixels": 1,
+          "ratio": 2.2494657518839277e-05
+        },
+        "yellow": {
+          "pixels": 1,
+          "ratio": 2.2494657518839277e-05
+        },
+        "red": {
+          "pixels": 0,
+          "ratio": 0.0
+        },
+        "white": {
+          "pixels": 44311,
+          "ratio": 0.9967607693172872
+        }
+      }
+    }
+  ],
+  "matched_keys": [
+    "D11"
+  ]
+}

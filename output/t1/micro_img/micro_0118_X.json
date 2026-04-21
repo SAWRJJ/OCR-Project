@@ -1,0 +1,134 @@
+{
+  "micro_image_name": "micro_0118_X.jpg",
+  "text": "X",
+  "global_poly": [
+    [
+      1401,
+      1813
+    ],
+    [
+      1453,
+      1813
+    ],
+    [
+      1453,
+      1857
+    ],
+    [
+      1401,
+      1857
+    ]
+  ],
+  "micro_poly": [
+    [
+      250,
+      40
+    ],
+    [
+      302,
+      40
+    ],
+    [
+      302,
+      84
+    ],
+    [
+      250,
+      84
+    ]
+  ],
+  "source_split_image": "split_68_1400_1400.jpg",
+  "split_poly": [
+    [
+      1,
+      413
+    ],
+    [
+      53,
+      413
+    ],
+    [
+      53,
+      457
+    ],
+    [
+      1,
+      457
+    ]
+  ],
+  "color_presence": {
+    "blue": false,
+    "green": true,
+    "yellow": true,
+    "red": false,
+    "white": true
+  },
+  "color_stats": {
+    "blue": {
+      "pixels": 7,
+      "ratio": 0.00017353364073578265
+    },
+    "green": {
+      "pixels": 1519,
+      "ratio": 0.03765680003966483
+    },
+    "yellow": {
+      "pixels": 1220,
+      "ratio": 0.030244434528236403
+    },
+    "red": {
+      "pixels": 0,
+      "ratio": 0.0
+    },
+    "white": {
+      "pixels": 37589,
+      "ratio": 0.9318508602310477
+    }
+  },
+  "color_valid_pixels": 40338,
+  "re_ocr_text": "X",
+  "re_ocr_confidence": 1.0,
+  "re_ocr_details": [
+    {
+      "text": "X",
+      "confidence": 1.0,
+      "color_info": null,
+      "matched_key": "X",
+      "template_match_res": true,
+      "template_match_score": 0.5698283910751343,
+      "template_name": "ll1_r",
+      "color_presence": {
+        "blue": false,
+        "green": true,
+        "yellow": true,
+        "red": false,
+        "white": true
+      },
+      "color_stats": {
+        "blue": {
+          "pixels": 7,
+          "ratio": 0.00017353364073578265
+        },
+        "green": {
+          "pixels": 1519,
+          "ratio": 0.03765680003966483
+        },
+        "yellow": {
+          "pixels": 1220,
+          "ratio": 0.030244434528236403
+        },
+        "red": {
+          "pixels": 0,
+          "ratio": 0.0
+        },
+        "white": {
+          "pixels": 37589,
+          "ratio": 0.9318508602310477
+        }
+      }
+    }
+  ],
+  "matched_keys": [
+    "X"
+  ]
+}

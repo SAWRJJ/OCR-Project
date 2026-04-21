@@ -1,0 +1,146 @@
+{
+  "micro_image_name": "micro_0009_FXII_k.jpg",
+  "text": "FXII k",
+  "global_poly": [
+    [
+      3572,
+      1079
+    ],
+    [
+      3722,
+      1079
+    ],
+    [
+      3722,
+      1150
+    ],
+    [
+      3572,
+      1150
+    ]
+  ],
+  "micro_poly": [
+    [
+      0,
+      40
+    ],
+    [
+      150,
+      40
+    ],
+    [
+      150,
+      111
+    ],
+    [
+      0,
+      111
+    ]
+  ],
+  "source_split_image": "split_16_3500_700.jpg",
+  "split_poly": [
+    [
+      72,
+      379
+    ],
+    [
+      222,
+      379
+    ],
+    [
+      222,
+      450
+    ],
+    [
+      72,
+      450
+    ]
+  ],
+  "color_presence": {
+    "blue": false,
+    "green": true,
+    "yellow": false,
+    "red": false,
+    "white": true
+  },
+  "color_stats": {
+    "blue": {
+      "pixels": 4,
+      "ratio": 6.49930944837111e-05
+    },
+    "green": {
+      "pixels": 817,
+      "ratio": 0.013274839548297994
+    },
+    "yellow": {
+      "pixels": 0,
+      "ratio": 0.0
+    },
+    "red": {
+      "pixels": 2,
+      "ratio": 3.249654724185555e-05
+    },
+    "white": {
+      "pixels": 60715,
+      "ratio": 0.98651393289463
+    }
+  },
+  "color_valid_pixels": 61545,
+  "re_ocr_text": "FXII k",
+  "re_ocr_confidence": 1.0,
+  "re_ocr_details": [
+    {
+      "text": "FXII k",
+      "confidence": 1.0,
+      "color_info": null,
+      "matched_key": "FXⅡ",
+      "template_match_res": 0,
+      "template_match_score": false,
+      "black_pixel_count": 0,
+      "black_radio": 0,
+      "template_name": "color_detection",
+      "color_centers_separate": {
+        "red": [],
+        "yellow": [],
+        "green": [
+          [
+            190,
+            84
+          ]
+        ]
+      },
+      "color_presence": {
+        "blue": false,
+        "green": true,
+        "yellow": false,
+        "red": false,
+        "white": true
+      },
+      "color_stats": {
+        "blue": {
+          "pixels": 4,
+          "ratio": 6.49930944837111e-05
+        },
+        "green": {
+          "pixels": 817,
+          "ratio": 0.013274839548297994
+        },
+        "yellow": {
+          "pixels": 0,
+          "ratio": 0.0
+        },
+        "red": {
+          "pixels": 2,
+          "ratio": 3.249654724185555e-05
+        },
+        "white": {
+          "pixels": 60715,
+          "ratio": 0.98651393289463
+        }
+      }
+    }
+  ],
+  "matched_keys": [
+    "FXⅡ"
+  ]
+}

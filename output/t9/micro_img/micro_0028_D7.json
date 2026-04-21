@@ -1,0 +1,131 @@
+{
+  "micro_image_name": "micro_0028_D7.jpg",
+  "text": "D7",
+  "global_poly": [
+    [
+      1176,
+      503
+    ],
+    [
+      1212,
+      506
+    ],
+    [
+      1210,
+      536
+    ],
+    [
+      1174,
+      533
+    ]
+  ],
+  "micro_poly": [
+    [
+      72,
+      40
+    ],
+    [
+      108,
+      43
+    ],
+    [
+      106,
+      73
+    ],
+    [
+      70,
+      70
+    ]
+  ],
+  "source_split_image": "split_1_700_0.jpg",
+  "split_poly": [
+    [
+      476,
+      503
+    ],
+    [
+      512,
+      506
+    ],
+    [
+      510,
+      536
+    ],
+    [
+      474,
+      533
+    ]
+  ],
+  "color_presence": {
+    "blue": true,
+    "green": false,
+    "yellow": false,
+    "red": false,
+    "white": true
+  },
+  "color_stats": {
+    "blue": {
+      "pixels": 127,
+      "ratio": 0.0030595037340399906
+    },
+    "green": {
+      "pixels": 1,
+      "ratio": 2.409058058299205e-05
+    },
+    "yellow": {
+      "pixels": 1,
+      "ratio": 2.409058058299205e-05
+    },
+    "red": {
+      "pixels": 0,
+      "ratio": 0.0
+    },
+    "white": {
+      "pixels": 41381,
+      "ratio": 0.996892315104794
+    }
+  },
+  "color_valid_pixels": 41510,
+  "re_ocr_text": "D7",
+  "re_ocr_confidence": 1.0,
+  "re_ocr_details": [
+    {
+      "text": "D7",
+      "confidence": 1.0,
+      "color_info": null,
+      "matched_key": "D7",
+      "color_presence": {
+        "blue": true,
+        "green": false,
+        "yellow": false,
+        "red": false,
+        "white": true
+      },
+      "color_stats": {
+        "blue": {
+          "pixels": 127,
+          "ratio": 0.0030595037340399906
+        },
+        "green": {
+          "pixels": 1,
+          "ratio": 2.409058058299205e-05
+        },
+        "yellow": {
+          "pixels": 1,
+          "ratio": 2.409058058299205e-05
+        },
+        "red": {
+          "pixels": 0,
+          "ratio": 0.0
+        },
+        "white": {
+          "pixels": 41381,
+          "ratio": 0.996892315104794
+        }
+      }
+    }
+  ],
+  "matched_keys": [
+    "D7"
+  ]
+}

@@ -1,0 +1,131 @@
+{
+  "micro_image_name": "micro_0043_D65.jpg",
+  "text": "D65",
+  "global_poly": [
+    [
+      11211,
+      4383
+    ],
+    [
+      11311,
+      4383
+    ],
+    [
+      11311,
+      4441
+    ],
+    [
+      11211,
+      4441
+    ]
+  ],
+  "micro_poly": [
+    [
+      250,
+      40
+    ],
+    [
+      350,
+      40
+    ],
+    [
+      350,
+      98
+    ],
+    [
+      250,
+      98
+    ]
+  ],
+  "source_split_image": "split_213_10500_4200.jpg",
+  "split_poly": [
+    [
+      711,
+      183
+    ],
+    [
+      811,
+      183
+    ],
+    [
+      811,
+      241
+    ],
+    [
+      711,
+      241
+    ]
+  ],
+  "color_presence": {
+    "blue": true,
+    "green": false,
+    "yellow": false,
+    "red": false,
+    "white": true
+  },
+  "color_stats": {
+    "blue": {
+      "pixels": 444,
+      "ratio": 0.005526925087758608
+    },
+    "green": {
+      "pixels": 0,
+      "ratio": 0.0
+    },
+    "yellow": {
+      "pixels": 0,
+      "ratio": 0.0
+    },
+    "red": {
+      "pixels": 0,
+      "ratio": 0.0
+    },
+    "white": {
+      "pixels": 79890,
+      "ratio": 0.9944730749122414
+    }
+  },
+  "color_valid_pixels": 80334,
+  "re_ocr_text": "D65",
+  "re_ocr_confidence": 1.0,
+  "re_ocr_details": [
+    {
+      "text": "D65",
+      "confidence": 1.0,
+      "color_info": null,
+      "matched_key": "D6",
+      "color_presence": {
+        "blue": true,
+        "green": false,
+        "yellow": false,
+        "red": false,
+        "white": true
+      },
+      "color_stats": {
+        "blue": {
+          "pixels": 444,
+          "ratio": 0.005526925087758608
+        },
+        "green": {
+          "pixels": 0,
+          "ratio": 0.0
+        },
+        "yellow": {
+          "pixels": 0,
+          "ratio": 0.0
+        },
+        "red": {
+          "pixels": 0,
+          "ratio": 0.0
+        },
+        "white": {
+          "pixels": 79890,
+          "ratio": 0.9944730749122414
+        }
+      }
+    }
+  ],
+  "matched_keys": [
+    "D6"
+  ]
+}

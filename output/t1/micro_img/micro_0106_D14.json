@@ -1,0 +1,131 @@
+{
+  "micro_image_name": "micro_0106_D14.jpg",
+  "text": "D14",
+  "global_poly": [
+    [
+      18878,
+      1468
+    ],
+    [
+      18980,
+      1468
+    ],
+    [
+      18980,
+      1526
+    ],
+    [
+      18878,
+      1526
+    ]
+  ],
+  "micro_poly": [
+    [
+      0,
+      40
+    ],
+    [
+      102,
+      40
+    ],
+    [
+      102,
+      98
+    ],
+    [
+      0,
+      98
+    ]
+  ],
+  "source_split_image": "split_59_18200_700.jpg",
+  "split_poly": [
+    [
+      678,
+      768
+    ],
+    [
+      780,
+      768
+    ],
+    [
+      780,
+      826
+    ],
+    [
+      678,
+      826
+    ]
+  ],
+  "color_presence": {
+    "blue": true,
+    "green": false,
+    "yellow": false,
+    "red": false,
+    "white": true
+  },
+  "color_stats": {
+    "blue": {
+      "pixels": 413,
+      "ratio": 0.008794718909710392
+    },
+    "green": {
+      "pixels": 8,
+      "ratio": 0.00017035775127768313
+    },
+    "yellow": {
+      "pixels": 6,
+      "ratio": 0.00012776831345826236
+    },
+    "red": {
+      "pixels": 0,
+      "ratio": 0.0
+    },
+    "white": {
+      "pixels": 46536,
+      "ratio": 0.9909710391822828
+    }
+  },
+  "color_valid_pixels": 46960,
+  "re_ocr_text": "D14",
+  "re_ocr_confidence": 1.0,
+  "re_ocr_details": [
+    {
+      "text": "D14",
+      "confidence": 1.0,
+      "color_info": null,
+      "matched_key": "D14",
+      "color_presence": {
+        "blue": true,
+        "green": false,
+        "yellow": false,
+        "red": false,
+        "white": true
+      },
+      "color_stats": {
+        "blue": {
+          "pixels": 413,
+          "ratio": 0.008794718909710392
+        },
+        "green": {
+          "pixels": 8,
+          "ratio": 0.00017035775127768313
+        },
+        "yellow": {
+          "pixels": 6,
+          "ratio": 0.00012776831345826236
+        },
+        "red": {
+          "pixels": 0,
+          "ratio": 0.0
+        },
+        "white": {
+          "pixels": 46536,
+          "ratio": 0.9909710391822828
+        }
+      }
+    }
+  ],
+  "matched_keys": [
+    "D14"
+  ]
+}

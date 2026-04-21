@@ -1,0 +1,175 @@
+{
+    "input_path": "splits/split_7_4900_0.jpg",
+    "page_index": null,
+    "model_settings": {
+        "use_doc_preprocessor": true,
+        "use_textline_orientation": false
+    },
+    "doc_preprocessor_res": {
+        "input_path": null,
+        "page_index": null,
+        "model_settings": {
+            "use_doc_orientation_classify": false,
+            "use_doc_unwarping": false
+        },
+        "angle": -1
+    },
+    "dt_polys": [
+        [
+            [
+                55,
+                554
+            ],
+            [
+                93,
+                554
+            ],
+            [
+                93,
+                702
+            ],
+            [
+                55,
+                702
+            ]
+        ],
+        [
+            [
+                149,
+                779
+            ],
+            [
+                337,
+                778
+            ],
+            [
+                337,
+                813
+            ],
+            [
+                149,
+                815
+            ]
+        ],
+        [
+            [
+                147,
+                899
+            ],
+            [
+                289,
+                904
+            ],
+            [
+                288,
+                942
+            ],
+            [
+                146,
+                937
+            ]
+        ]
+    ],
+    "text_det_params": {
+        "limit_side_len": 64,
+        "limit_type": "min",
+        "thresh": 0.3,
+        "max_side_limit": 4000,
+        "box_thresh": 0.6,
+        "unclip_ratio": 1.5
+    },
+    "text_type": "general",
+    "textline_orientation_angles": [
+        -1,
+        -1,
+        -1
+    ],
+    "text_rec_score_thresh": 0.0,
+    "return_word_box": false,
+    "rec_texts": [
+        "兰州方面",
+        "工务段管线",
+        "变电所"
+    ],
+    "rec_scores": [
+        0.9955909252166748,
+        0.9876087307929993,
+        0.9994518160820007
+    ],
+    "rec_polys": [
+        [
+            [
+                55,
+                554
+            ],
+            [
+                93,
+                554
+            ],
+            [
+                93,
+                702
+            ],
+            [
+                55,
+                702
+            ]
+        ],
+        [
+            [
+                149,
+                779
+            ],
+            [
+                337,
+                778
+            ],
+            [
+                337,
+                813
+            ],
+            [
+                149,
+                815
+            ]
+        ],
+        [
+            [
+                147,
+                899
+            ],
+            [
+                289,
+                904
+            ],
+            [
+                288,
+                942
+            ],
+            [
+                146,
+                937
+            ]
+        ]
+    ],
+    "rec_boxes": [
+        [
+            55,
+            554,
+            93,
+            702
+        ],
+        [
+            149,
+            778,
+            337,
+            815
+        ],
+        [
+            146,
+            899,
+            289,
+            942
+        ]
+    ]
+}

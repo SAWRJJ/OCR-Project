@@ -1,0 +1,134 @@
+{
+  "micro_image_name": "micro_0062_XD_2161_.jpg",
+  "text": "XDⅡ",
+  "global_poly": [
+    [
+      3387,
+      822
+    ],
+    [
+      3517,
+      818
+    ],
+    [
+      3519,
+      878
+    ],
+    [
+      3389,
+      882
+    ]
+  ],
+  "micro_poly": [
+    [
+      0,
+      44
+    ],
+    [
+      130,
+      40
+    ],
+    [
+      132,
+      100
+    ],
+    [
+      2,
+      104
+    ]
+  ],
+  "source_split_image": "split_37_2800_700.jpg",
+  "split_poly": [
+    [
+      587,
+      122
+    ],
+    [
+      717,
+      118
+    ],
+    [
+      719,
+      178
+    ],
+    [
+      589,
+      182
+    ]
+  ],
+  "color_presence": {
+    "blue": false,
+    "green": false,
+    "yellow": true,
+    "red": true,
+    "white": true
+  },
+  "color_stats": {
+    "blue": {
+      "pixels": 16,
+      "ratio": 0.00034490191851692175
+    },
+    "green": {
+      "pixels": 13,
+      "ratio": 0.0002802328087949989
+    },
+    "yellow": {
+      "pixels": 2428,
+      "ratio": 0.052338866134942874
+    },
+    "red": {
+      "pixels": 1672,
+      "ratio": 0.03604225048501832
+    },
+    "white": {
+      "pixels": 42261,
+      "ratio": 0.9109937486527269
+    }
+  },
+  "color_valid_pixels": 46390,
+  "re_ocr_text": "XDⅡ",
+  "re_ocr_confidence": 0.9875306487083435,
+  "re_ocr_details": [
+    {
+      "text": "XDⅡ",
+      "confidence": 0.9875306487083435,
+      "color_info": null,
+      "matched_key": "X",
+      "template_match_res": true,
+      "template_match_score": 0.569828450679779,
+      "template_name": "ll1_r",
+      "color_presence": {
+        "blue": false,
+        "green": false,
+        "yellow": true,
+        "red": true,
+        "white": true
+      },
+      "color_stats": {
+        "blue": {
+          "pixels": 16,
+          "ratio": 0.00034490191851692175
+        },
+        "green": {
+          "pixels": 13,
+          "ratio": 0.0002802328087949989
+        },
+        "yellow": {
+          "pixels": 2428,
+          "ratio": 0.052338866134942874
+        },
+        "red": {
+          "pixels": 1672,
+          "ratio": 0.03604225048501832
+        },
+        "white": {
+          "pixels": 42261,
+          "ratio": 0.9109937486527269
+        }
+      }
+    }
+  ],
+  "matched_keys": [
+    "X"
+  ]
+}

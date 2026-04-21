@@ -1,0 +1,131 @@
+{
+  "micro_image_name": "micro_0105_D22.jpg",
+  "text": "D22",
+  "global_poly": [
+    [
+      17652,
+      1532
+    ],
+    [
+      17751,
+      1532
+    ],
+    [
+      17751,
+      1590
+    ],
+    [
+      17652,
+      1590
+    ]
+  ],
+  "micro_poly": [
+    [
+      70,
+      40
+    ],
+    [
+      169,
+      40
+    ],
+    [
+      169,
+      98
+    ],
+    [
+      70,
+      98
+    ]
+  ],
+  "source_split_image": "split_58_17500_700.jpg",
+  "split_poly": [
+    [
+      152,
+      832
+    ],
+    [
+      251,
+      832
+    ],
+    [
+      251,
+      890
+    ],
+    [
+      152,
+      890
+    ]
+  ],
+  "color_presence": {
+    "blue": true,
+    "green": false,
+    "yellow": false,
+    "red": false,
+    "white": true
+  },
+  "color_stats": {
+    "blue": {
+      "pixels": 452,
+      "ratio": 0.008113590263691683
+    },
+    "green": {
+      "pixels": 0,
+      "ratio": 0.0
+    },
+    "yellow": {
+      "pixels": 0,
+      "ratio": 0.0
+    },
+    "red": {
+      "pixels": 0,
+      "ratio": 0.0
+    },
+    "white": {
+      "pixels": 55256,
+      "ratio": 0.9918684593153709
+    }
+  },
+  "color_valid_pixels": 55709,
+  "re_ocr_text": "D22",
+  "re_ocr_confidence": 1.0,
+  "re_ocr_details": [
+    {
+      "text": "D22",
+      "confidence": 1.0,
+      "color_info": null,
+      "matched_key": "D22",
+      "color_presence": {
+        "blue": true,
+        "green": false,
+        "yellow": false,
+        "red": false,
+        "white": true
+      },
+      "color_stats": {
+        "blue": {
+          "pixels": 452,
+          "ratio": 0.008113590263691683
+        },
+        "green": {
+          "pixels": 0,
+          "ratio": 0.0
+        },
+        "yellow": {
+          "pixels": 0,
+          "ratio": 0.0
+        },
+        "red": {
+          "pixels": 0,
+          "ratio": 0.0
+        },
+        "white": {
+          "pixels": 55256,
+          "ratio": 0.9918684593153709
+        }
+      }
+    }
+  ],
+  "matched_keys": [
+    "D22"
+  ]
+}

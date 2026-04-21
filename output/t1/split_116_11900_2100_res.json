@@ -1,0 +1,220 @@
+{
+    "input_path": "splits/split_116_11900_2100.jpg",
+    "page_index": null,
+    "model_settings": {
+        "use_doc_preprocessor": true,
+        "use_textline_orientation": false
+    },
+    "doc_preprocessor_res": {
+        "input_path": null,
+        "page_index": null,
+        "model_settings": {
+            "use_doc_orientation_classify": false,
+            "use_doc_unwarping": false
+        },
+        "angle": -1
+    },
+    "dt_polys": [
+        [
+            [
+                250,
+                543
+            ],
+            [
+                408,
+                543
+            ],
+            [
+                408,
+                618
+            ],
+            [
+                250,
+                618
+            ]
+        ],
+        [
+            [
+                0,
+                661
+            ],
+            [
+                81,
+                656
+            ],
+            [
+                85,
+                729
+            ],
+            [
+                0,
+                734
+            ]
+        ],
+        [
+            [
+                250,
+                777
+            ],
+            [
+                415,
+                780
+            ],
+            [
+                413,
+                855
+            ],
+            [
+                249,
+                852
+            ]
+        ],
+        [
+            [
+                0,
+                891
+            ],
+            [
+                98,
+                886
+            ],
+            [
+                101,
+                961
+            ],
+            [
+                0,
+                965
+            ]
+        ]
+    ],
+    "text_det_params": {
+        "limit_side_len": 64,
+        "limit_type": "min",
+        "thresh": 0.3,
+        "max_side_limit": 4000,
+        "box_thresh": 0.6,
+        "unclip_ratio": 1.5
+    },
+    "text_type": "general",
+    "textline_orientation_angles": [
+        -1,
+        -1,
+        -1,
+        -1
+    ],
+    "text_rec_score_thresh": 0.0,
+    "return_word_box": false,
+    "rec_texts": [
+        "辆1",
+        "27/",
+        "辆2",
+        "29/"
+    ],
+    "rec_scores": [
+        0.999311625957489,
+        0.9677240252494812,
+        0.9975701570510864,
+        0.9865958094596863
+    ],
+    "rec_polys": [
+        [
+            [
+                250,
+                543
+            ],
+            [
+                408,
+                543
+            ],
+            [
+                408,
+                618
+            ],
+            [
+                250,
+                618
+            ]
+        ],
+        [
+            [
+                0,
+                661
+            ],
+            [
+                81,
+                656
+            ],
+            [
+                85,
+                729
+            ],
+            [
+                0,
+                734
+            ]
+        ],
+        [
+            [
+                250,
+                777
+            ],
+            [
+                415,
+                780
+            ],
+            [
+                413,
+                855
+            ],
+            [
+                249,
+                852
+            ]
+        ],
+        [
+            [
+                0,
+                891
+            ],
+            [
+                98,
+                886
+            ],
+            [
+                101,
+                961
+            ],
+            [
+                0,
+                965
+            ]
+        ]
+    ],
+    "rec_boxes": [
+        [
+            250,
+            543,
+            408,
+            618
+        ],
+        [
+            0,
+            656,
+            85,
+            734
+        ],
+        [
+            249,
+            777,
+            415,
+            855
+        ],
+        [
+            0,
+            886,
+            101,
+            965
+        ]
+    ]
+}

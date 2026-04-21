@@ -1,0 +1,149 @@
+{
+  "micro_image_name": "micro_0018_0s3.jpg",
+  "text": "S3",
+  "global_poly": [
+    [
+      2651,
+      1451
+    ],
+    [
+      2808,
+      1417
+    ],
+    [
+      2826,
+      1497
+    ],
+    [
+      2669,
+      1532
+    ]
+  ],
+  "micro_poly": [
+    [
+      387,
+      63
+    ],
+    [
+      451,
+      63
+    ],
+    [
+      451,
+      115
+    ],
+    [
+      387,
+      115
+    ]
+  ],
+  "source_split_image": "split_25_2100_1400.jpg",
+  "split_poly": [
+    [
+      551,
+      51
+    ],
+    [
+      708,
+      17
+    ],
+    [
+      726,
+      97
+    ],
+    [
+      569,
+      132
+    ]
+  ],
+  "color_presence": {
+    "blue": false,
+    "green": true,
+    "yellow": false,
+    "red": true,
+    "white": true
+  },
+  "color_stats": {
+    "blue": {
+      "pixels": 2,
+      "ratio": 2.4275379909695588e-05
+    },
+    "green": {
+      "pixels": 1524,
+      "ratio": 0.018497839491188037
+    },
+    "yellow": {
+      "pixels": 1,
+      "ratio": 1.2137689954847794e-05
+    },
+    "red": {
+      "pixels": 1561,
+      "ratio": 0.018946934019517407
+    },
+    "white": {
+      "pixels": 79285,
+      "ratio": 0.9623367480701073
+    }
+  },
+  "color_valid_pixels": 82388,
+  "re_ocr_text": "",
+  "re_ocr_confidence": 0.0,
+  "re_ocr_details": [
+    {
+      "text": "S3",
+      "confidence": 0.9967255592346191,
+      "color_info": null,
+      "matched_key": "S3",
+      "template_match_res": 1,
+      "template_match_score": true,
+      "black_pixel_count": 998,
+      "black_radio": 37.266616878267364,
+      "template_name": "color_detection",
+      "color_centers_separate": {
+        "red": [
+          [
+            244,
+            113
+          ]
+        ],
+        "yellow": [],
+        "green": [
+          [
+            291,
+            113
+          ]
+        ]
+      },
+      "color_presence": {
+        "blue": false,
+        "green": true,
+        "yellow": false,
+        "red": true,
+        "white": true
+      },
+      "color_stats": {
+        "blue": {
+          "pixels": 2,
+          "ratio": 2.4275379909695588e-05
+        },
+        "green": {
+          "pixels": 1524,
+          "ratio": 0.018497839491188037
+        },
+        "yellow": {
+          "pixels": 1,
+          "ratio": 1.2137689954847794e-05
+        },
+        "red": {
+          "pixels": 1561,
+          "ratio": 0.018946934019517407
+        },
+        "white": {
+          "pixels": 79285,
+          "ratio": 0.9623367480701073
+        }
+      }
+    }
+  ],
+  "matched_keys": []
+}

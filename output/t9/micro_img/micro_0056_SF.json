@@ -1,0 +1,256 @@
+{
+  "micro_image_name": "micro_0056_SF.jpg",
+  "text": ")—SF",
+  "global_poly": [
+    [
+      3842,
+      510
+    ],
+    [
+      3922,
+      503
+    ],
+    [
+      3925,
+      537
+    ],
+    [
+      3844,
+      543
+    ]
+  ],
+  "micro_poly": [
+    [
+      299,
+      47
+    ],
+    [
+      379,
+      40
+    ],
+    [
+      382,
+      74
+    ],
+    [
+      301,
+      80
+    ]
+  ],
+  "source_split_image": "split_5_3500_0.jpg",
+  "split_poly": [
+    [
+      342,
+      510
+    ],
+    [
+      422,
+      503
+    ],
+    [
+      425,
+      537
+    ],
+    [
+      344,
+      543
+    ]
+  ],
+  "color_presence": {
+    "blue": true,
+    "green": true,
+    "yellow": true,
+    "red": true,
+    "white": true
+  },
+  "color_stats": {
+    "blue": {
+      "pixels": 92,
+      "ratio": 0.0018879152900617676
+    },
+    "green": {
+      "pixels": 503,
+      "ratio": 0.010321971640229013
+    },
+    "yellow": {
+      "pixels": 806,
+      "ratio": 0.016539779606410704
+    },
+    "red": {
+      "pixels": 483,
+      "ratio": 0.00991155527282428
+    },
+    "white": {
+      "pixels": 46818,
+      "ratio": 0.9607436744577373
+    }
+  },
+  "color_valid_pixels": 48731,
+  "re_ocr_text": "SF",
+  "re_ocr_confidence": 1.0,
+  "re_ocr_details": [
+    {
+      "text": "SF",
+      "confidence": 0.9818941354751587,
+      "color_info": null,
+      "matched_key": "SF",
+      "template_match_res": 0,
+      "template_match_score": false,
+      "black_pixel_count": 0,
+      "black_radio": 0,
+      "template_name": "color_detection",
+      "color_centers_separate": {
+        "red": [
+          [
+            239,
+            64
+          ]
+        ],
+        "yellow": [
+          [
+            197,
+            60
+          ],
+          [
+            192,
+            65
+          ],
+          [
+            263,
+            66
+          ],
+          [
+            269,
+            60
+          ],
+          [
+            188,
+            68
+          ],
+          [
+            255,
+            66
+          ]
+        ],
+        "green": [
+          [
+            215,
+            64
+          ]
+        ]
+      },
+      "color_presence": {
+        "blue": true,
+        "green": true,
+        "yellow": true,
+        "red": true,
+        "white": true
+      },
+      "color_stats": {
+        "blue": {
+          "pixels": 92,
+          "ratio": 0.0018879152900617676
+        },
+        "green": {
+          "pixels": 503,
+          "ratio": 0.010321971640229013
+        },
+        "yellow": {
+          "pixels": 806,
+          "ratio": 0.016539779606410704
+        },
+        "red": {
+          "pixels": 483,
+          "ratio": 0.00991155527282428
+        },
+        "white": {
+          "pixels": 46818,
+          "ratio": 0.9607436744577373
+        }
+      }
+    },
+    {
+      "text": "SF",
+      "confidence": 1.0,
+      "color_info": null,
+      "matched_key": "SF",
+      "template_match_res": 0,
+      "template_match_score": false,
+      "black_pixel_count": 0,
+      "black_radio": 0,
+      "template_name": "color_detection",
+      "color_centers_separate": {
+        "red": [
+          [
+            239,
+            64
+          ]
+        ],
+        "yellow": [
+          [
+            197,
+            60
+          ],
+          [
+            192,
+            65
+          ],
+          [
+            263,
+            66
+          ],
+          [
+            269,
+            60
+          ],
+          [
+            188,
+            68
+          ],
+          [
+            255,
+            66
+          ]
+        ],
+        "green": [
+          [
+            215,
+            64
+          ]
+        ]
+      },
+      "color_presence": {
+        "blue": true,
+        "green": true,
+        "yellow": true,
+        "red": true,
+        "white": true
+      },
+      "color_stats": {
+        "blue": {
+          "pixels": 92,
+          "ratio": 0.0018879152900617676
+        },
+        "green": {
+          "pixels": 503,
+          "ratio": 0.010321971640229013
+        },
+        "yellow": {
+          "pixels": 806,
+          "ratio": 0.016539779606410704
+        },
+        "red": {
+          "pixels": 483,
+          "ratio": 0.00991155527282428
+        },
+        "white": {
+          "pixels": 46818,
+          "ratio": 0.9607436744577373
+        }
+      }
+    }
+  ],
+  "matched_keys": [
+    "SF"
+  ]
+}

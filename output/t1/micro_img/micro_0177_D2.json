@@ -1,0 +1,131 @@
+{
+  "micro_image_name": "micro_0177_D2.jpg",
+  "text": "D2",
+  "global_poly": [
+    [
+      19800,
+      1935
+    ],
+    [
+      19876,
+      1935
+    ],
+    [
+      19876,
+      1996
+    ],
+    [
+      19800,
+      1996
+    ]
+  ],
+  "micro_poly": [
+    [
+      250,
+      40
+    ],
+    [
+      326,
+      40
+    ],
+    [
+      326,
+      101
+    ],
+    [
+      250,
+      101
+    ]
+  ],
+  "source_split_image": "split_94_19600_1400.jpg",
+  "split_poly": [
+    [
+      200,
+      535
+    ],
+    [
+      276,
+      535
+    ],
+    [
+      276,
+      596
+    ],
+    [
+      200,
+      596
+    ]
+  ],
+  "color_presence": {
+    "blue": true,
+    "green": false,
+    "yellow": false,
+    "red": false,
+    "white": true
+  },
+  "color_stats": {
+    "blue": {
+      "pixels": 448,
+      "ratio": 0.008285862247540134
+    },
+    "green": {
+      "pixels": 1,
+      "ratio": 1.849522823111637e-05
+    },
+    "yellow": {
+      "pixels": 0,
+      "ratio": 0.0
+    },
+    "red": {
+      "pixels": 0,
+      "ratio": 0.0
+    },
+    "white": {
+      "pixels": 53619,
+      "ratio": 0.9916956425242287
+    }
+  },
+  "color_valid_pixels": 54068,
+  "re_ocr_text": "D2",
+  "re_ocr_confidence": 1.0,
+  "re_ocr_details": [
+    {
+      "text": "D2",
+      "confidence": 1.0,
+      "color_info": null,
+      "matched_key": "D2",
+      "color_presence": {
+        "blue": true,
+        "green": false,
+        "yellow": false,
+        "red": false,
+        "white": true
+      },
+      "color_stats": {
+        "blue": {
+          "pixels": 448,
+          "ratio": 0.008285862247540134
+        },
+        "green": {
+          "pixels": 1,
+          "ratio": 1.849522823111637e-05
+        },
+        "yellow": {
+          "pixels": 0,
+          "ratio": 0.0
+        },
+        "red": {
+          "pixels": 0,
+          "ratio": 0.0
+        },
+        "white": {
+          "pixels": 53619,
+          "ratio": 0.9916956425242287
+        }
+      }
+    }
+  ],
+  "matched_keys": [
+    "D2"
+  ]
+}

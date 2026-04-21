@@ -1,0 +1,134 @@
+{
+  "micro_image_name": "micro_0045_X3.jpg",
+  "text": "X3",
+  "global_poly": [
+    [
+      15403,
+      589
+    ],
+    [
+      15471,
+      589
+    ],
+    [
+      15471,
+      646
+    ],
+    [
+      15403,
+      646
+    ]
+  ],
+  "micro_poly": [
+    [
+      70,
+      40
+    ],
+    [
+      138,
+      40
+    ],
+    [
+      138,
+      97
+    ],
+    [
+      70,
+      97
+    ]
+  ],
+  "source_split_image": "split_21_14700_0.jpg",
+  "split_poly": [
+    [
+      703,
+      589
+    ],
+    [
+      771,
+      589
+    ],
+    [
+      771,
+      646
+    ],
+    [
+      703,
+      646
+    ]
+  ],
+  "color_presence": {
+    "blue": false,
+    "green": true,
+    "yellow": true,
+    "red": true,
+    "white": true
+  },
+  "color_stats": {
+    "blue": {
+      "pixels": 8,
+      "ratio": 0.00016988023443472353
+    },
+    "green": {
+      "pixels": 1535,
+      "ratio": 0.03259576998216258
+    },
+    "yellow": {
+      "pixels": 1234,
+      "ratio": 0.026204026161556104
+    },
+    "red": {
+      "pixels": 2291,
+      "ratio": 0.04864945213624395
+    },
+    "white": {
+      "pixels": 41996,
+      "ratio": 0.8917862906650811
+    }
+  },
+  "color_valid_pixels": 47092,
+  "re_ocr_text": "X3",
+  "re_ocr_confidence": 1.0,
+  "re_ocr_details": [
+    {
+      "text": "X3",
+      "confidence": 1.0,
+      "color_info": null,
+      "matched_key": "X3",
+      "template_match_res": true,
+      "template_match_score": 0.5839226841926575,
+      "template_name": "ll1_r",
+      "color_presence": {
+        "blue": false,
+        "green": true,
+        "yellow": true,
+        "red": true,
+        "white": true
+      },
+      "color_stats": {
+        "blue": {
+          "pixels": 8,
+          "ratio": 0.00016988023443472353
+        },
+        "green": {
+          "pixels": 1535,
+          "ratio": 0.03259576998216258
+        },
+        "yellow": {
+          "pixels": 1234,
+          "ratio": 0.026204026161556104
+        },
+        "red": {
+          "pixels": 2291,
+          "ratio": 0.04864945213624395
+        },
+        "white": {
+          "pixels": 41996,
+          "ratio": 0.8917862906650811
+        }
+      }
+    }
+  ],
+  "matched_keys": [
+    "X3"
+  ]
+}

@@ -1,0 +1,93 @@
+{
+  "micro_image_name": "micro_0007_XFS.jpg",
+  "text": "XFS",
+  "global_poly": [
+    [
+      3677,
+      1220
+    ],
+    [
+      3791,
+      1220
+    ],
+    [
+      3791,
+      1287
+    ],
+    [
+      3677,
+      1287
+    ]
+  ],
+  "micro_poly": [
+    [
+      300,
+      40
+    ],
+    [
+      414,
+      40
+    ],
+    [
+      414,
+      107
+    ],
+    [
+      300,
+      107
+    ]
+  ],
+  "source_split_image": "split_15_2800_700.jpg",
+  "split_poly": [
+    [
+      877,
+      520
+    ],
+    [
+      991,
+      520
+    ],
+    [
+      991,
+      587
+    ],
+    [
+      877,
+      587
+    ]
+  ],
+  "color_presence": {
+    "blue": false,
+    "green": true,
+    "yellow": false,
+    "red": false,
+    "white": true
+  },
+  "color_stats": {
+    "blue": {
+      "pixels": 1,
+      "ratio": 1.8401295451199766e-05
+    },
+    "green": {
+      "pixels": 817,
+      "ratio": 0.015033858383630208
+    },
+    "yellow": {
+      "pixels": 0,
+      "ratio": 0.0
+    },
+    "red": {
+      "pixels": 1,
+      "ratio": 1.8401295451199766e-05
+    },
+    "white": {
+      "pixels": 53520,
+      "ratio": 0.9848373325482114
+    }
+  },
+  "color_valid_pixels": 54344,
+  "re_ocr_text": "",
+  "re_ocr_confidence": 0.0,
+  "re_ocr_details": [],
+  "matched_keys": []
+}

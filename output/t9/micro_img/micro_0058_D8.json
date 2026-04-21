@@ -1,0 +1,131 @@
+{
+  "micro_image_name": "micro_0058_D8.jpg",
+  "text": "D8",
+  "global_poly": [
+    [
+      3647,
+      696
+    ],
+    [
+      3684,
+      699
+    ],
+    [
+      3681,
+      729
+    ],
+    [
+      3644,
+      725
+    ]
+  ],
+  "micro_poly": [
+    [
+      302,
+      40
+    ],
+    [
+      339,
+      43
+    ],
+    [
+      336,
+      73
+    ],
+    [
+      299,
+      69
+    ]
+  ],
+  "source_split_image": "split_5_3500_0.jpg",
+  "split_poly": [
+    [
+      147,
+      696
+    ],
+    [
+      184,
+      699
+    ],
+    [
+      181,
+      729
+    ],
+    [
+      144,
+      725
+    ]
+  ],
+  "color_presence": {
+    "blue": true,
+    "green": false,
+    "yellow": false,
+    "red": false,
+    "white": true
+  },
+  "color_stats": {
+    "blue": {
+      "pixels": 139,
+      "ratio": 0.0033411855199269266
+    },
+    "green": {
+      "pixels": 4,
+      "ratio": 9.614922359501947e-05
+    },
+    "yellow": {
+      "pixels": 4,
+      "ratio": 9.614922359501947e-05
+    },
+    "red": {
+      "pixels": 0,
+      "ratio": 0.0
+    },
+    "white": {
+      "pixels": 41454,
+      "ratio": 0.9964424787269843
+    }
+  },
+  "color_valid_pixels": 41602,
+  "re_ocr_text": "D8",
+  "re_ocr_confidence": 1.0,
+  "re_ocr_details": [
+    {
+      "text": "D8",
+      "confidence": 1.0,
+      "color_info": null,
+      "matched_key": "D8",
+      "color_presence": {
+        "blue": true,
+        "green": false,
+        "yellow": false,
+        "red": false,
+        "white": true
+      },
+      "color_stats": {
+        "blue": {
+          "pixels": 139,
+          "ratio": 0.0033411855199269266
+        },
+        "green": {
+          "pixels": 4,
+          "ratio": 9.614922359501947e-05
+        },
+        "yellow": {
+          "pixels": 4,
+          "ratio": 9.614922359501947e-05
+        },
+        "red": {
+          "pixels": 0,
+          "ratio": 0.0
+        },
+        "white": {
+          "pixels": 41454,
+          "ratio": 0.9964424787269843
+        }
+      }
+    }
+  ],
+  "matched_keys": [
+    "D8"
+  ]
+}
