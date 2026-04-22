@@ -7,6 +7,7 @@
     <list default="true" id="8dae42eb-bb69-4c69-8122-86870f3e60ec" name="Changes" comment="【小窗口】【充分检测 二次ocr的数据】">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/little_light/LW_detect.py" beforeDir="false" afterPath="$PROJECT_DIR$/little_light/LW_detect.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/little_light/micro_0000_XF.json" beforeDir="false" afterPath="$PROJECT_DIR$/little_light/micro_0000_XF.json" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -75,7 +76,7 @@
     "Python.visualize_micro_poly.executor": "Run",
     "RunOnceActivity.ShowReadmeOnStart": "true",
     "git-widget-placeholder": "master",
-    "last_opened_file_path": "D:/work/ocr+Transformer",
+    "last_opened_file_path": "D:/work/ocr+Transformer/little_light",
     "node.js.detected.package.eslint": "true",
     "node.js.detected.package.tslint": "true",
     "node.js.selected.package.eslint": "(autodetect)",
@@ -102,7 +103,7 @@
       <recent name="D:\work\ocr+Transformer\test" />
     </key>
   </component>
-  <component name="RunManager" selected="Python.main">
+  <component name="RunManager" selected="Python.LW_detect">
     <configuration name="LW_detect" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
       <module name="ocr+Transformer" />
       <option name="ENV_FILES" value="" />
@@ -220,8 +221,8 @@
     </configuration>
     <recent_temporary>
       <list>
-        <item itemvalue="Python.main" />
         <item itemvalue="Python.LW_detect" />
+        <item itemvalue="Python.main" />
         <item itemvalue="Python.singal" />
         <item itemvalue="Python.find_boundary_dark" />
         <item itemvalue="Python.test5" />
@@ -308,7 +309,7 @@
       <workItem from="1776783330344" duration="1034000" />
       <workItem from="1776784381833" duration="249000" />
       <workItem from="1776784656779" duration="284000" />
-      <workItem from="1776785331047" duration="15456000" />
+      <workItem from="1776785331047" duration="17469000" />
     </task>
     <task id="LOCAL-00001" summary="init">
       <option name="closed" value="true" />
@@ -350,7 +351,23 @@
       <option name="project" value="LOCAL" />
       <updated>1776858385013</updated>
     </task>
-    <option name="localTasksCounter" value="6" />
+    <task id="LOCAL-00006" summary="【小窗口】【充分检测 二次ocr的数据】">
+      <option name="closed" value="true" />
+      <created>1776858751961</created>
+      <option name="number" value="00006" />
+      <option name="presentableId" value="LOCAL-00006" />
+      <option name="project" value="LOCAL" />
+      <updated>1776858751961</updated>
+    </task>
+    <task id="LOCAL-00007" summary="【小窗口】【充分检测 二次ocr的数据】">
+      <option name="closed" value="true" />
+      <created>1776858812987</created>
+      <option name="number" value="00007" />
+      <option name="presentableId" value="LOCAL-00007" />
+      <option name="project" value="LOCAL" />
+      <updated>1776858812987</updated>
+    </task>
+    <option name="localTasksCounter" value="8" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -441,6 +458,11 @@
           <line>133</line>
           <option name="timeStamp" value="161" />
         </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/little_light/LW_detect.py</url>
+          <line>867</line>
+          <option name="timeStamp" value="162" />
+        </line-breakpoint>
       </breakpoints>
     </breakpoint-manager>
   </component>
@@ -455,7 +477,7 @@
     <SUITE FILE_PATH="coverage/ocr_Transformer$test5.coverage" NAME="test5 Coverage Results" MODIFIED="1775915982864" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/test4" />
     <SUITE FILE_PATH="coverage/ocr_Transformer$detect_traffic_light.coverage" NAME="detect_traffic_light Coverage Results" MODIFIED="1770867105285" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/little_light" />
     <SUITE FILE_PATH="coverage/ocr_Transformer$visualize_micro_poly.coverage" NAME="visualize_micro_poly Coverage Results" MODIFIED="1774749021300" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/test4" />
-    <SUITE FILE_PATH="coverage/ocr_Transformer$LW_detect.coverage" NAME="LW_detect Coverage Results" MODIFIED="1776062477641" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/little_light" />
+    <SUITE FILE_PATH="coverage/ocr_Transformer$LW_detect.coverage" NAME="LW_detect Coverage Results" MODIFIED="1776860503887" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/little_light" />
     <SUITE FILE_PATH="coverage/ocr_Transformer$detect_contours.coverage" NAME="detect_contours Coverage Results" MODIFIED="1770447845595" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/test1" />
     <SUITE FILE_PATH="coverage/ocr_Transformer$test4.coverage" NAME="test4 Coverage Results" MODIFIED="1774071455610" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/test4" />
     <SUITE FILE_PATH="coverage/ocr_Transformer$test.coverage" NAME="test Coverage Results" MODIFIED="1768723559505" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />

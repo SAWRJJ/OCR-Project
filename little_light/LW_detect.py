@@ -1767,6 +1767,18 @@ def process_leftmost_pixels(img, mask_red, mask_yellow, mask_green, red_center, 
             dy = point2[1] - point1[1]
             length = ((dx ** 2) + (dy ** 2)) ** 0.5
 
+            # 计算两点连线的角度（弧度）
+            line_angle = np.arctan2(dy, dx)
+            # 计算与文本框角度的差值
+            angle_diff = abs(line_angle - angle)
+            print(f"连线角度: {np.degrees(line_angle):.2f} 度, 文本框角度: {np.degrees(angle):.2f} 度, 差值: {np.degrees(angle_diff):.2f} 度")
+
+            # 可视化两个端点
+            if debug:
+                cv2.circle(vis_img, (int(point1[0]), int(point1[1])), 8, (0, 255, 0), -1)
+                cv2.circle(vis_img, (int(point2[0]), int(point2[1])), 8, (0, 0, 255), -1)
+                cv2.line(vis_img, (int(point1[0]), int(point1[1])), (int(point2[0]), int(point2[1])), (255, 255, 0), 2)
+
             if length > 0:
                 unit_dx = dx / length
                 unit_dy = dy / length
@@ -1989,6 +2001,18 @@ def process_rightmost_pixels(img, mask_red, mask_yellow, mask_green, red_center,
             dy = point2[1] - point1[1]
             length = ((dx ** 2) + (dy ** 2)) ** 0.5
 
+            # 计算两点连线的角度（弧度）
+            line_angle = np.arctan2(dy, dx)
+            # 计算与文本框角度的差值
+            angle_diff = abs(line_angle - angle)
+            print(f"连线角度: {np.degrees(line_angle):.2f} 度, 文本框角度: {np.degrees(angle):.2f} 度, 差值: {np.degrees(angle_diff):.2f} 度")
+
+            # 可视化两个端点
+            if debug:
+                cv2.circle(vis_img, (int(point1[0]), int(point1[1])), 8, (0, 255, 0), -1)
+                cv2.circle(vis_img, (int(point2[0]), int(point2[1])), 8, (0, 0, 255), -1)
+                cv2.line(vis_img, (int(point1[0]), int(point1[1])), (int(point2[0]), int(point2[1])), (255, 255, 0), 2)
+
             if length > 0:
                 unit_dx = dx / length
                 unit_dy = dy / length
@@ -2042,11 +2066,11 @@ def save_visualization(img, image_path, debug=True):
 
 if __name__ == "__main__":
     # 输入图像路径
-    input_image = r"D:\work\ocr+Transformer\little_light\micro_0004_S1.jpg"  # micro_0079_S8.jpg micro_0004_S1 micro_0016_XI.jpg
+    input_image = r"D:\work\ocr+Transformer\little_light\micro_0002_S1.jpg"  # micro_0079_S8.jpg micro_0004_S1 micro_0016_XI.jpg
 
     # 输入目标字符
     target_char = "SII"
-    target_char = "XI"
+    target_char = "XF"
     target_char = "S1"
     # # 输入图像路径
     # input_image = r"D:\work\ocr+Transformer\little_light\micro_0084_X8.jpg"
