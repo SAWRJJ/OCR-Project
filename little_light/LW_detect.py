@@ -8,6 +8,7 @@ import os
 from paddleocr import PaddleOCR
 from scan_dark_pixels import find_left_to_right_dark_region, remove_dark_region
 
+
 def calculate_textbox_angle(poly):
     """
     计算文本框的倾斜角度
@@ -176,7 +177,7 @@ def draw_target_char_left_edge(img, json_path, target_char='S5', color_line_info
             yellow_left_edge_bottom = (
                 int(yellow_box_left * cos_a + center[1] * sin_a - center[0] * sin_a + yellow_box_left * (1 - cos_a)),
                 int(-yellow_box_left * sin_a + center[1] * cos_a + center[0] * sin_a - center[1] * sin_a + (
-                            max_y - min_y)))
+                        max_y - min_y)))
 
             right_edge_top = poly_arr[poly_arr[:, 0].argmax()].copy()
             right_edge_bottom = poly_arr[poly_arr[:, 0].argmax()].copy()
@@ -649,6 +650,7 @@ def draw_target_char_right_edge(img, json_path, target_char='X', color_line_info
 
     return img, polygon
 
+
 def build_sorted_centers_list(red_centers, yellow_centers, green_centers, sort_by='x', reverse=False):
     """
     将红、黄、绿独立区域中心坐标合并成一个列表，并根据x坐标排序
@@ -669,7 +671,6 @@ def build_sorted_centers_list(red_centers, yellow_centers, green_centers, sort_b
         processed_yellow_centers = [yellow_centers[1]]
     elif len(yellow_centers) == 6:
         processed_yellow_centers = [yellow_centers[1], yellow_centers[4]]
-
 
     all_centers = []
     for centers, color_name in [(red_centers, 'red'), (processed_yellow_centers, 'yellow'), (green_centers, 'green')]:
@@ -719,7 +720,6 @@ def detect_colors(image_path, target_char, debug=True, threshold=100):
         img = remove_dark_region(img, region)
     template_match_res = None
     black_radio = 0
-
 
     hsv = cv2.cvtColor(img, cv2.COLOR_BGR2HSV)
 
@@ -816,7 +816,6 @@ def detect_colors(image_path, target_char, debug=True, threshold=100):
     if green_centers:
         print(f"绿色独立区域中心坐标: {green_centers}")
 
-
     vis_centers_img = img.copy()
     for center in red_centers:
         cv2.circle(vis_centers_img, center, 3, (255, 0, 0), -1)
@@ -867,7 +866,7 @@ def detect_colors(image_path, target_char, debug=True, threshold=100):
         print(f"文本框倾斜角度: {np.degrees(textbox_angle):.2f} 度")
 
     if 'X' in target_char:
-        sorted_centers = build_sorted_centers_list(red_centers, yellow_centers, green_centers,reverse=False)
+        sorted_centers = build_sorted_centers_list(red_centers, yellow_centers, green_centers, reverse=False)
         vis_img, color_line_info, linear_point, far_points = process_leftmost_pixels(img, mask_red, mask_yellow,
                                                                                      mask_green, red_center,
                                                                                      yellow_center, green_center,
@@ -910,7 +909,7 @@ def detect_colors(image_path, target_char, debug=True, threshold=100):
                                                       textbox_angle=textbox_angle)
 
     black_pixel_count = 0
-    if is_linear:
+    if is_linear and len(sorted_centers) > 0:
         print("执行单线检测")
         vis_img, found_pixel, left_black, right_black, template_match_res = single_line_detection(vis_img, json_path,
                                                                                                   target_char,
@@ -923,7 +922,7 @@ def detect_colors(image_path, target_char, debug=True, threshold=100):
     else:
         print("执行双线黑色像素统计")
         if polygon:
-            black_pixel_count,polygon_total_pixels = calculate_black_pixels(vis_img, polygon, json_path, data)
+            black_pixel_count, polygon_total_pixels = calculate_black_pixels(vis_img, polygon, json_path, data)
             black_radio = black_pixel_count / polygon_total_pixels * 100.0
             print(f"black_radio:{black_radio}")
             if 1100 < black_pixel_count <= 1450:
@@ -934,7 +933,7 @@ def detect_colors(image_path, target_char, debug=True, threshold=100):
                 template_match_res = 0
             if template_match_res == 1 and black_pixel_count < 500:
                 template_match_res = 1
-            elif template_match_res == 1 and black_radio >= 30:
+            elif template_match_res == 1 and black_radio >= 32:
                 template_match_res = 3
         else:
             template_match_res = None
@@ -1181,9 +1180,9 @@ def single_line_detection(img, json_path, target_char, linear_point, origin_img,
             cv2.line(far_vis_img, extend_start, extend_end, (255, 255, 0), 2)
 
             red_point_pos = (int(point1[0] - unit_dx_far * length_far * 3 / 2),
-                            int(point1[1] - unit_dy_far * length_far * 3 / 2))
+                             int(point1[1] - unit_dy_far * length_far * 3 / 2))
             red_point_pos2 = (int(red_point_pos[0] - unit_dx_far * 25),
-                            int(red_point_pos[1] - unit_dy_far * 25))
+                              int(red_point_pos[1] - unit_dy_far * 25))
             found_pixel = red_point_pos
             cv2.circle(far_vis_img, red_point_pos, 1, (0, 0, 255), -1)
             cv2.circle(far_vis_img, red_point_pos2, 1, (255, 0, 255), -1)
@@ -1209,7 +1208,9 @@ def single_line_detection(img, json_path, target_char, linear_point, origin_img,
             rect_gray = cv2.cvtColor(origin_img, cv2.COLOR_BGR2GRAY)
             _, rect_dark_mask = cv2.threshold(rect_gray, 100, 255, cv2.THRESH_BINARY_INV)
             rect_dark_pixels = cv2.countNonZero(cv2.bitwise_and(rect_mask, rect_dark_mask))
-            black_radio = rect_dark_pixels / rect_total_pixels * 100.0
+            black_radio = 0.0
+            if rect_total_pixels > 0:
+                black_radio = rect_dark_pixels / rect_total_pixels * 100.0
             print(f"black_radio:{black_radio}")
             if 1100 < rect_dark_pixels <= 1400:
                 template_match_res = 3
@@ -1298,7 +1299,6 @@ def single_line_detection(img, json_path, target_char, linear_point, origin_img,
         if found_pixel:
             if far_points and len(far_points) >= 1 and debug:
 
-
                 edge_point = far_points[0]
 
                 dx_line = edge_point[0] - found_pixel[0]
@@ -1319,9 +1319,9 @@ def single_line_detection(img, json_path, target_char, linear_point, origin_img,
                     ex_p1 = 10
                     if target_char.startswith('X'):
                         current_pos = [
-                                found_pixel[0] +  dir_x*ex_p1,
-                                found_pixel[1]
-                            ]
+                            found_pixel[0] + dir_x * ex_p1,
+                            found_pixel[1]
+                        ]
 
                         # 如果用于图像索引，转成整数
                         current_pos = [int(round(current_pos[0])), int(round(current_pos[1]))]
@@ -1340,9 +1340,9 @@ def single_line_detection(img, json_path, target_char, linear_point, origin_img,
                     ex_p = 19
                     while True:
                         scan_start = (int(current_pos[0] - perp_dx * ((max_x - min_x) + ex_p)),
-                                      int(current_pos[1] - perp_dy * ( (max_y - min_y)/2 + ex_p)))
+                                      int(current_pos[1] - perp_dy * ((max_y - min_y) / 2 + ex_p)))
                         scan_end = (int(current_pos[0] + perp_dx * ((max_x - min_x) + ex_p)),
-                                    int(current_pos[1] + perp_dy * ( (max_y - min_y)/2 + ex_p)))
+                                    int(current_pos[1] + perp_dy * ((max_y - min_y) / 2 + ex_p)))
 
                         scan_lines.append((scan_start, scan_end))
 
@@ -1427,7 +1427,7 @@ def single_line_detection(img, json_path, target_char, linear_point, origin_img,
 
                                 stop_rect = [rect_stop_p1, rect_stop_p2, rect_stop_p3, rect_stop_p4]
 
-                                black_count = bwb_line_detect(origin_img, stop_rect,True)
+                                black_count = bwb_line_detect(origin_img, stop_rect, True)
                                 print(f"bwb_line_detect结果（白色后出现黑色次数）: {black_count}")
 
                                 template_match_res = 0
@@ -1474,14 +1474,15 @@ def single_line_detection(img, json_path, target_char, linear_point, origin_img,
                                 perp_dx_far = -unit_dy_far
                                 perp_dy_far = unit_dx_far
 
-
                                 edge_top = (edge_x, min_y)
                                 edge_bottom = (edge_x, max_y)
 
                                 rect_p1 = (
-                                    int(edge_top[0] + perp_dx_far * expand_px), int(edge_top[1] + perp_dy_far * expand_px))
+                                    int(edge_top[0] + perp_dx_far * expand_px),
+                                    int(edge_top[1] + perp_dy_far * expand_px))
                                 rect_p2 = (
-                                    int(edge_top[0] - perp_dx_far * expand_px), int(edge_top[1] - perp_dy_far * expand_px))
+                                    int(edge_top[0] - perp_dx_far * expand_px),
+                                    int(edge_top[1] - perp_dy_far * expand_px))
                                 rect_p3 = (int(edge_bottom[0] - perp_dx_far * expand_px),
                                            int(edge_bottom[1] - perp_dy_far * expand_px))
                                 rect_p4 = (int(edge_bottom[0] + perp_dx_far * expand_px),
@@ -1514,7 +1515,7 @@ def bwb_line_detect(img, rect, debug=False):
     cv2.fillPoly(mask, [np.array(rect)], 255)
 
     x, y, w, h = cv2.boundingRect(np.array(rect))
-    roi = img[y:y+h, x:x+w]
+    roi = img[y:y + h, x:x + w]
 
     if debug:
         if not os.path.exists('output'):
@@ -1729,6 +1730,7 @@ def process_leftmost_pixels(img, mask_red, mask_yellow, mask_green, red_center, 
 
     color_line_info = None
     leftmost_points = []
+    far_left_points = None
     if red_leftmost:
         leftmost_points.append(red_leftmost)
     if yellow_leftmost:
@@ -1950,6 +1952,7 @@ def process_rightmost_pixels(img, mask_red, mask_yellow, mask_green, red_center,
 
     color_line_info = None
     rightmost_points = []
+    far_right_points = None
     if red_rightmost:
         rightmost_points.append(red_rightmost)
     if yellow_rightmost:
@@ -2039,7 +2042,7 @@ def save_visualization(img, image_path, debug=True):
 
 if __name__ == "__main__":
     # 输入图像路径
-    input_image = r"D:\work\ocr+Transformer\little_light\micro_0004_S1.jpg" # micro_0079_S8.jpg micro_0004_S1 micro_0016_XI.jpg
+    input_image = r"D:\work\ocr+Transformer\little_light\micro_0004_S1.jpg"  # micro_0079_S8.jpg micro_0004_S1 micro_0016_XI.jpg
 
     # 输入目标字符
     target_char = "SII"
