@@ -149,7 +149,6 @@ def process_micro_images(micro_img_dir):
                 else:
                     first_poly = initial_polys
                 img = cv2.imread(img_path)
-                gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
                 filename_matched_key1 = None
                 found_match_in_filename1 = False
                 if "X" in filename_matched_key:
@@ -161,10 +160,12 @@ def process_micro_images(micro_img_dir):
                     if dark_ratio:
                         print("execute test5 detect")
                         textbox_angle, _ = calculate_textbox_angle(first_poly)
+                        img0 = find_drak_remove(img)
+                        gray = cv2.cvtColor(img0, cv2.COLOR_BGR2GRAY)
                         _, binary = cv2.threshold(gray, 200, 255, cv2.THRESH_BINARY)
                         debug_vis_path = os.path.join(micro_img_dir, 'debug', filename.replace('.jpg', '_scan_debug.jpg'))
                         first_non_white_col, found_scan_line_start, found_scan_line_end, non_white_pixels, expand_x, expand_y, final_scan_line_start, final_scan_line_end = find_first_non_white_column_along_tilt(
-                            first_poly, binary, textbox_angle, debug_img=img, output_path=debug_vis_path)
+                            first_poly, binary, textbox_angle, debug_img=img0, output_path=debug_vis_path)
                         if first_non_white_col is not None and expand_x is not None and expand_y is not None and final_scan_line_start is not None and final_scan_line_end is not None:
                             left_line = sorted([found_scan_line_start, found_scan_line_end], key=lambda p: p[0])[0]
                             right_line = sorted([final_scan_line_start, final_scan_line_end], key=lambda p: p[0])[1]
