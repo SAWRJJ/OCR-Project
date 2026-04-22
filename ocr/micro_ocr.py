@@ -187,25 +187,28 @@ def process_micro_images(micro_img_dir):
                             results = ocr_engine.ocr.predict(cropped0)
                             for result in results:
                                 if len(result) >= 2 and len(result['rec_texts'])>0:
-                                    text = result['rec_texts'][0]
-                                    conf = result['rec_scores'][0]
-                                    rec_poly = result['rec_polys'][0]
-                                    restored_poly = [[int(point[0] + left), int(point[1])] for point in rec_poly]
-                                    if os.path.exists(json_path):
-                                        with open(json_path, 'r', encoding='utf-8') as f:
-                                            json_data = json.load(f)
-                                        json_data['micro_poly'] = restored_poly
-                                        with open(json_path, 'w', encoding='utf-8') as f:
-                                            json.dump(json_data, f, ensure_ascii=False, indent=2)
-                                    for key, variants in target_defs.items():
-                                        for variant in variants:
-                                            if variant in text:
-                                                filename_matched_key1 = key
-                                                found_match_in_filename1 = True
+                                    for i in range(len(result['rec_texts'])):
+                                        text = result['rec_texts'][i]
+                                        conf = result['rec_scores'][i]
+                                        rec_poly = result['rec_polys'][i]
+                                        restored_poly = [[int(point[0] + left), int(point[1])] for point in rec_poly]
+                                        for key, variants in target_defs.items():
+                                            for variant in variants:
+                                                if variant in text:
+                                                    filename_matched_key1 = key
+                                                    found_match_in_filename1 = True
+                                                    break
+                                            if found_match_in_filename1:
                                                 break
                                         if found_match_in_filename1:
                                             break
                                     if found_match_in_filename1:
+                                        if os.path.exists(json_path):
+                                            with open(json_path, 'r', encoding='utf-8') as f:
+                                                json_data = json.load(f)
+                                            json_data['micro_poly'] = restored_poly
+                                            with open(json_path, 'w', encoding='utf-8') as f:
+                                                json.dump(json_data, f, ensure_ascii=False, indent=2)
                                         detail_item = {
                                             "text": text,
                                             "confidence": conf,
@@ -283,27 +286,29 @@ def process_micro_images(micro_img_dir):
                     results = ocr_engine.ocr.predict(cropped0)
                     for result in results:
                         if len(result) >= 2 and len(result['rec_texts'])>0:
-                            text = ''.join(results[0]['rec_texts']).replace(' ', '')
-                            conf = result['rec_scores'][0]
-                            rec_poly = result['rec_polys'][0]
-                            restored_poly = [[int(point[0] + x_min), int(point[1] + y_min)] for point in rec_poly]
-                            if os.path.exists(json_path):
-                                with open(json_path, 'r', encoding='utf-8') as f:
-                                    json_data = json.load(f)
-                                json_data['micro_poly'] = restored_poly
-                                json_data["text"] = text
-                                with open(json_path, 'w', encoding='utf-8') as f:
-                                    json.dump(json_data, f, ensure_ascii=False, indent=2)
-                            for key, variants in target_defs.items():
-                                for variant in variants:
-                                    if variant in text:
-                                        filename_matched_key1 = key
-                                        found_match_in_filename1 = True
+                            for i in range(len(result['rec_texts'])):
+                                text = ''.join(results[i]['rec_texts']).replace(' ', '')
+                                conf = result['rec_scores'][i]
+                                rec_poly = result['rec_polys'][i]
+                                restored_poly = [[int(point[i] + x_min), int(point[1] + y_min)] for point in rec_poly]
+                                for key, variants in target_defs.items():
+                                    for variant in variants:
+                                        if variant in text:
+                                            filename_matched_key1 = key
+                                            found_match_in_filename1 = True
+                                            break
+                                    if found_match_in_filename1:
                                         break
                                 if found_match_in_filename1:
                                     break
-
                             if found_match_in_filename1:
+                                if os.path.exists(json_path):
+                                    with open(json_path, 'r', encoding='utf-8') as f:
+                                        json_data = json.load(f)
+                                    json_data['micro_poly'] = restored_poly
+                                    json_data["text"] = text
+                                    with open(json_path, 'w', encoding='utf-8') as f:
+                                        json.dump(json_data, f, ensure_ascii=False, indent=2)
                                 detail_item = {
                                     "text": text,
                                     "confidence": conf,
