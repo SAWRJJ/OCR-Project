@@ -80,46 +80,102 @@ class ImageProcessor:
         return int(np.sum(~(white_mask | black_mask)))
 
     @staticmethod
-    def choose_one_sided_extension(img, p1, p2, extend_length=220, line_thickness=3, white_thresh=245, black_thresh=10, min_non_bw_pixels=5):
+    def choose_one_sided_extension(img, p1, p2, extend_length=220, line_thickness=3, white_thresh=245, black_thresh=5, min_non_bw_pixels=5, text=None):
+        """选择线条的单侧延伸方向
+        
+        根据两侧延伸区域中的非黑白像素数量，决定线条应该向哪个方向延伸。
+        返回延伸后的新端点，如果两侧都没有内容则返回None。
+        
+        Args:
+            img: 输入图像
+            p1, p2: 线段的两端点坐标
+            extend_length: 延伸长度（像素）
+            line_thickness: 线条粗细
+            white_thresh: 白色阈值，高于此值视为白色
+            black_thresh: 黑色阈值，低于此值视为黑色
+            min_non_bw_pixels: 最少非黑白像素数阈值
+            text: 输入文本，用于在两侧都无内容时判断延伸方向
+            
+        Returns:
+            延伸后的新端点坐标对，或None
+        """
         if img is None or img.size == 0:
             return None
 
+        # 调试输出目录
+        debug_dir = "debug_output"
+        if not os.path.exists(debug_dir):
+            os.makedirs(debug_dir)
+
+        # 计算线段的方向向量
         dx = float(p2[0] - p1[0])
         dy = float(p2[1] - p1[1])
         length = float(np.sqrt(dx * dx + dy * dy))
         if length <= 1e-6:
             return None
 
+        # 归一化方向向量
         ux = dx / length
         uy = dy / length
 
         h, w = img.shape[:2]
+        # 创建原始线段的掩码
         base_mask = np.zeros((h, w), dtype=np.uint8)
         cv2.line(base_mask, (int(p1[0]), int(p1[1])), (int(p2[0]), int(p2[1])), 255, int(line_thickness))
 
-        # Check extension 1 (from p1 away)
+        # 延伸方向1：从p1向相反方向延伸
         p1_ext = [p1[0] - ux * extend_length, p1[1] - uy * extend_length]
         cand1_mask = np.zeros((h, w), dtype=np.uint8)
         cv2.line(cand1_mask, (int(p1_ext[0]), int(p1_ext[1])), (int(p2[0]), int(p2[1])), 255, int(line_thickness))
+        # 只保留延伸部分的掩码（排除原始线段）
         ext1_mask = cv2.bitwise_and(cand1_mask, cv2.bitwise_not(base_mask))
+
+        if text == "X10":
+            # 可视化：保存ext1_mask并在原图上显示
+            cv2.imwrite(os.path.join(debug_dir, "ext1_mask.png"), ext1_mask)
+            img_ext1_vis = img.copy()
+            if len(img_ext1_vis.shape) == 2:
+                img_ext1_vis = cv2.cvtColor(img_ext1_vis, cv2.COLOR_GRAY2BGR)
+            img_ext1_vis[ext1_mask > 0] = [0, 255, 255]
+            cv2.imwrite(os.path.join(debug_dir, "ext1_mask_overlay.png"), img_ext1_vis)
         
+        # 统计延伸区域1中的总像素数和非黑白像素数量
+        ext1_total = int(np.sum(ext1_mask > 0))
         ext1_count = ImageProcessor.count_non_bw_pixels_along_line(
             img, (0, 0), (0, 0), line_thickness, white_thresh, black_thresh, mask=ext1_mask
         )
 
-        # Check extension 2 (from p2 away)
+        # 延伸方向2：从p2向相同方向延伸
         p2_ext = [p2[0] + ux * extend_length, p2[1] + uy * extend_length]
         cand2_mask = np.zeros((h, w), dtype=np.uint8)
         cv2.line(cand2_mask, (int(p1[0]), int(p1[1])), (int(p2_ext[0]), int(p2_ext[1])), 255, int(line_thickness))
+        # 只保留延伸部分的掩码（排除原始线段）
         ext2_mask = cv2.bitwise_and(cand2_mask, cv2.bitwise_not(base_mask))
         
+        # # 可视化：保存ext2_mask并在原图上显示
+        # cv2.imwrite(os.path.join(debug_dir, "ext2_mask.png"), ext2_mask)
+        # img_ext2_vis = img.copy()
+        # if len(img_ext2_vis.shape) == 2:
+        #     img_ext2_vis = cv2.cvtColor(img_ext2_vis, cv2.COLOR_GRAY2BGR)
+        # img_ext2_vis[ext2_mask > 0] = [0, 255, 255]
+        # cv2.imwrite(os.path.join(debug_dir, "ext2_mask_overlay.png"), img_ext2_vis)
+        
+        # 统计延伸区域2中的总像素数和非黑白像素数量
+        ext2_total = int(np.sum(ext2_mask > 0))
         ext2_count = ImageProcessor.count_non_bw_pixels_along_line(
             img, (0, 0), (0, 0), line_thickness, white_thresh, black_thresh, mask=ext2_mask
         )
 
+        # 如果两侧都没有内容，根据输入文本判断延伸方向
         if ext1_count < int(min_non_bw_pixels) and ext2_count < int(min_non_bw_pixels):
+            # 文本包含X则向右延伸，包含S则向左延伸
+            if text and 'X' in text.upper():
+                return p1, p2_ext
+            elif text and 'S' in text.upper():
+                return p1_ext, p2
             return None
 
+        # 返回非黑白像素较多的那个延伸方向
         if ext2_count >= ext1_count:
             return p1, p2_ext
         return p1_ext, p2
