@@ -87,5 +87,5 @@ def main(image_path):
     logger.info("OCR 完成，文字结果已保存")
 
 if __name__ == "__main__":
-    img_path= "img/t8.jpg"
+    img_path= "img/t9.jpg"
     main(img_path)

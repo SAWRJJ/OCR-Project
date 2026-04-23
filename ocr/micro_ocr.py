@@ -101,7 +101,7 @@ def process_micro_images(micro_img_dir):
             continue
 
         # micro_0005_S
-        if filename == "micro_0018_x_3c0_0.jpg":
+        if filename == "micro_0045_X3.jpg":
             print(-1)
         img_path = os.path.join(micro_img_dir, filename)
         json_path = os.path.join(micro_img_dir, os.path.splitext(filename)[0] + ".json")
@@ -173,7 +173,7 @@ def process_micro_images(micro_img_dir):
                     if dark_ratio:
                         print("execute test5 detect")
                         textbox_angle, _ = calculate_textbox_angle(first_poly)
-                        img0 = find_drak_remove(img)
+                        img0 = find_drak_remove(img,dark_threshold=230)
                         gray = cv2.cvtColor(img0, cv2.COLOR_BGR2GRAY)
                         _, binary = cv2.threshold(gray, 200, 255, cv2.THRESH_BINARY)
                         debug_vis_path = os.path.join(micro_img_dir, 'debug',

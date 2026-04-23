@@ -165,7 +165,10 @@ class ImageProcessor:
         ext2_count = ImageProcessor.count_non_bw_pixels_along_line(
             img, (0, 0), (0, 0), line_thickness, white_thresh, black_thresh, mask=ext2_mask
         )
-
+        if text and 'X' in text.upper():
+            return p1, p2_ext
+        elif text and 'S' in text.upper():
+            return p1_ext, p2
         # 如果两侧都没有内容，根据输入文本判断延伸方向
         if ext1_count < int(min_non_bw_pixels) and ext2_count < int(min_non_bw_pixels):
             # 文本包含X则向右延伸，包含S则向左延伸

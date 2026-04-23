@@ -884,7 +884,7 @@ def detect_colors(image_path, target_char, debug=True, threshold=100):
         'yellow': yellow_centers,
         'green': green_centers
     }
-    if not is_linear and angle_diff<70:
+    if not is_linear and angle_diff<75:
         return False, 0, 0, color_centers_separate, 0
     # red_rightmost = calculate_rightmost(mask_red)
     # yellow_rightmost = calculate_rightmost(mask_yellow)
@@ -928,6 +928,18 @@ def detect_colors(image_path, target_char, debug=True, threshold=100):
     else:
         print("执行双线黑色像素统计")
         if polygon:
+            extended_start, extended_end, extended_right_end, extended_right_start = polygon
+            a1, b1 = extended_end[0] - extended_start[0], extended_end[1] - extended_start[1]
+            a2, b2 = extended_right_start[0] - extended_start[0], extended_right_start[1] - extended_start[1]
+            polygon_width = abs(a1 * b2 - a2 * b1) / ((a1 ** 2 + b1 ** 2) ** 0.5)
+            print(f"polygon_width:{polygon_width}")
+            if polygon_width > 280:
+                return False, 0, 0, color_centers_separate, 0
+            filename = os.path.basename(image_path)
+            name, ext = os.path.splitext(filename)
+            vis_debug_path = os.path.join('output', f'{name}_polygon_debug.png')
+            cv2.imwrite(vis_debug_path, vis_img)
+            print(f"polygon可视化已保存到: {vis_debug_path}")
             black_pixel_count, polygon_total_pixels = calculate_black_pixels(vis_img, polygon, json_path, data)
             black_radio = black_pixel_count / polygon_total_pixels * 100.0
             print(f"black_radio:{black_radio}")
@@ -2069,11 +2081,11 @@ def save_visualization(img, image_path, debug=True):
 
 if __name__ == "__main__":
     # 输入图像路径
-    input_image = r"D:\work\ocr+Transformer\little_light\micro_0000_XF.jpg"  # micro_0079_S8.jpg micro_0004_S1 micro_0016_XI.jpg
+    input_image = r"/Users/saw/WorkSpace/work/OCR-Project/little_light/micro_0012_FS.jpg"  # micro_0079_S8.jpg micro_0004_S1 micro_0016_XI.jpg
 
     # 输入目标字符
     target_char = "SII"
-    target_char = "XF"
+    target_char = "FS"
     # target_char = "S1"
     # # 输入图像路径
     # input_image = r"D:\work\ocr+Transformer\little_light\micro_0084_X8.jpg"

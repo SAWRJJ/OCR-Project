@@ -4,10 +4,32 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="8dae42eb-bb69-4c69-8122-86870f3e60ec" name="Changes" comment="【小窗口】【充分检测 二次ocr的数据】">
+    <list default="true" id="8dae42eb-bb69-4c69-8122-86870f3e60ec" name="Changes" comment="【小窗口 判断文本框和颜色组成举行的宽】">
+      <change afterPath="$PROJECT_DIR$/.idea/OCR-Project.iml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/little_light/LW_detect.py" beforeDir="false" afterPath="$PROJECT_DIR$/little_light/LW_detect.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/little_light/micro_0000_XF.json" beforeDir="false" afterPath="$PROJECT_DIR$/little_light/micro_0000_XF.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/main.py" beforeDir="false" afterPath="$PROJECT_DIR$/main.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ocr/LW_detect.py" beforeDir="false" afterPath="$PROJECT_DIR$/ocr/LW_detect.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ocr/image_processor.py" beforeDir="false" afterPath="$PROJECT_DIR$/ocr/image_processor.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ocr/micro_ocr.py" beforeDir="false" afterPath="$PROJECT_DIR$/ocr/micro_ocr.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ocr/visualizer.py" beforeDir="false" afterPath="$PROJECT_DIR$/ocr/visualizer.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/splits/split_0_0_0.jpg" beforeDir="false" afterPath="$PROJECT_DIR$/splits/split_0_0_0.jpg" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/splits/split_10_1400_700.jpg" beforeDir="false" afterPath="$PROJECT_DIR$/splits/split_10_1400_700.jpg" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/splits/split_11_2100_700.jpg" beforeDir="false" afterPath="$PROJECT_DIR$/splits/split_11_2100_700.jpg" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/splits/split_12_2800_700.jpg" beforeDir="false" afterPath="$PROJECT_DIR$/splits/split_12_2800_700.jpg" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/splits/split_13_3500_700.jpg" beforeDir="false" afterPath="$PROJECT_DIR$/splits/split_13_3500_700.jpg" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/splits/split_14_4200_700.jpg" beforeDir="false" afterPath="$PROJECT_DIR$/splits/split_14_4200_700.jpg" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/splits/split_15_4900_700.jpg" beforeDir="false" afterPath="$PROJECT_DIR$/splits/split_15_4900_700.jpg" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/splits/split_1_700_0.jpg" beforeDir="false" afterPath="$PROJECT_DIR$/splits/split_1_700_0.jpg" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/splits/split_23_4900_1400.jpg" beforeDir="false" afterPath="$PROJECT_DIR$/splits/split_23_4900_1400.jpg" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/splits/split_2_1400_0.jpg" beforeDir="false" afterPath="$PROJECT_DIR$/splits/split_2_1400_0.jpg" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/splits/split_3_2100_0.jpg" beforeDir="false" afterPath="$PROJECT_DIR$/splits/split_3_2100_0.jpg" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/splits/split_4_2800_0.jpg" beforeDir="false" afterPath="$PROJECT_DIR$/splits/split_4_2800_0.jpg" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/splits/split_5_3500_0.jpg" beforeDir="false" afterPath="$PROJECT_DIR$/splits/split_5_3500_0.jpg" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/splits/split_6_4200_0.jpg" beforeDir="false" afterPath="$PROJECT_DIR$/splits/split_6_4200_0.jpg" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/splits/split_7_4900_0.jpg" beforeDir="false" afterPath="$PROJECT_DIR$/splits/split_7_4900_0.jpg" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/splits/split_8_0_700.jpg" beforeDir="false" afterPath="$PROJECT_DIR$/splits/split_8_0_700.jpg" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/splits/split_9_700_700.jpg" beforeDir="false" afterPath="$PROJECT_DIR$/splits/split_9_700_700.jpg" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -41,11 +63,22 @@
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
     <option name="RESET_MODE" value="MIXED" />
   </component>
+  <component name="GitHubPullRequestSearchHistory"><![CDATA[{
+  "lastFilter": {
+    "state": "OPEN",
+    "assignee": "SAWRJJ"
+  }
+}]]></component>
+  <component name="GithubPullRequestsUISettings"><![CDATA[{
+  "selectedUrlAndAccountId": {
+    "url": "https://github.com/SAWRJJ/OCR-Project.git",
+    "accountId": "f65efc84-e54b-4c49-8bc1-85bf8aa511d7"
+  }
+}]]></component>
   <component name="ProjectColorInfo">{
   &quot;associatedIndex&quot;: 0
 }</component>
   <component name="ProjectId" id="385oSxdrT07PK2w3m8W7MRWXOJT" />
-  <component name="ProjectLevelVcsManager" settingsEditedManually="true" />
   <component name="ProjectViewState">
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
@@ -75,8 +108,12 @@
     "Python.test5.executor": "Run",
     "Python.visualize_micro_poly.executor": "Run",
     "RunOnceActivity.ShowReadmeOnStart": "true",
+    "RunOnceActivity.TerminalTabsStorage.copyFrom.TerminalArrangementManager.252": "true",
+    "RunOnceActivity.git.unshallow": "true",
+    "RunOnceActivity.typescript.service.memoryLimit.init": "true",
+    "SHARE_PROJECT_CONFIGURATION_FILES": "true",
     "git-widget-placeholder": "master",
-    "last_opened_file_path": "D:/work/ocr+Transformer/little_light",
+    "last_opened_file_path": "/Users/saw/WorkSpace/work/OCR-Project/little_light",
     "node.js.detected.package.eslint": "true",
     "node.js.detected.package.tslint": "true",
     "node.js.selected.package.eslint": "(autodetect)",
@@ -89,11 +126,11 @@
 }]]></component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$/little_light" />
       <recent name="D:\work\ocr+Transformer\little_light" />
       <recent name="D:\work\ocr+Transformer\ocr" />
       <recent name="D:\work\ocr+Transformer\test2\micro_img" />
       <recent name="D:\work\ocr+Transformer\test5" />
-      <recent name="D:\work\ocr+Transformer\test4" />
     </key>
     <key name="MoveFile.RECENT_KEYS">
       <recent name="D:\work\ocr+Transformer\little_light" />
@@ -103,7 +140,7 @@
       <recent name="D:\work\ocr+Transformer\test" />
     </key>
   </component>
-  <component name="RunManager" selected="Python.LW_detect">
+  <component name="RunManager" selected="Python.main">
     <configuration name="LW_detect" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
       <module name="ocr+Transformer" />
       <option name="ENV_FILES" value="" />
@@ -113,11 +150,13 @@
         <env name="PYTHONUNBUFFERED" value="1" />
       </envs>
       <option name="SDK_HOME" value="" />
+      <option name="SDK_NAME" value="$PROJECT_DIR$/../../Software/miniconda3/envs/SAW" />
       <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/little_light" />
-      <option name="IS_MODULE_SDK" value="true" />
+      <option name="IS_MODULE_SDK" value="false" />
       <option name="ADD_CONTENT_ROOTS" value="true" />
       <option name="ADD_SOURCE_ROOTS" value="true" />
       <EXTENSION ID="PythonCoverageRunConfigurationExtension" runner="coverage.py" />
+      <option name="RUN_TOOL" value="" />
       <option name="SCRIPT_NAME" value="$PROJECT_DIR$/little_light/LW_detect.py" />
       <option name="PARAMETERS" value="" />
       <option name="SHOW_COMMAND_LINE" value="false" />
@@ -141,6 +180,7 @@
       <option name="ADD_CONTENT_ROOTS" value="true" />
       <option name="ADD_SOURCE_ROOTS" value="true" />
       <EXTENSION ID="PythonCoverageRunConfigurationExtension" runner="coverage.py" />
+      <option name="RUN_TOOL" value="" />
       <option name="SCRIPT_NAME" value="$PROJECT_DIR$/test5/find_boundary_dark.py" />
       <option name="PARAMETERS" value="" />
       <option name="SHOW_COMMAND_LINE" value="false" />
@@ -159,11 +199,13 @@
         <env name="PYTHONUNBUFFERED" value="1" />
       </envs>
       <option name="SDK_HOME" value="" />
+      <option name="SDK_NAME" value="$PROJECT_DIR$/../../Software/miniconda3/envs/SAW" />
       <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$" />
-      <option name="IS_MODULE_SDK" value="true" />
+      <option name="IS_MODULE_SDK" value="false" />
       <option name="ADD_CONTENT_ROOTS" value="true" />
       <option name="ADD_SOURCE_ROOTS" value="true" />
       <EXTENSION ID="PythonCoverageRunConfigurationExtension" runner="coverage.py" />
+      <option name="RUN_TOOL" value="" />
       <option name="SCRIPT_NAME" value="$PROJECT_DIR$/main.py" />
       <option name="PARAMETERS" value="" />
       <option name="SHOW_COMMAND_LINE" value="false" />
@@ -187,6 +229,7 @@
       <option name="ADD_CONTENT_ROOTS" value="true" />
       <option name="ADD_SOURCE_ROOTS" value="true" />
       <EXTENSION ID="PythonCoverageRunConfigurationExtension" runner="coverage.py" />
+      <option name="RUN_TOOL" value="" />
       <option name="SCRIPT_NAME" value="$PROJECT_DIR$/test2/singal.py" />
       <option name="PARAMETERS" value="" />
       <option name="SHOW_COMMAND_LINE" value="false" />
@@ -210,6 +253,7 @@
       <option name="ADD_CONTENT_ROOTS" value="true" />
       <option name="ADD_SOURCE_ROOTS" value="true" />
       <EXTENSION ID="PythonCoverageRunConfigurationExtension" runner="coverage.py" />
+      <option name="RUN_TOOL" value="" />
       <option name="SCRIPT_NAME" value="$PROJECT_DIR$/test4/test5.py" />
       <option name="PARAMETERS" value="" />
       <option name="SHOW_COMMAND_LINE" value="false" />
@@ -219,10 +263,17 @@
       <option name="INPUT_FILE" value="" />
       <method v="2" />
     </configuration>
+    <list>
+      <item itemvalue="Python.find_boundary_dark" />
+      <item itemvalue="Python.LW_detect" />
+      <item itemvalue="Python.main" />
+      <item itemvalue="Python.singal" />
+      <item itemvalue="Python.test5" />
+    </list>
     <recent_temporary>
       <list>
-        <item itemvalue="Python.LW_detect" />
         <item itemvalue="Python.main" />
+        <item itemvalue="Python.LW_detect" />
         <item itemvalue="Python.singal" />
         <item itemvalue="Python.find_boundary_dark" />
         <item itemvalue="Python.test5" />
@@ -232,8 +283,8 @@
   <component name="SharedIndexes">
     <attachedChunks>
       <set>
-        <option value="bundled-js-predefined-1d06a55b98c1-74d2a5396914-JavaScript-PY-241.14494.241" />
-        <option value="bundled-python-sdk-0509580d9d50-28c9f5db9ffe-com.jetbrains.pycharm.pro.sharedIndexes.bundled-PY-241.14494.241" />
+        <option value="bundled-js-predefined-d6986cc7102b-9b0f141eb926-JavaScript-PY-253.31033.139" />
+        <option value="bundled-python-sdk-2653e85de345-6d6dccd035ac-com.jetbrains.pycharm.pro.sharedIndexes.bundled-PY-253.31033.139" />
       </set>
     </attachedChunks>
   </component>
@@ -309,7 +360,9 @@
       <workItem from="1776783330344" duration="1034000" />
       <workItem from="1776784381833" duration="249000" />
       <workItem from="1776784656779" duration="284000" />
-      <workItem from="1776785331047" duration="17469000" />
+      <workItem from="1776785331047" duration="633000" />
+      <workItem from="1776828513115" duration="3646000" />
+      <workItem from="1776861672955" duration="8831000" />
     </task>
     <task id="LOCAL-00001" summary="init">
       <option name="closed" value="true" />
@@ -319,55 +372,7 @@
       <option name="project" value="LOCAL" />
       <updated>1776783825834</updated>
     </task>
-    <task id="LOCAL-00002" summary="init">
-      <option name="closed" value="true" />
-      <created>1776785970010</created>
-      <option name="number" value="00002" />
-      <option name="presentableId" value="LOCAL-00002" />
-      <option name="project" value="LOCAL" />
-      <updated>1776785970010</updated>
-    </task>
-    <task id="LOCAL-00003" summary="【分图】【修改画红线找裁切方向的逻辑】">
-      <option name="closed" value="true" />
-      <created>1776838474520</created>
-      <option name="number" value="00003" />
-      <option name="presentableId" value="LOCAL-00003" />
-      <option name="project" value="LOCAL" />
-      <updated>1776838474520</updated>
-    </task>
-    <task id="LOCAL-00004" summary="【分图】【修改画红线找裁切方向的逻辑】">
-      <option name="closed" value="true" />
-      <created>1776854991735</created>
-      <option name="number" value="00004" />
-      <option name="presentableId" value="LOCAL-00004" />
-      <option name="project" value="LOCAL" />
-      <updated>1776854991735</updated>
-    </task>
-    <task id="LOCAL-00005" summary="【小窗口】【充分检测 二次ocr的数据】">
-      <option name="closed" value="true" />
-      <created>1776858385013</created>
-      <option name="number" value="00005" />
-      <option name="presentableId" value="LOCAL-00005" />
-      <option name="project" value="LOCAL" />
-      <updated>1776858385013</updated>
-    </task>
-    <task id="LOCAL-00006" summary="【小窗口】【充分检测 二次ocr的数据】">
-      <option name="closed" value="true" />
-      <created>1776858751961</created>
-      <option name="number" value="00006" />
-      <option name="presentableId" value="LOCAL-00006" />
-      <option name="project" value="LOCAL" />
-      <updated>1776858751961</updated>
-    </task>
-    <task id="LOCAL-00007" summary="【小窗口】【充分检测 二次ocr的数据】">
-      <option name="closed" value="true" />
-      <created>1776858812987</created>
-      <option name="number" value="00007" />
-      <option name="presentableId" value="LOCAL-00007" />
-      <option name="project" value="LOCAL" />
-      <updated>1776858812987</updated>
-    </task>
-    <option name="localTasksCounter" value="8" />
+    <option name="localTasksCounter" value="2" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -401,9 +406,8 @@
   </component>
   <component name="VcsManagerConfiguration">
     <MESSAGE value="init" />
-    <MESSAGE value="【分图】【修改画红线找裁切方向的逻辑】" />
-    <MESSAGE value="【小窗口】【充分检测 二次ocr的数据】" />
-    <option name="LAST_COMMIT_MESSAGE" value="【小窗口】【充分检测 二次ocr的数据】" />
+    <MESSAGE value="【小窗口 判断文本框和颜色组成举行的宽】" />
+    <option name="LAST_COMMIT_MESSAGE" value="【小窗口 判断文本框和颜色组成举行的宽】" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
@@ -420,74 +424,81 @@
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/little_light/LW_detect.py</url>
-          <line>1402</line>
+          <line>1415</line>
           <option name="timeStamp" value="102" />
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/little_light/LW_detect.py</url>
-          <line>1429</line>
+          <line>1442</line>
           <option name="timeStamp" value="103" />
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/little_light/LW_detect.py</url>
-          <line>1459</line>
+          <line>1472</line>
           <option name="timeStamp" value="104" />
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/little_light/LW_detect.py</url>
-          <line>1490</line>
+          <line>1503</line>
           <option name="timeStamp" value="105" />
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
-          <url>file://$PROJECT_DIR$/ocr/micro_ocr.py</url>
-          <line>91</line>
-          <option name="timeStamp" value="123" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/little_light/LW_detect.py</url>
-          <line>900</line>
-          <option name="timeStamp" value="126" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
-          <url>file://$PROJECT_DIR$/little_light/LW_detect.py</url>
-          <line>1228</line>
+          <line>1241</line>
           <option name="timeStamp" value="128" />
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/ocr/micro_ocr.py</url>
-          <line>133</line>
+          <line>104</line>
+          <option name="timeStamp" value="155" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/ocr/micro_ocr.py</url>
+          <line>178</line>
+          <option name="timeStamp" value="160" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/ocr/micro_ocr.py</url>
+          <line>233</line>
           <option name="timeStamp" value="161" />
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
-          <url>file://$PROJECT_DIR$/little_light/LW_detect.py</url>
-          <line>867</line>
+          <url>file://$PROJECT_DIR$/ocr/LW_detect.py</url>
+          <line>845</line>
           <option name="timeStamp" value="162" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/ocr/LW_detect.py</url>
+          <line>960</line>
+          <option name="timeStamp" value="163" />
         </line-breakpoint>
       </breakpoints>
     </breakpoint-manager>
   </component>
   <component name="com.intellij.coverage.CoverageDataManagerImpl">
-    <SUITE FILE_PATH="coverage/ocr_Transformer$feature_matching_ransac.coverage" NAME="feature_matching_ransac Coverage Results" MODIFIED="1770867350239" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/test1" />
-    <SUITE FILE_PATH="coverage/ocr_Transformer$match_contours.coverage" NAME="match_contours Coverage Results" MODIFIED="1770867067546" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/test1" />
-    <SUITE FILE_PATH="coverage/ocr_Transformer$find_boundary_dark.coverage" NAME="find_boundary_dark Coverage Results" MODIFIED="1775959812346" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/test5" />
-    <SUITE FILE_PATH="coverage/ocr_Transformer$kdtree_match.coverage" NAME="kdtree_match Coverage Results" MODIFIED="1770810010785" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/template" />
-    <SUITE FILE_PATH="coverage/ocr_Transformer$t1.coverage" NAME="t1 Coverage Results" MODIFIED="1774353351185" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
-    <SUITE FILE_PATH="coverage/ocr_Transformer$new_method.coverage" NAME="new_method Coverage Results" MODIFIED="1770876841798" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/test1" />
+    <SUITE FILE_PATH="coverage/ocr_Transformer$scan_dark_pixels.coverage" NAME="scan_dark_pixels Coverage Results" MODIFIED="1775804903345" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/little_light" />
+    <SUITE FILE_PATH="coverage/OCR_Project$LW_detect.coverage" NAME="LW_detect Coverage Results" MODIFIED="1776935356387" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/little_light" />
+    <SUITE FILE_PATH="coverage/ocr_Transformer$rotate_image.coverage" NAME="rotate_image Coverage Results" MODIFIED="1771545163205" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/test3" />
     <SUITE FILE_PATH="coverage/ocr_Transformer$draw_micro_poly.coverage" NAME="draw_micro_poly Coverage Results" MODIFIED="1769861319913" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/test" />
     <SUITE FILE_PATH="coverage/ocr_Transformer$test5.coverage" NAME="test5 Coverage Results" MODIFIED="1775915982864" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/test4" />
-    <SUITE FILE_PATH="coverage/ocr_Transformer$detect_traffic_light.coverage" NAME="detect_traffic_light Coverage Results" MODIFIED="1770867105285" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/little_light" />
-    <SUITE FILE_PATH="coverage/ocr_Transformer$visualize_micro_poly.coverage" NAME="visualize_micro_poly Coverage Results" MODIFIED="1774749021300" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/test4" />
-    <SUITE FILE_PATH="coverage/ocr_Transformer$LW_detect.coverage" NAME="LW_detect Coverage Results" MODIFIED="1776860503887" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/little_light" />
-    <SUITE FILE_PATH="coverage/ocr_Transformer$detect_contours.coverage" NAME="detect_contours Coverage Results" MODIFIED="1770447845595" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/test1" />
-    <SUITE FILE_PATH="coverage/ocr_Transformer$test4.coverage" NAME="test4 Coverage Results" MODIFIED="1774071455610" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/test4" />
-    <SUITE FILE_PATH="coverage/ocr_Transformer$test.coverage" NAME="test Coverage Results" MODIFIED="1768723559505" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
+    <SUITE FILE_PATH="coverage/ocr_Transformer$LW_detect.coverage" NAME="LW_detect Coverage Results" MODIFIED="1776062477641" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/little_light" />
     <SUITE FILE_PATH="coverage/ocr_Transformer$template_match.coverage" NAME="template_match Coverage Results" MODIFIED="1769859845392" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/template" />
-    <SUITE FILE_PATH="coverage/ocr_Transformer$singal__1_.coverage" NAME="singal (1) Coverage Results" MODIFIED="1770818669985" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/test2" />
-    <SUITE FILE_PATH="coverage/ocr_Transformer$template_matcher.coverage" NAME="template_matcher Coverage Results" MODIFIED="1771545465658" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/ocr" />
-    <SUITE FILE_PATH="coverage/ocr_Transformer$main.coverage" NAME="main Coverage Results" MODIFIED="1776857462455" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
-    <SUITE FILE_PATH="coverage/ocr_Transformer$scan_dark_pixels.coverage" NAME="scan_dark_pixels Coverage Results" MODIFIED="1775804903345" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/little_light" />
-    <SUITE FILE_PATH="coverage/ocr_Transformer$generate_report.coverage" NAME="generate_report Coverage Results" MODIFIED="1770818045769" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
+    <SUITE FILE_PATH="coverage/ocr_Transformer$feature_matching_ransac.coverage" NAME="feature_matching_ransac Coverage Results" MODIFIED="1770867350239" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/test1" />
     <SUITE FILE_PATH="coverage/ocr_Transformer$singal.coverage" NAME="singal Coverage Results" MODIFIED="1775959834038" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/test2" />
-    <SUITE FILE_PATH="coverage/ocr_Transformer$rotate_image.coverage" NAME="rotate_image Coverage Results" MODIFIED="1771545163205" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/test3" />
+    <SUITE FILE_PATH="coverage/ocr_Transformer$new_method.coverage" NAME="new_method Coverage Results" MODIFIED="1770876841798" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/test1" />
+    <SUITE FILE_PATH="coverage/ocr_Transformer$generate_report.coverage" NAME="generate_report Coverage Results" MODIFIED="1770818045769" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
+    <SUITE FILE_PATH="coverage/ocr_Transformer$match_contours.coverage" NAME="match_contours Coverage Results" MODIFIED="1770867067546" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/test1" />
+    <SUITE FILE_PATH="coverage/ocr_Transformer$test4.coverage" NAME="test4 Coverage Results" MODIFIED="1774071455610" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/test4" />
+    <SUITE FILE_PATH="coverage/ocr_Transformer$template_matcher.coverage" NAME="template_matcher Coverage Results" MODIFIED="1771545465658" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/ocr" />
+    <SUITE FILE_PATH="coverage/ocr_Transformer$kdtree_match.coverage" NAME="kdtree_match Coverage Results" MODIFIED="1770810010785" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/template" />
+    <SUITE FILE_PATH="coverage/ocr_Transformer$t1.coverage" NAME="t1 Coverage Results" MODIFIED="1774353351185" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
+    <SUITE FILE_PATH="coverage/ocr_Transformer$main.coverage" NAME="main Coverage Results" MODIFIED="1776073983987" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
+    <SUITE FILE_PATH="coverage/ocr_Transformer$detect_traffic_light.coverage" NAME="detect_traffic_light Coverage Results" MODIFIED="1770867105285" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/little_light" />
+    <SUITE FILE_PATH="coverage/ocr_Transformer$detect_contours.coverage" NAME="detect_contours Coverage Results" MODIFIED="1770447845595" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/test1" />
+    <SUITE FILE_PATH="coverage/ocr_Transformer$find_boundary_dark.coverage" NAME="find_boundary_dark Coverage Results" MODIFIED="1775959812346" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/test5" />
+    <SUITE FILE_PATH="coverage/ocr_Transformer$test.coverage" NAME="test Coverage Results" MODIFIED="1768723559505" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
+    <SUITE FILE_PATH="coverage/ocr_Transformer$visualize_micro_poly.coverage" NAME="visualize_micro_poly Coverage Results" MODIFIED="1774749021300" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/test4" />
+    <SUITE FILE_PATH="coverage/ocr_Transformer$singal__1_.coverage" NAME="singal (1) Coverage Results" MODIFIED="1770818669985" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/test2" />
+    <SUITE FILE_PATH="coverage/OCR_Project$main.coverage" NAME="main Coverage Results" MODIFIED="1776937636684" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
   </component>
 </project>

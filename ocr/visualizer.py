@@ -91,7 +91,7 @@ class Visualizer:
             # Handle both 2-element (legacy) and 4-element (new) tuples
             if len(item) == 5:
                 poly, text, source_split, split_poly, score = item
-                if text == 'x10':
+                if text == 'X_3a0_0':
                     print(1)
             else:
                 poly, text = item
@@ -101,8 +101,9 @@ class Visualizer:
             if len(poly) != 4:
                 continue
 
-            if text == "D4/":
+            if text == 'xπ0':
                 print(0)
+            text = text.replace("π","II")
             if not should_keep_text(text, target_chars=target_chars, exclude_substrings=exclude_substrings):
                 continue
             text = text.upper()
