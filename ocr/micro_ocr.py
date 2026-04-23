@@ -54,6 +54,19 @@ def load_target_definitions():
         logger.warning(f"target.json 不存在: {TARGET_PATH}")
         return {}
 
+def check_text(potential_text):
+    target_defs = load_target_definitions()
+    filename_matched_key = None
+    found_match_in_filename = False
+    for key, variants in target_defs.items():
+        for variant in variants:
+            if variant in potential_text:
+                filename_matched_key = key
+                found_match_in_filename = True
+                break
+        if found_match_in_filename:
+            break
+    return filename_matched_key,found_match_in_filename
 
 def process_micro_images(micro_img_dir):
     """
@@ -88,7 +101,7 @@ def process_micro_images(micro_img_dir):
             continue
 
         # micro_0005_S
-        if filename == "micro_0008_x30.jpg":
+        if filename == "micro_0018_x_3c0_0.jpg":
             print(-1)
         img_path = os.path.join(micro_img_dir, filename)
         json_path = os.path.join(micro_img_dir, os.path.splitext(filename)[0] + ".json")
@@ -113,10 +126,10 @@ def process_micro_images(micro_img_dir):
                 # 如果不足3个部分，取最后一个或者保持原样，视具体情况而定
                 # 这里保留原有的逻辑作为 fallback，取最后一个
                 potential_text = parts[-1]
-            
+
             import re
             potential_text = re.sub(r'[a-z]', lambda m: m.group(0).upper(), potential_text)
-            
+
             if potential_text == "XI":
                 print(potential_text)
             filename_matched_key = None
@@ -163,13 +176,14 @@ def process_micro_images(micro_img_dir):
                         img0 = find_drak_remove(img)
                         gray = cv2.cvtColor(img0, cv2.COLOR_BGR2GRAY)
                         _, binary = cv2.threshold(gray, 200, 255, cv2.THRESH_BINARY)
-                        debug_vis_path = os.path.join(micro_img_dir, 'debug', filename.replace('.jpg', '_scan_debug.jpg'))
+                        debug_vis_path = os.path.join(micro_img_dir, 'debug',
+                                                      filename.replace('.jpg', '_scan_debug.jpg'))
                         first_non_white_col, found_scan_line_start, found_scan_line_end, non_white_pixels, expand_x, expand_y, final_scan_line_start, final_scan_line_end = find_first_non_white_column_along_tilt(
                             first_poly, binary, textbox_angle, debug_img=img0, output_path=debug_vis_path)
                         if first_non_white_col is not None and expand_x is not None and expand_y is not None and final_scan_line_start is not None and final_scan_line_end is not None:
                             left_line = sorted([found_scan_line_start, found_scan_line_end], key=lambda p: p[0])[0]
                             right_line = sorted([final_scan_line_start, final_scan_line_end], key=lambda p: p[0])[1]
-                            left = left_line[0]-3
+                            left = left_line[0] - 3
                             right = right_line[0]
                             left = max(0, left)
                             right = min(img.shape[1], right)
@@ -186,7 +200,7 @@ def process_micro_images(micro_img_dir):
                             cv2.imwrite(cropped_path, cropped0)
                             results = ocr_engine.ocr.predict(cropped0)
                             for result in results:
-                                if len(result) >= 2 and len(result['rec_texts'])>0:
+                                if len(result) >= 2 and len(result['rec_texts']) > 0:
                                     for i in range(len(result['rec_texts'])):
                                         text = result['rec_texts'][i]
                                         conf = result['rec_scores'][i]
@@ -285,7 +299,7 @@ def process_micro_images(micro_img_dir):
                     cropped0 = find_drak_remove(cropped)
                     results = ocr_engine.ocr.predict(cropped0)
                     for result in results:
-                        if len(result) >= 2 and len(result['rec_texts'])>0:
+                        if len(result) >= 2 and len(result['rec_texts']) > 0:
                             for i in range(len(result['rec_texts'])):
                                 text = ''.join(results[i]['rec_texts']).replace(' ', '')
                                 conf = result['rec_scores'][i]
@@ -397,8 +411,18 @@ def process_micro_images(micro_img_dir):
 
                     if textbox_length > 80:
                         logger.info(f"文本框长度 {textbox_length:.2f} > 300，进行裁切检测: {filename}")
+                        img_data = find_drak_remove(img_data)
+                        debug_path = os.path.join(micro_img_dir, 'debug', filename.replace('.jpg', '_debug.jpg'))
+                        os.makedirs(os.path.dirname(debug_path), exist_ok=True)
+                        cropped_path = os.path.join(micro_img_dir, 'debug', filename.replace('.jpg', '_cropped.jpg'))
+                        cv2.imwrite(cropped_path, img_data)
+                        # vis_img = img.copy()
+                        # cv2.polylines(vis_img, [expanded_array], isClosed=True, color=(0, 255, 0), thickness=2)
+                        # cv2.rectangle(vis_img, (x_min, y_min), (x_max, y_max), (255, 0, 0), 2)
+                        # cv2.imwrite(debug_path, vis_img)
+
                         use_adjusted, adjusted_edge, crop_ocr_result = adjust_textbox_edge(
-                            img_data, first_poly, direction, json_path
+                            img_data, first_poly, direction, json_path, crop_size=40
                         )
                         if use_adjusted and adjusted_edge and crop_ocr_result:
                             use_crop_ocr = True
@@ -573,7 +597,7 @@ def process_micro_images(micro_img_dir):
                         existing_score = existing_item.get("item", {}).get("details", [{}])[0].get(
                             "confidence", existing_item["confidence"])
 
-                        if compare_score - existing_score>0.2:
+                        if compare_score - existing_score > 0.2:
                             best_results_map[m_key] = {
                                 "confidence": res["confidence"],  # 仍然记录原始置信度
                                 "item": final_item
@@ -748,7 +772,8 @@ def save_results_to_excel(all_results, output_file="ocr_results.xlsx", micro_img
     df = pd.DataFrame(data_list)
     df = df.sort_values(by="matched_key", key=lambda x: x.str.lower() if x.dtype == object else x, ascending=False)
     columns = ["filename", "matched_key", "confidence", "template_name", "template_match_res", "template_match_score",
-               "black_pixel_count", "black_radio", "color_blue", "color_green", "color_yellow", "color_red", "color_white",
+               "black_pixel_count", "black_radio", "color_blue", "color_green", "color_yellow", "color_red",
+               "color_white",
                "red_centers", "yellow_centers", "green_centers"]
     final_columns = [c for c in columns if c in df.columns]
     df = df[final_columns]
@@ -760,7 +785,7 @@ def save_results_to_excel(all_results, output_file="ocr_results.xlsx", micro_img
         logger.error(f"保存 Excel 失败: {e}")
 
 
-def adjust_textbox_edge(img, poly, direction, json_path):
+def adjust_textbox_edge(img, poly, direction, json_path, crop_size=40):
     import cv2
     import numpy as np
     import os
@@ -769,7 +794,17 @@ def adjust_textbox_edge(img, poly, direction, json_path):
     use_adjusted_edge = False
     adjusted_edge = None
     crop_ocr_result = None
+    crop_ocr = OCREngine()
+    crop_result = crop_ocr.predict(img, adjust_type=True)
 
+    for res in crop_result:
+        if isinstance(res, dict) and 'rec_texts' in res and len(res['rec_texts']) > 0:
+            for line in res["rec_texts"]:
+                check_res0,check_res1 = check_text(line)
+                if check_res1:
+                    crop_ocr_result = res
+                    return True, True, crop_ocr_result
+                print(f"识别文本: {line}")
     x_coords = [point[0] for point in poly]
     textbox_length = max(x_coords) - min(x_coords)
 
@@ -779,7 +814,7 @@ def adjust_textbox_edge(img, poly, direction, json_path):
 
     if direction == 'right':
         rightmost_x = max(x_coords)
-        yellow_box_left = rightmost_x - 40
+        yellow_box_left = rightmost_x - crop_size
         yellow_contour = [(yellow_box_left, min_y), (rightmost_x, min_y), (rightmost_x, max_y),
                           (yellow_box_left, max_y)]
         cv2.polylines(img, [np.array(yellow_contour)], isClosed=True, color=(0, 255, 255), thickness=2)
@@ -791,7 +826,7 @@ def adjust_textbox_edge(img, poly, direction, json_path):
         y2 = int(max_y)
     elif direction == 'left':
         leftmost_x = min(x_coords)
-        yellow_box_right = leftmost_x + 40
+        yellow_box_right = leftmost_x + crop_size
         yellow_contour = [(leftmost_x, min_y), (yellow_box_right, min_y), (yellow_box_right, max_y),
                           (leftmost_x, max_y)]
         cv2.polylines(img, [np.array(yellow_contour)], isClosed=True, color=(0, 255, 255), thickness=2)
@@ -818,8 +853,6 @@ def adjust_textbox_edge(img, poly, direction, json_path):
         crop_output_path = os.path.join('output', f'{filename}_yellow_crop.png')
         cv2.imwrite(crop_output_path, cropped_img)
         print(f"已保存裁剪后的黄色轮廓区域: {crop_output_path}")
-
-        crop_ocr = OCREngine()
 
         crop_result = crop_ocr.predict([crop_output_path], adjust_type=True)
 
