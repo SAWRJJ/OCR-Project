@@ -104,7 +104,7 @@ def process_micro_images(micro_img_dir):
             continue
 
         # micro_0005_S
-        if filename == "micro_0006_S4.jpg":
+        if filename == "micro_0018_0S3.jpg":
             print(-1)
         img_path = os.path.join(micro_img_dir, filename)
         json_path = os.path.join(micro_img_dir, os.path.splitext(filename)[0] + ".json")
@@ -287,7 +287,7 @@ def process_micro_images(micro_img_dir):
                     x_coords = [point[0] for point in first_poly]
                     textbox_length = max(x_coords) - min(x_coords)
                     print(textbox_length)
-                    if textbox_length > 80:
+                    if textbox_length > 120 and ("0" or "o") not in potential_text:
                         expand_length = 55
                         if "F" in filename_matched_key:
                             expand_length = 85
@@ -303,11 +303,12 @@ def process_micro_images(micro_img_dir):
                     debug_path = os.path.join(micro_img_dir, 'debug', filename.replace('.jpg', '_debug.jpg'))
                     os.makedirs(os.path.dirname(debug_path), exist_ok=True)
                     cropped_path = os.path.join(micro_img_dir, 'debug', filename.replace('.jpg', '_cropped.jpg'))
+                    cropped_path0 = os.path.join(micro_img_dir, 'debug', filename.replace('.jpg', '_cropped0.jpg'))
                     # vis_img = img.copy()
                     # cv2.polylines(vis_img, [expanded_array], isClosed=True, color=(0, 255, 0), thickness=2)
                     # cv2.rectangle(vis_img, (x_min, y_min), (x_max, y_max), (255, 0, 0), 2)
-                    # cv2.imwrite(debug_path, vis_img)
-                    cropped0 = find_drak_remove(cropped)
+                    cv2.imwrite(cropped_path0, cropped)
+                    cropped0 = find_drak_remove(cropped,dark_threshold=190)
                     cv2.imwrite(cropped_path, cropped0)
                     results = ocr_engine.ocr.predict(cropped0)
                     for result in results:
