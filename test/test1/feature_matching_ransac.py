@@ -126,6 +126,6 @@ def feature_matching_ransac(img1_path, img2_path, output_path):
 if __name__ == "__main__":
     ref_image_path = r"img.png"
     target_image_path = r"img_1.png"
-    output_image_path = r"d:\work\ocr+Transformer\test1\img_1_feature_match.png"
+    output_image_path = r"/test/test1/img_1_feature_match.png"
     
     feature_matching_ransac(ref_image_path, target_image_path, output_image_path)

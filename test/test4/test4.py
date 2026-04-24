@@ -112,8 +112,8 @@ def draw_poly_comparison(json_path, output_dir, expand_pixels=5):
     print(f'外扩后多边形: {expanded_poly}')
 
 if __name__ == '__main__':
-    json_path = r'd:\work\ocr+Transformer\test4\micro_0060_X.json'
-    output_dir = r'd:\work\ocr+Transformer\test4\output'
+    json_path = r'/test/test4/micro_0060_X.json'
+    output_dir = r'/test/test4/output'
     
     with open(json_path, 'r', encoding='utf-8') as f:
         data = json.load(f)

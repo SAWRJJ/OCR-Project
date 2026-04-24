@@ -42,7 +42,7 @@ def detect_and_visualize_contours(image_path, output_path):
     print(f"Result saved to {output_path}")
 
 if __name__ == "__main__":
-    input_image_path = r"d:\work\ocr+Transformer\test1\img.png"
+    input_image_path = r"/test/test1/img.png"
     output_image_path = r"d:\work\ocr+Transformer\test1\img_contours.png"
     
     detect_and_visualize_contours(input_image_path, output_image_path)

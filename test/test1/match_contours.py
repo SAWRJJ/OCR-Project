@@ -74,8 +74,8 @@ def match_contours(ref_path, target_path, output_path, match_threshold=0.2):
     print(f"Result saved to {output_path}")
 
 if __name__ == "__main__":
-    ref_image_path = r"d:\work\ocr+Transformer\test1\img.png"
-    target_image_path = r"d:\work\ocr+Transformer\test1\img_1.png"
+    ref_image_path = r"/test/test1/img.png"
+    target_image_path = r"/test/test1/img_1.png"
     output_image_path = r"d:\work\ocr+Transformer\test1\img_1_matched.png"
     
     # Threshold can be adjusted. 0.0 is perfect match. 

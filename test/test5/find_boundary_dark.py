@@ -349,7 +349,7 @@ def visualize_with_original(img, regions, output_path):
 
 
 if __name__ == "__main__":
-    test_dir = r"d:\work\ocr+Transformer\test5"
+    test_dir = r"/test/test5"
     image_path = os.path.join(test_dir, "micro_0018_0s3_cropped.jpg")
 
     output_dir = test_dir

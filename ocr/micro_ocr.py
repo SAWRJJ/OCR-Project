@@ -8,6 +8,7 @@ from .config import Config
 from .X_detect import expand_poly_vertical, count_dark_pixels_in_expanded_region, \
     find_first_non_white_column_along_tilt, calculate_horizontal_tilt_angle, expand_poly
 from .find_boundary_dark import find_drak_remove
+from .utils import calculate_shift_params
 import cv2
 import numpy as np
 
@@ -54,6 +55,7 @@ def load_target_definitions():
         logger.warning(f"target.json 不存在: {TARGET_PATH}")
         return {}
 
+
 def check_text(potential_text):
     target_defs = load_target_definitions()
     filename_matched_key = None
@@ -66,7 +68,8 @@ def check_text(potential_text):
                 break
         if found_match_in_filename:
             break
-    return filename_matched_key,found_match_in_filename
+    return filename_matched_key, found_match_in_filename
+
 
 def process_micro_images(micro_img_dir):
     """
@@ -101,7 +104,7 @@ def process_micro_images(micro_img_dir):
             continue
 
         # micro_0005_S
-        if filename == "micro_0045_X3.jpg":
+        if filename == "micro_0006_S4.jpg":
             print(-1)
         img_path = os.path.join(micro_img_dir, filename)
         json_path = os.path.join(micro_img_dir, os.path.splitext(filename)[0] + ".json")
@@ -173,7 +176,7 @@ def process_micro_images(micro_img_dir):
                     if dark_ratio:
                         print("execute test5 detect")
                         textbox_angle, _ = calculate_textbox_angle(first_poly)
-                        img0 = find_drak_remove(img,dark_threshold=230)
+                        img0 = find_drak_remove(img, dark_threshold=230)
                         gray = cv2.cvtColor(img0, cv2.COLOR_BGR2GRAY)
                         _, binary = cv2.threshold(gray, 200, 255, cv2.THRESH_BINARY)
                         debug_vis_path = os.path.join(micro_img_dir, 'debug',
@@ -281,7 +284,16 @@ def process_micro_images(micro_img_dir):
                         detailed_results.append(detail_item)
                 elif "S" in filename_matched_key:
                     tilt_angle = calculate_horizontal_tilt_angle(first_poly)
-                    expanded_poly = expand_poly(first_poly, expand_x=30, expand_y=6, angle=tilt_angle)
+                    x_coords = [point[0] for point in first_poly]
+                    textbox_length = max(x_coords) - min(x_coords)
+                    print(textbox_length)
+                    if textbox_length > 80:
+                        expand_length = 55
+                        if "F" in filename_matched_key:
+                            expand_length = 85
+                        second_poly, expanded_poly = calculate_shift_params(first_poly, extend_length=expand_length)
+                    else:
+                        expanded_poly = expand_poly(first_poly, expand_x=30, expand_y=6, angle=tilt_angle)
                     expanded_array = np.array(expanded_poly, dtype=np.int32)
                     x_min = max(0, int(min(p[0] for p in expanded_poly)))
                     x_max = min(img.shape[1], int(max(p[0] for p in expanded_poly)))
@@ -291,12 +303,12 @@ def process_micro_images(micro_img_dir):
                     debug_path = os.path.join(micro_img_dir, 'debug', filename.replace('.jpg', '_debug.jpg'))
                     os.makedirs(os.path.dirname(debug_path), exist_ok=True)
                     cropped_path = os.path.join(micro_img_dir, 'debug', filename.replace('.jpg', '_cropped.jpg'))
-                    cv2.imwrite(cropped_path, cropped)
                     # vis_img = img.copy()
                     # cv2.polylines(vis_img, [expanded_array], isClosed=True, color=(0, 255, 0), thickness=2)
                     # cv2.rectangle(vis_img, (x_min, y_min), (x_max, y_max), (255, 0, 0), 2)
                     # cv2.imwrite(debug_path, vis_img)
                     cropped0 = find_drak_remove(cropped)
+                    cv2.imwrite(cropped_path, cropped0)
                     results = ocr_engine.ocr.predict(cropped0)
                     for result in results:
                         if len(result) >= 2 and len(result['rec_texts']) > 0:
@@ -800,7 +812,7 @@ def adjust_textbox_edge(img, poly, direction, json_path, crop_size=40):
     for res in crop_result:
         if isinstance(res, dict) and 'rec_texts' in res and len(res['rec_texts']) > 0:
             for line in res["rec_texts"]:
-                check_res0,check_res1 = check_text(line)
+                check_res0, check_res1 = check_text(line)
                 if check_res1:
                     crop_ocr_result = res
                     return True, True, crop_ocr_result

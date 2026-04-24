@@ -6,13 +6,16 @@ import os
 
 def find_left_to_right_dark_region(img, dark_threshold=125):
     """
-    找到从左侧边到右侧边的深色连通区域
-    返回: 中线行号，如果没找到返回None
+    找到从任意边界到任意边界的深色连通区域
+    例如：从左到右、从下到上、从右到左等
+    返回: 中线点坐标，如果没找到返回None
     """
     gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
     h, w = gray.shape
 
     dark_mask = (gray < dark_threshold).astype(np.uint8)
+    cv2.imwrite('output/dark_mask.png', dark_mask * 255)
+    print(f"dark_mask已保存到: output/dark_mask.png")
 
     labeled = np.zeros_like(dark_mask, dtype=np.int32)
     label = 0
@@ -53,15 +56,35 @@ def find_left_to_right_dark_region(img, dark_threshold=125):
                         'max_row': max(p[0] for p in region_pixels),
                     })
 
-    left_to_right_regions = [r for r in regions if r['min_col'] == 0 and r['max_col'] == w - 1]
+    def touches_boundary(region):
+        """检查区域是否触及任意两个边界"""
+        min_row, max_row = region['min_row'], region['max_row']
+        min_col, max_col = region['min_col'], region['max_col']
+        touches = []
+        if min_row == 0:
+            touches.append('top')
+        if max_row == h - 1:
+            touches.append('bottom')
+        if min_col == 0:
+            touches.append('left')
+        if max_col == w - 1:
+            touches.append('right')
+        return len(touches) >= 2, touches
 
-    if left_to_right_regions:
-        largest_region = max(left_to_right_regions, key=lambda r: len(r['pixels']))
+    boundary_regions = []
+    for r in regions:
+        is_boundary, touches = touches_boundary(r)
+        if is_boundary:
+            boundary_regions.append((r, touches))
+
+    if boundary_regions:
+        largest_region, touches = max(boundary_regions, key=lambda x: len(x[0]['pixels']))
         center_row = (largest_region['min_row'] + largest_region['max_row']) // 2
-        print(f"找到左到右连通区域: 像素数={len(largest_region['pixels'])}, "
-              f"行范围=[{largest_region['min_row']}, {largest_region['max_row']}], "
-              f"中线行号={center_row}")
-        return center_row, largest_region
+        center_col = (largest_region['min_col'] + largest_region['max_col']) // 2
+        print(f"找到边界连通区域: 像素数={len(largest_region['pixels'])}, "
+              f"触及边界={touches}, "
+              f"中心点=({center_row}, {center_col})")
+        return (center_row, center_col), largest_region
 
     return None, None
 

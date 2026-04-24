@@ -362,6 +362,8 @@ def calculate_black_pixels(img, polygon, json_path, data):
 
     gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
     _, black_mask = cv2.threshold(gray, 50, 255, cv2.THRESH_BINARY_INV)
+    cv2.imwrite('output/black_mask.png', black_mask)
+    print(f"black_mask已保存到: output/black_mask.png")
 
     polygon_arr = np.array(polygon)
 
@@ -408,6 +410,16 @@ def calculate_black_pixels(img, polygon, json_path, data):
     print(f"多边形内的黑色像素数量: {black_pixels_in_polygon}")
     print(f"左侧黑色像素数量: {left_black_pixels}")
     print(f"右侧黑色像素数量: {right_black_pixels}")
+
+    # 可视化polygon范围内的图像
+    polygon_arr = np.array(polygon)
+    x_min, y_min = polygon_arr.min(axis=0)
+    x_max, y_max = polygon_arr.max(axis=0)
+    x_min, x_max = max(0, int(x_min)), min(img.shape[1], int(x_max))
+    y_min, y_max = max(0, int(y_min)), min(img.shape[0], int(y_max))
+    polygon_roi = img[y_min:y_max, x_min:x_max]
+    cv2.imwrite('output/polygon_roi.png', polygon_roi)
+    print(f"polygon范围图像已保存到: output/polygon_roi.png")
 
     data['polygon_total_pixels'] = int(polygon_total_pixels)
     data['black_pixels_in_polygon'] = int(black_pixels_in_polygon)
@@ -711,7 +723,7 @@ def detect_colors(image_path, target_char, debug=True, threshold=100):
     if img is None:
         print(f"无法读取图像: {image_path}")
         return False, 0.0, None, {}
-    center_row, region = find_left_to_right_dark_region(img, dark_threshold=210)
+    center_row, region = find_left_to_right_dark_region(img, dark_threshold=200)
 
     if region is not None:
         print("=" * 50)
@@ -935,14 +947,13 @@ def detect_colors(image_path, target_char, debug=True, threshold=100):
             print(f"polygon_width:{polygon_width}")
             if polygon_width > 280:
                 return False, 0, 0, color_centers_separate, 0
-            filename = os.path.basename(image_path)
-            name, ext = os.path.splitext(filename)
-            vis_debug_path = os.path.join('output', f'{name}_polygon_debug.png')
-            cv2.imwrite(vis_debug_path, vis_img)
-            print(f"polygon可视化已保存到: {vis_debug_path}")
-            black_pixel_count, polygon_total_pixels = calculate_black_pixels(vis_img, polygon, json_path, data)
+            # filename = os.path.basename(image_path)
+            # name, ext = os.path.splitext(filename)
+            # vis_debug_path = os.path.join('output', f'{name}_polygon_debug.png')
+            # cv2.imwrite(vis_debug_path, vis_img)
+            # print(f"polygon可视化已保存到: {vis_debug_path}")
+            black_pixel_count, polygon_total_pixels = calculate_black_pixels(img, polygon, json_path, data)
             black_radio = black_pixel_count / polygon_total_pixels * 100.0
-            print(f"black_radio:{black_radio}")
             if 1100 < black_pixel_count <= 1450:
                 template_match_res = 3
             elif 400 < black_pixel_count <= 1100:
@@ -953,6 +964,8 @@ def detect_colors(image_path, target_char, debug=True, threshold=100):
                 template_match_res = 1
             elif template_match_res == 1 and black_radio >= 32:
                 template_match_res = 3
+            if polygon_total_pixels<1000 and 30>black_radio>20:
+                template_match_res = 2
         else:
             template_match_res = None
 
@@ -962,7 +975,7 @@ def detect_colors(image_path, target_char, debug=True, threshold=100):
 
     is_match = black_pixel_count >= threshold
 
-    print(f"黑色像素总数: {black_pixel_count}, 匹配分数: {match_score:.3f}, 是否匹配: {is_match}")
+    print(f"黑色像素总数: {black_pixel_count}, 匹配分数: {template_match_res:.3f}, black_radio: {black_radio}")
 
 
     return is_match, black_pixel_count, template_match_res, color_centers_separate, black_radio
@@ -1162,13 +1175,18 @@ def single_line_detection(img, json_path, target_char, linear_point, origin_img,
     extend_length = 220
     expand_px = 15
     distance_linear_center = 120
+    far_vis_img = origin_img.copy()
     if linear_point is not None:
         dx_linear = linear_point[0] - textbox_center[0]
         dy_linear = linear_point[1] - textbox_center[1]
         distance_linear_center = ((dx_linear ** 2) + (dy_linear ** 2)) ** 0.5
         print(f"linear_point到文本框中心的距离: {distance_linear_center:.2f} 像素")
-    far_vis_img = origin_img.copy()
-    if distance_linear_center <= 120:
+    if distance_linear_center <= 90:
+        # 可视化linear_point到文本框中心的距离
+        cv2.circle(far_vis_img, (int(linear_point[0]), int(linear_point[1])), 3, (0, 165, 255), -1)
+        cv2.circle(far_vis_img, (int(textbox_center[0]), int(textbox_center[1])), 3, (255, 0, 255), -1)
+        cv2.line(far_vis_img, (int(linear_point[0]), int(linear_point[1])),
+                 (int(textbox_center[0]), int(textbox_center[1])), (255, 255, 0), 2)
         point1 = far_points[0]
         point2 = far_points[1] if len(far_points) >= 2 else far_points[0]
         # 黄线 连接两个颜色
@@ -2081,11 +2099,11 @@ def save_visualization(img, image_path, debug=True):
 
 if __name__ == "__main__":
     # 输入图像路径
-    input_image = r"/Users/saw/WorkSpace/work/OCR-Project/little_light/micro_0012_FS.jpg"  # micro_0079_S8.jpg micro_0004_S1 micro_0016_XI.jpg
+    input_image = r"micro_0010_X4.jpg"  # micro_0079_S8.jpg micro_0004_S1 micro_0016_XI.jpg
 
     # 输入目标字符
     target_char = "SII"
-    target_char = "FS"
+    target_char = "X4"
     # target_char = "S1"
     # # 输入图像路径
     # input_image = r"D:\work\ocr+Transformer\little_light\micro_0084_X8.jpg"

@@ -60,8 +60,8 @@ def draw_micro_poly(json_path, output_dir):
 
 if __name__ == "__main__":
     # 输入路径
-    json_path = r"D:\work\ocr+Transformer\test\micro_0005_S.json"
+    json_path = r"/test/test0/micro_0005_S.json"
     # 输出目录
-    output_dir = r"D:\work\ocr+Transformer\test\output"
+    output_dir = r"/test/test0/output"
     
     draw_micro_poly(json_path, output_dir)

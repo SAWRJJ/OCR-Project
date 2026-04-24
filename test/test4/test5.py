@@ -4,7 +4,7 @@ import os
 import math
 import numpy as np
 import sys
-sys.path.insert(0, r'd:\work\ocr+Transformer')
+sys.path.insert(0, r'/')
 from ocr.ocr_engine import OCREngine
 
 def find_first_non_white_column_along_tilt(poly, gray_img, angle):
@@ -113,7 +113,7 @@ def perform_ocr(image_path):
     """
     try:
         ocr_engine = OCREngine()
-        results = ocr_engine.predict(image_path, output_dir=r'd:\work\ocr+Transformer\test4\output\ocr',adjust_type=True)
+        results = ocr_engine.predict(image_path, output_dir=r'/test/test4/output/ocr', adjust_type=True)
         return results
     except Exception as e:
         print(f"OCR识别失败: {e}")
@@ -161,9 +161,9 @@ def visualize_result(image_path, first_black_col, expand_col, non_white_pixels, 
 
 
 def main():
-    json_path = r'd:\work\ocr+Transformer\test4\micro_0018_0s3.json'
-    image_path = r'd:\work\ocr+Transformer\test4\micro_0018_0s3.jpg'
-    output_path = r'd:\work\ocr+Transformer\test4\output\black_column_visualization.jpg'
+    json_path = r'/test/test4/micro_0018_0s3.json'
+    image_path = r'/test/test4/micro_0018_0s3.jpg'
+    output_path = r'/test/test4/output/black_column_visualization.jpg'
 
     os.makedirs(os.path.dirname(output_path), exist_ok=True)
 

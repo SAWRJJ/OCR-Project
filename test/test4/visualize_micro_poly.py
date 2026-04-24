@@ -78,9 +78,9 @@ def expand_poly(poly, expand_x=10, expand_y=5, angle=0):
     return [[int(p[0]), int(p[1])] for p in final_poly]
 
 
-img_path = r"d:\work\ocr+Transformer\test4\micro_0004_S.jpg"
-json_path = r"d:\work\ocr+Transformer\test4\micro_0004_S.json"
-output_path = r"d:\work\ocr+Transformer\test4\micro_0004_S_visualized.jpg"
+img_path = r"/test/test4/micro_0004_S.jpg"
+json_path = r"/test/test4/micro_0004_S.json"
+output_path = r"/test/test4/micro_0004_S_visualized.jpg"
 
 img = cv2.imread(img_path)
 if img is None:
@@ -112,7 +112,7 @@ y_max = min(img.shape[0], int(max(p[1] for p in expanded_poly)))
 cropped = img[y_min:y_max, x_min:x_max]
 print(f"裁切区域: x={x_min}:{x_max}, y={y_min}:{y_max}, 裁切后尺寸: {cropped.shape}")
 
-cropped_path = r"d:\work\ocr+Transformer\test4\micro_0004_S_cropped.jpg"
+cropped_path = r"/test/test4/micro_0004_S_cropped.jpg"
 cv2.imwrite(cropped_path, cropped)
 print(f"裁切图像已保存: {cropped_path}")
 
