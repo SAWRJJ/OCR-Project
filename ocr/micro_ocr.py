@@ -757,6 +757,20 @@ def save_results_to_excel(all_results, output_file="ocr_results.xlsx", micro_img
                         return ""
                     return ";".join([f"({c[0]},{c[1]})" for c in centers])
 
+                yellow_length = len(color_centers.get("yellow", []))
+                yl = 0
+                gl = 0
+                rl = 0
+                if yellow_length == 0:
+                    yl = 0
+                elif yellow_length <= 4:
+                    yl = 1
+                elif yellow_length <= 7:
+                    yl = 2
+                if len(color_centers.get("green", [])) > 0:
+                    gl = 1
+                if len(color_centers.get("red", [])) > 0:
+                    rl = 1
                 row = {
                     "filename": filename,
                     "matched_key": current_matched_key,
@@ -771,10 +785,10 @@ def save_results_to_excel(all_results, output_file="ocr_results.xlsx", micro_img
                     "color_yellow": "Yes" if color_presence.get("yellow") else "No",
                     "color_red": "Yes" if color_presence.get("red") else "No",
                     "color_white": "Yes" if color_presence.get("white") else "No",
-                    "red_centers": format_centers(color_centers.get("red", [])),
-                    "yellow_centers": format_centers(color_centers.get("yellow", [])),
-                    "green_centers": format_centers(color_centers.get("green", [])),
-                }
+                    "red_centers":rl,
+                    "yellow_centers": yl,
+                    "green_centers": gl,
+                    }
                 data_list.append(row)
 
     if not data_list:
