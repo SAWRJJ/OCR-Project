@@ -287,7 +287,7 @@ def process_micro_images(micro_img_dir):
                     x_coords = [point[0] for point in first_poly]
                     textbox_length = max(x_coords) - min(x_coords)
                     print(textbox_length)
-                    if textbox_length > 120 and ("0" or "o") not in potential_text:
+                    if textbox_length > 120 and potential_text[0] == "S":
                         expand_length = 55
                         if "F" in filename_matched_key:
                             expand_length = 85
