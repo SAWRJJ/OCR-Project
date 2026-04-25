@@ -1187,7 +1187,7 @@ def single_line_detection(img, json_path, target_char, linear_point, origin_img,
         dy_linear = linear_point[1] - textbox_center[1]
         distance_linear_center = ((dx_linear ** 2) + (dy_linear ** 2)) ** 0.5
         print(f"linear_point到文本框中心的距离: {distance_linear_center:.2f} 像素")
-    if distance_linear_center <= 90:
+    if distance_linear_center <= 120:
         # 可视化linear_point到文本框中心的距离
         cv2.circle(far_vis_img, (int(linear_point[0]), int(linear_point[1])), 3, (0, 165, 255), -1)
         cv2.circle(far_vis_img, (int(textbox_center[0]), int(textbox_center[1])), 3, (255, 0, 255), -1)
@@ -1220,9 +1220,13 @@ def single_line_detection(img, json_path, target_char, linear_point, origin_img,
                              int(point1[1] - unit_dy_far * length_far * 3 / 2))
             red_point_pos2 = (int(red_point_pos[0] - unit_dx_far * 25),
                               int(red_point_pos[1] - unit_dy_far * 25))
+
+            red_point_pos3 = (int((red_point_pos[0] + red_point_pos2[0]) / 2),
+                              int((red_point_pos[1] + red_point_pos2[1]) / 2))
             found_pixel = red_point_pos
             cv2.circle(far_vis_img, red_point_pos, 1, (0, 0, 255), -1)
             cv2.circle(far_vis_img, red_point_pos2, 1, (255, 0, 255), -1)
+            cv2.circle(far_vis_img, red_point_pos3, 1, (255, 100, 128), -1)
             print(f"延长线上距离起点{length_far * 3 / 2:.2f}像素的红点坐标: {red_point_pos}")
             print(f"延长线上距离起点{length_far:.2f}像素的紫点坐标: {red_point_pos2}")
 
