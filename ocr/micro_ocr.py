@@ -104,7 +104,7 @@ def process_micro_images(micro_img_dir):
             continue
 
         # micro_0005_S
-        if filename == "micro_0008_XII0.jpg":
+        if filename == "micro_0011_XFS.jpg":
             print(-1)
         img_path = os.path.join(micro_img_dir, filename)
         json_path = os.path.join(micro_img_dir, os.path.splitext(filename)[0] + ".json")
@@ -293,7 +293,7 @@ def process_micro_images(micro_img_dir):
                             expand_length = 85
                         second_poly, expanded_poly = calculate_shift_params(first_poly, extend_length=expand_length)
                     else:
-                        expanded_poly = expand_poly(first_poly, expand_x=30, expand_y=6, angle=tilt_angle)
+                        expanded_poly = expand_poly(first_poly, expand_x=40, expand_y=6, angle=tilt_angle)
                     expanded_array = np.array(expanded_poly, dtype=np.int32)
                     x_min = max(0, int(min(p[0] for p in expanded_poly)))
                     x_max = min(img.shape[1], int(max(p[0] for p in expanded_poly)))

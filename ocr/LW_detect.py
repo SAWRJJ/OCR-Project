@@ -980,7 +980,7 @@ def detect_colors(image_path, target_char, debug=True, threshold=100):
             a1, b1 = extended_end[0] - extended_start[0], extended_end[1] - extended_start[1]
             a2, b2 = extended_right_start[0] - extended_start[0], extended_right_start[1] - extended_start[1]
             polygon_width = abs(a1 * b2 - a2 * b1) / ((a1 ** 2 + b1 ** 2) ** 0.5)
-            print(f"polygon_width:{polygon_width}")
+            print(f"{json_path.split('/')[-1]:10}  polygon_width:{polygon_width}")
             if polygon_width > 280:
                 return False, 0, 0, color_centers_separate, 0
             # filename = os.path.basename(image_path)
@@ -996,10 +996,17 @@ def detect_colors(image_path, target_char, debug=True, threshold=100):
                 template_match_res = 1
             elif black_pixel_count <= 400:
                 template_match_res = 0
-            if template_match_res == 1 and black_pixel_count < 500:
+            print(f"{json_path.split('/')[-1]:10} polygon_total_pixels:{polygon_total_pixels}")
+            if template_match_res == 1 and 410<=black_pixel_count < 500:
                 template_match_res = 1
-            elif template_match_res == 1 and black_radio >= 32:
+            elif template_match_res == 1 and 32 <= black_radio<40:
                 template_match_res = 3
+            elif template_match_res == 1 and 40 <= black_radio:
+                template_match_res = 0
+            if template_match_res == 1 and black_pixel_count<410:
+                template_match_res = 0
+            if template_match_res == 1 and black_radio>40:
+                template_match_res = 0
             if polygon_total_pixels <= 1500 and 16 < black_radio <= 30 and 100 < black_pixel_count:
                 template_match_res = 2
         else:

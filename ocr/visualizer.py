@@ -101,7 +101,7 @@ class Visualizer:
             if len(poly) != 4:
                 continue
 
-            if text == 'xπ0':
+            if text == 'XFS II':
                 print(0)
             text = text.replace("π","II")
             if not should_keep_text(text, target_chars=target_chars, exclude_substrings=exclude_substrings):

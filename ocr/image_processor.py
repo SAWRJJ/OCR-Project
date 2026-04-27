@@ -130,7 +130,7 @@ class ImageProcessor:
         # 只保留延伸部分的掩码（排除原始线段）
         ext1_mask = cv2.bitwise_and(cand1_mask, cv2.bitwise_not(base_mask))
 
-        if text == "X10":
+        if text == "XFS II":
             # 可视化：保存ext1_mask并在原图上显示
             cv2.imwrite(os.path.join(debug_dir, "ext1_mask.png"), ext1_mask)
             img_ext1_vis = img.copy()
