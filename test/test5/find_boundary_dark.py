@@ -86,8 +86,12 @@ def find_closed_dark_regions(img_path, dark_threshold=125, min_circularity=0.7):
             dark_area = len(r['pixels'])
 
             if hole_pixels > 0:
-                circularity = calculate_circularity(r, (h, w))
+                circularity, largest_contour = calculate_circularity(r, (h, w))
                 if circularity >= min_circularity:
+                    center, radius = calculate_circle_from_contour(largest_contour)
+                    r['center'] = center
+                    r['radius'] = radius
+                    print(center, radius)
                     closed_regions.append(r)
 
     return closed_regions
@@ -101,7 +105,7 @@ def calculate_circularity(region, img_shape):
     """
     pixels = region['pixels']
     if not pixels:
-        return 0.0
+        return 0.0, None
 
     h, w = img_shape[:2]
     region_mask = np.zeros((h, w), dtype=np.uint8)
@@ -111,18 +115,34 @@ def calculate_circularity(region, img_shape):
     contours, _ = cv2.findContours(region_mask, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
 
     if not contours:
-        return 0.0
+        return 0.0, None
 
     largest_contour = max(contours, key=cv2.contourArea)
     area = cv2.contourArea(largest_contour)
     perimeter = cv2.arcLength(largest_contour, closed=True)
 
     if perimeter == 0:
-        return 0.0
+        return 0.0, None
 
     circularity = 4 * np.pi * area / (perimeter ** 2)
 
-    return circularity
+    return circularity, largest_contour
+
+
+def calculate_circle_from_contour(contour):
+    """
+    从轮廓计算最小外接圆的圆心和半径
+
+    参数:
+        contour: OpenCV轮廓
+
+    返回:
+        tuple: (center, radius) - center为(x, y)元组，radius为半径
+    """
+    (x, y), radius = cv2.minEnclosingCircle(contour)
+    center = (int(x), int(y))
+    radius = int(radius)
+    return center, radius
 
 
 def find_boundary_connected_dark_pixels(img_path, dark_threshold=125):
@@ -290,6 +310,11 @@ def visualize_boundary_dark_pixels(img, regions, output_path):
         for r, c in all_boundary_pixels:
             vis_img[r, c] = [0, 255, 0]
 
+        for r in regions:
+            if 'center' in r and 'radius' in r:
+                cv2.circle(vis_img, r['center'], r['radius'], (0, 255, 255), 2)
+                cv2.circle(vis_img, r['center'], 3, (0, 0, 255), -1)
+
         total_pixels = len(all_boundary_pixels)
         cv2.putText(vis_img, f"边界连通深色像素: {total_pixels}", (10, 30),
                     cv2.FONT_HERSHEY_SIMPLEX, 0.7, (0, 255, 0), 2)
@@ -349,9 +374,9 @@ def visualize_with_original(img, regions, output_path):
 
 
 if __name__ == "__main__":
-    test_dir = r"/test/test5"
-    image_path = os.path.join(test_dir, "micro_0018_0s3_cropped.jpg")
-
+    test_dir = r"./test/test5"
+    image_path = "micro_0008_XII0.jpg"
+    json_path = image_path.replace(".jpg", ".json")
     output_dir = test_dir
     os.makedirs(output_dir, exist_ok=True)
 
@@ -371,7 +396,7 @@ if __name__ == "__main__":
         print(f"找到 {len(closed_regions)} 个闭合圆环:")
         h, w = img.shape[:2]
         for i, r in enumerate(closed_regions):
-            circularity = calculate_circularity(r, img.shape)
+            circularity, _ = calculate_circularity(r, img.shape)
             print(f"  区域{i+1}: 像素数={len(r['pixels'])}, "
                   f"行范围=[{r['min_row']}, {r['max_row']}], "
                   f"列范围=[{r['min_col']}, {r['max_col']}], "
@@ -381,7 +406,7 @@ if __name__ == "__main__":
 
     if img is not None:
         vis_path = os.path.join(output_dir, "boundary_dark_pixels.png")
-        visualize_boundary_dark_pixels(img, boundary_regions, vis_path)
+        visualize_boundary_dark_pixels(img, closed_regions, vis_path)
 
         overlay_path = os.path.join(output_dir, "boundary_dark_pixels_overlay.png")
         visualize_with_original(img, boundary_regions, overlay_path)

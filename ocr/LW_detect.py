@@ -7,6 +7,35 @@ import os
 
 from paddleocr import PaddleOCR
 from .scan_dark_pixels import find_left_to_right_dark_region, remove_dark_region
+from .find_boundary_dark import find_closed_dark_regions, visualize_all_dark_regions
+
+def count_dark_pixels_in_radius(point, img, radius=3, threshold=100):
+    """
+    计算给定点的半径范围内深色像素数量
+
+    参数:
+        point: (x, y) 坐标
+        img: 输入图像
+        radius: 搜索半径，默认为3像素
+        threshold: 深色像素的灰度阈值，默认为100
+
+    返回:
+        int: 半径范围内的深色像素数量
+    """
+    x, y = int(point[0]), int(point[1])
+    height, width = img.shape[:2]
+    gray_img = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY) if len(img.shape) == 3 else img
+    dark_count = 0
+
+    for dy in range(-radius, radius + 1):
+        for dx in range(-radius, radius + 1):
+            if dx * dx + dy * dy <= radius * radius:
+                px, py = x + dx, y + dy
+                if 0 <= px < width and 0 <= py < height:
+                    if gray_img[py, px] < threshold:
+                        dark_count += 1
+
+    return dark_count
 
 
 def calculate_textbox_angle(poly):
@@ -1187,86 +1216,112 @@ def single_line_detection(img, json_path, target_char, linear_point, origin_img,
         dy_linear = linear_point[1] - textbox_center[1]
         distance_linear_center = ((dx_linear ** 2) + (dy_linear ** 2)) ** 0.5
         print(f"linear_point到文本框中心的距离: {distance_linear_center:.2f} 像素")
-    if distance_linear_center <= 120:
+    closed_regions = find_closed_dark_regions(origin_img)
+    if debug and len(closed_regions)>0:
+        vis_path = os.path.join('output', f'{filename}_closed_circles.png')
+        visualize_all_dark_regions(origin_img, [], closed_regions, vis_path)
+    point1 = far_points[0]
+    point2 = far_points[1] if len(far_points) >= 2 else far_points[0]
+    dx_far = point2[0] - point1[0]
+    dy_far = point2[1] - point1[1]
+    length_far = ((dx_far ** 2) + (dy_far ** 2)) ** 0.5
+    cd = 0
+    if length_far > 0:
+        unit_dx_far = dx_far / length_far
+        unit_dy_far = dy_far / length_far
+
+        if target_char.startswith('X'):
+            extend_start = (int(point1[0] - unit_dx_far * extend_length),
+                            int(point1[1] - unit_dy_far * extend_length))
+        else:
+            extend_start = (int(point1[0] - unit_dx_far * extend_length),
+                            int(point1[1] - unit_dy_far * extend_length))
+        extend_end = point1
+        red_point_pos = (int(point1[0] - unit_dx_far * length_far * 3 / 2),
+                         int(point1[1] - unit_dy_far * length_far * 3 / 2))
+        red_point_pos2 = (int(red_point_pos[0] - unit_dx_far * 25),
+                          int(red_point_pos[1] - unit_dy_far * 25))
+        # TODO: 计算 closed_regions 与 textbox_center 的距离 找到最近的圆心
+        # 计算 closed_regions 与 textbox_center 的距离 找到最近的圆心
+        if closed_regions and "center" in closed_regions[0]:
+            min_dist = ((closed_regions[0]["center"][0] - textbox_center[0]) ** 2 + (closed_regions[0]["center"][1] - textbox_center[1]) ** 2) ** 0.5
+            nearest_center = closed_regions[0]["center"]
+            for r in closed_regions:
+                if 'center' in r:
+                    cx, cy = r['center']
+                    dist = ((cx - textbox_center[0]) ** 2 + (cy - textbox_center[1]) ** 2) ** 0.5
+                    if dist < min_dist:
+                        min_dist = dist
+                        nearest_center = r['center']
+            if nearest_center:
+                red_point_pos3 = (int(nearest_center[0] - unit_dx_far * 4),
+                                  int(nearest_center[1] - unit_dy_far * 4))
+            else:
+                red_point_pos3 = (int(red_point_pos2[0] - unit_dx_far * 4),
+                                  int(red_point_pos2[1] - unit_dy_far * 4))
+        else:
+            red_point_pos3 = (int(red_point_pos2[0] - unit_dx_far * 4),
+                              int(red_point_pos2[1] - unit_dy_far * 4))
+        # red_point_pos3 = (int(red_point_pos2[0] - unit_dx_far * 4),
+        #                   int(red_point_pos2[1] - unit_dy_far * 4))
+        cv2.circle(far_vis_img, red_point_pos2, 5, (255, 0, 255), -1)
+        cv2.circle(far_vis_img, red_point_pos3, 3, (255, 100, 128), -1)
+        cd = count_dark_pixels_in_radius(red_point_pos3, origin_img)
+        print(f"{json_path.split('/')[-1]:10} cd:{cd}")
+    if distance_linear_center <= 120 and length_far>0 and cd <= 1:
         # 可视化linear_point到文本框中心的距离
         cv2.circle(far_vis_img, (int(linear_point[0]), int(linear_point[1])), 3, (0, 165, 255), -1)
         cv2.circle(far_vis_img, (int(textbox_center[0]), int(textbox_center[1])), 3, (255, 0, 255), -1)
         cv2.line(far_vis_img, (int(linear_point[0]), int(linear_point[1])),
                  (int(textbox_center[0]), int(textbox_center[1])), (255, 255, 0), 2)
-        point1 = far_points[0]
-        point2 = far_points[1] if len(far_points) >= 2 else far_points[0]
-        # 黄线 连接两个颜色
+       # 黄线 连接两个颜色
         cv2.line(far_vis_img, point1, point2, (0, 255, 255), 2)
+        # 青色延长线
+        cv2.line(far_vis_img, extend_start, extend_end, (255, 255, 0), 2)
+        found_pixel = red_point_pos
+        cv2.circle(far_vis_img, red_point_pos, 1, (0, 0, 255), -1)
+        cv2.circle(far_vis_img, red_point_pos2, 1, (255, 0, 255), -1)
 
-        dx_far = point2[0] - point1[0]
-        dy_far = point2[1] - point1[1]
-        length_far = ((dx_far ** 2) + (dy_far ** 2)) ** 0.5
-        red_point_pos = None
-        if length_far > 0:
-            unit_dx_far = dx_far / length_far
-            unit_dy_far = dy_far / length_far
+        print(f"延长线上距离起点{length_far * 3 / 2:.2f}像素的红点坐标: {red_point_pos}")
+        print(f"延长线上距离起点{length_far:.2f}像素的紫点坐标: {red_point_pos2}")
 
-            if target_char.startswith('X'):
-                extend_start = (int(point1[0] - unit_dx_far * extend_length),
-                                int(point1[1] - unit_dy_far * extend_length))
-            else:
-                extend_start = (int(point1[0] - unit_dx_far * extend_length),
-                                int(point1[1] - unit_dy_far * extend_length))
-            extend_end = point1
-            # 青色延长线
-            cv2.line(far_vis_img, extend_start, extend_end, (255, 255, 0), 2)
+        perp_dx = -unit_dy_far
+        perp_dy = unit_dx_far
+        ex_p2 = 51
+        vertical_line_start = (int(red_point_pos[0] - perp_dx * ex_p2), int(red_point_pos[1] - perp_dy * ex_p2))
+        vertical_line_end = (int(red_point_pos[0] + perp_dx * ex_p2), int(red_point_pos[1] + perp_dy * ex_p2))
+        cv2.line(far_vis_img, vertical_line_start, vertical_line_end, (0, 255, 255), 1)
 
-            red_point_pos = (int(point1[0] - unit_dx_far * length_far * 3 / 2),
-                             int(point1[1] - unit_dy_far * length_far * 3 / 2))
-            red_point_pos2 = (int(red_point_pos[0] - unit_dx_far * 25),
-                              int(red_point_pos[1] - unit_dy_far * 25))
+        vertical_line_start2 = (int(red_point_pos2[0] - perp_dx * ex_p2), int(red_point_pos2[1] - perp_dy * ex_p2))
+        vertical_line_end2 = (int(red_point_pos2[0] + perp_dx * ex_p2), int(red_point_pos2[1] + perp_dy * ex_p2))
+        cv2.line(far_vis_img, vertical_line_start2, vertical_line_end2, (255, 0, 255), 1)
 
-            red_point_pos3 = (int((red_point_pos[0] + red_point_pos2[0]) / 2),
-                              int((red_point_pos[1] + red_point_pos2[1]) / 2))
-            found_pixel = red_point_pos
-            cv2.circle(far_vis_img, red_point_pos, 1, (0, 0, 255), -1)
-            cv2.circle(far_vis_img, red_point_pos2, 1, (255, 0, 255), -1)
-            cv2.circle(far_vis_img, red_point_pos3, 1, (255, 100, 128), -1)
-            print(f"延长线上距离起点{length_far * 3 / 2:.2f}像素的红点坐标: {red_point_pos}")
-            print(f"延长线上距离起点{length_far:.2f}像素的紫点坐标: {red_point_pos2}")
+        rect_points = [vertical_line_start, vertical_line_end, vertical_line_end2, vertical_line_start2]
+        rect_mask = np.zeros(origin_img.shape[:2], dtype=np.uint8)
+        cv2.fillPoly(rect_mask, [np.array(rect_points)], 255)
+        rect_total_pixels = cv2.countNonZero(rect_mask)
 
-            perp_dx = -unit_dy_far
-            perp_dy = unit_dx_far
-            ex_p2 = 51
-            vertical_line_start = (int(red_point_pos[0] - perp_dx * ex_p2), int(red_point_pos[1] - perp_dy * ex_p2))
-            vertical_line_end = (int(red_point_pos[0] + perp_dx * ex_p2), int(red_point_pos[1] + perp_dy * ex_p2))
-            cv2.line(far_vis_img, vertical_line_start, vertical_line_end, (0, 255, 255), 1)
-
-            vertical_line_start2 = (int(red_point_pos2[0] - perp_dx * ex_p2), int(red_point_pos2[1] - perp_dy * ex_p2))
-            vertical_line_end2 = (int(red_point_pos2[0] + perp_dx * ex_p2), int(red_point_pos2[1] + perp_dy * ex_p2))
-            cv2.line(far_vis_img, vertical_line_start2, vertical_line_end2, (255, 0, 255), 1)
-
-            rect_points = [vertical_line_start, vertical_line_end, vertical_line_end2, vertical_line_start2]
-            rect_mask = np.zeros(origin_img.shape[:2], dtype=np.uint8)
-            cv2.fillPoly(rect_mask, [np.array(rect_points)], 255)
-            rect_total_pixels = cv2.countNonZero(rect_mask)
-
-            rect_gray = cv2.cvtColor(origin_img, cv2.COLOR_BGR2GRAY)
-            _, rect_dark_mask = cv2.threshold(rect_gray, 100, 255, cv2.THRESH_BINARY_INV)
-            rect_dark_pixels = cv2.countNonZero(cv2.bitwise_and(rect_mask, rect_dark_mask))
-            black_radio = 0.0
-            if rect_total_pixels > 0:
-                black_radio = rect_dark_pixels / rect_total_pixels * 100.0
-            print(f"black_radio:{black_radio}")
-            if 1100 < rect_dark_pixels <= 1400:
-                template_match_res = 3
-            elif 400 < rect_dark_pixels <= 1100:
-                template_match_res = 1
-            elif rect_dark_pixels <= 400:
-                template_match_res = 0
-            if template_match_res == 1 and rect_dark_pixels < 500:
-                template_match_res = 1
-            elif template_match_res == 1 and black_radio >= 40:
-                template_match_res = 3
-            print(f"四个点围成矩形的总像素数: {rect_total_pixels}")
-            print(f"四个点围成矩形的深色像素数: {rect_dark_pixels}")
-            left_black_pixels = rect_dark_pixels
-            right_black_pixels = black_radio
+        rect_gray = cv2.cvtColor(origin_img, cv2.COLOR_BGR2GRAY)
+        _, rect_dark_mask = cv2.threshold(rect_gray, 100, 255, cv2.THRESH_BINARY_INV)
+        rect_dark_pixels = cv2.countNonZero(cv2.bitwise_and(rect_mask, rect_dark_mask))
+        black_radio = 0.0
+        if rect_total_pixels > 0:
+            black_radio = rect_dark_pixels / rect_total_pixels * 100.0
+        print(f"black_radio:{black_radio}")
+        if 1100 < rect_dark_pixels <= 1400:
+            template_match_res = 3
+        elif 400 < rect_dark_pixels <= 1100:
+            template_match_res = 1
+        elif rect_dark_pixels <= 400:
+            template_match_res = 0
+        if template_match_res == 1 and rect_dark_pixels < 500:
+            template_match_res = 1
+        elif template_match_res == 1 and black_radio >= 40:
+            template_match_res = 3
+        print(f"四个点围成矩形的总像素数: {rect_total_pixels}")
+        print(f"四个点围成矩形的深色像素数: {rect_dark_pixels}")
+        left_black_pixels = rect_dark_pixels
+        right_black_pixels = black_radio
     else:
         if far_points and len(far_points) >= 2:
             print("使用far_points计算交点代替扫描黑色像素")
