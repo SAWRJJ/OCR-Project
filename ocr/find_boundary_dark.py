@@ -379,13 +379,15 @@ def visualize_with_original(img, regions, output_path):
 
     return vis_img
 
-def find_drak_remove(image_path, dark_threshold=200, output_path=None):
+def find_drak_remove(image_path, dark_threshold=200, output_path=None,use_circle = True):
     """
     找出并移除深色像素（边界连通 + 闭合圆环）
     image_path: 可以是图片路径(str)或图片数组(numpy.ndarray)
     """
     img, boundary_regions = find_boundary_connected_dark_pixels(image_path, dark_threshold=dark_threshold)
-    closed_regions = find_closed_dark_regions(image_path, dark_threshold=dark_threshold)
+    closed_regions = []
+    if use_circle:
+        closed_regions = find_closed_dark_regions(image_path, dark_threshold=dark_threshold)
     return remove_dark_regions(img, boundary_regions, closed_regions, output_path)
 
 if __name__ == "__main__":

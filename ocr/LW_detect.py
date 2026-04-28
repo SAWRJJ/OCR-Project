@@ -7,7 +7,7 @@ import os
 
 from paddleocr import PaddleOCR
 from .scan_dark_pixels import find_left_to_right_dark_region, remove_dark_region
-from .find_boundary_dark import find_closed_dark_regions, visualize_all_dark_regions
+from .find_boundary_dark import find_closed_dark_regions, visualize_all_dark_regions, find_drak_remove
 
 def count_dark_pixels_in_radius(point, img, radius=3, threshold=100):
     """
@@ -384,6 +384,8 @@ def calculate_black_pixels(img, polygon, json_path, data):
     返回:
         int: 黑色像素总数量
     """
+    filename = os.path.basename(json_path)
+    name, ext = os.path.splitext(filename)
     mask = np.zeros(img.shape[:2], dtype=np.uint8)
     cv2.fillPoly(mask, [np.array(polygon)], 255)
 
@@ -391,8 +393,8 @@ def calculate_black_pixels(img, polygon, json_path, data):
 
     gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
     _, black_mask = cv2.threshold(gray, 50, 255, cv2.THRESH_BINARY_INV)
-    cv2.imwrite('output/black_mask.png', black_mask)
-    print(f"black_mask已保存到: output/black_mask.png")
+    cv2.imwrite(f'output/{name}_black_mask.png', black_mask)
+    print(f"black_mask已保存到: output/{name}_black_mask.png")
 
     polygon_arr = np.array(polygon)
 
@@ -447,8 +449,8 @@ def calculate_black_pixels(img, polygon, json_path, data):
     x_min, x_max = max(0, int(x_min)), min(img.shape[1], int(x_max))
     y_min, y_max = max(0, int(y_min)), min(img.shape[0], int(y_max))
     polygon_roi = img[y_min:y_max, x_min:x_max]
-    cv2.imwrite('output/polygon_roi.png', polygon_roi)
-    print(f"polygon范围图像已保存到: output/polygon_roi.png")
+    cv2.imwrite(f'output/{name}_polygon_roi.png', polygon_roi)
+    print(f"polygon范围图像已保存到: output/{name}_polygon_roi.png")
 
     data['polygon_total_pixels'] = int(polygon_total_pixels)
     data['black_pixels_in_polygon'] = int(black_pixels_in_polygon)
@@ -988,21 +990,23 @@ def detect_colors(image_path, target_char, debug=True, threshold=100):
             # vis_debug_path = os.path.join('output', f'{name}_polygon_debug.png')
             # cv2.imwrite(vis_debug_path, vis_img)
             # print(f"polygon可视化已保存到: {vis_debug_path}")
+            img = find_drak_remove(img)
             black_pixel_count, polygon_total_pixels = calculate_black_pixels(img, polygon, json_path, data)
             black_radio = black_pixel_count / polygon_total_pixels * 100.0
-            if 1100 < black_pixel_count <= 1450:
+            if 1160 < black_pixel_count <= 1500:
                 template_match_res = 3
-            elif 400 < black_pixel_count <= 1100:
+            elif 400 < black_pixel_count <= 1160:
                 template_match_res = 1
             elif black_pixel_count <= 400:
                 template_match_res = 0
             print(f"{json_path.split('/')[-1]:10} polygon_total_pixels:{polygon_total_pixels}")
             if template_match_res == 1 and 410<=black_pixel_count < 500:
                 template_match_res = 1
-            elif template_match_res == 1 and 32 <= black_radio<40:
+            elif template_match_res == 1 and 33 <= black_radio<40:
                 template_match_res = 3
             elif template_match_res == 1 and 40 <= black_radio:
                 template_match_res = 0
+
             if template_match_res == 1 and black_pixel_count<410:
                 template_match_res = 0
             if template_match_res == 1 and black_radio>40:

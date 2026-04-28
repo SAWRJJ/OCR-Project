@@ -1,3 +1,5 @@
+import math
+
 import cv2
 import os
 import json
@@ -15,6 +17,8 @@ def detect_color_presence_bgr(
         min_pixels: int = 50,
         s_thresh: int = 50,
         v_thresh: int = 50,
+        boundary_width: int = 3,
+        text: str = None,
 ):
     if img_bgr is None or img_bgr.size == 0:
         return {
@@ -23,10 +27,22 @@ def detect_color_presence_bgr(
             "valid_pixels": 0,
         }
 
+    kernel = np.ones((3, 3), np.uint8)
+    img_bgr = cv2.erode(img_bgr, kernel, iterations=1)
+    img_bgr = cv2.dilate(img_bgr, kernel, iterations=1)
+
     hsv = cv2.cvtColor(img_bgr, cv2.COLOR_BGR2HSV)
     h = hsv[:, :, 0]
     s = hsv[:, :, 1]
     v = hsv[:, :, 2]
+
+    img_h, img_w = img_bgr.shape[:2]
+
+    boundary_mask = np.zeros((img_h, img_w), dtype=bool)
+    boundary_mask[:boundary_width, :] = True
+    boundary_mask[-boundary_width:, :] = True
+    boundary_mask[:, :boundary_width] = True
+    boundary_mask[:, -boundary_width:] = True
 
     # Valid Color: High Saturation, High Value
     valid_color = (s >= int(s_thresh)) & (v >= int(v_thresh))
@@ -51,16 +67,34 @@ def detect_color_presence_bgr(
         "red": ((_mask_in_range(0, 10) | _mask_in_range(170, 179)) & valid_color),
         "white": valid_white,
     }
+    if text == "SF":
+        yellow_mask_vis = np.zeros_like(img_bgr)
+        yellow_mask_vis[masks["yellow"]] = [0, 255, 255]
+        save_path = f"/Users/saw/WorkSpace/work/OCR-Project/test/test6/debug_SF_{img_bgr.shape[0]}x{img_bgr.shape[1]}.jpg"
+        cv2.imwrite(save_path, yellow_mask_vis)
+        logger.info(f"已保存 SF debug 黄色掩码: {save_path}")
 
     presence = {}
     stats = {}
+    positions = {}
     for name, m in masks.items():
         cnt = int(np.sum(m))
         ratio = float(cnt) / denom if denom > 0 else 0.0
-        presence[name] = (cnt >= int(min_pixels)) or (ratio >= float(min_ratio))
-        stats[name] = {"pixels": cnt, "ratio": ratio}
+        in_boundary = bool(np.any(m & boundary_mask)) if name != "white" else False
+        presence[name] = ((cnt >= int(min_pixels)) or (ratio >= float(min_ratio))) and not in_boundary
+        stats[name] = {"pixels": cnt, "ratio": ratio, "in_boundary": in_boundary}
+        if cnt > 0:
+            y_indices, x_indices = np.where(m)
+            positions[name] = {
+                "x_min": int(x_indices.min()),
+                "x_max": int(x_indices.max()),
+                "y_min": int(y_indices.min()),
+                "y_max": int(y_indices.max()),
+            }
+        else:
+            positions[name] = {"x_min": None, "x_max": None, "y_min": None, "y_max": None}
 
-    return {"presence": presence, "stats": stats, "valid_pixels": valid_count}
+    return {"presence": presence, "stats": stats, "valid_pixels": valid_count, "positions": positions}
 
 
 class Visualizer:
@@ -80,7 +114,7 @@ class Visualizer:
         if target_chars is None:
             target_chars = ["S", "X", "D"]
         if exclude_substrings is None:
-            exclude_substrings = ["/", "B", "DG", "YD", "G", "Y"]
+            exclude_substrings = ["/", "DG", "YD", "G", "Y"]
 
         if save_boxes_dir:
             os.makedirs(save_boxes_dir, exist_ok=True)
@@ -101,7 +135,7 @@ class Visualizer:
             if len(poly) != 4:
                 continue
 
-            if text == 'XFS II':
+            if "X8" in text or 'SF' in text:
                 print(0)
             text = text.replace("π","II")
             if not should_keep_text(text, target_chars=target_chars, exclude_substrings=exclude_substrings):
@@ -121,30 +155,99 @@ class Visualizer:
             bottom_ext = ImageProcessor.extend_opposite_side_for_small_box(bottom_line[0], bottom_line[1], bottom_ext,
                                                                            box_width)
 
+            if "X8" in text or "SF" in text:
+                print(top_ext)
+                print(bottom_ext)
             if not top_ext and not bottom_ext:
                 continue
+            dx = poly[1][0] - poly[0][0]  # 10310 - 10227 = 83
+            dy = poly[1][1] - poly[0][1]  # 2159 - 2202 = -43
 
+            angle_rad = math.atan2(dy, dx)
+            angle_deg = abs(math.degrees(angle_rad))
             if save_boxes_dir:
                 vertical_expand = 40
                 xs = []
+                ys = []
                 if top_ext:
                     xs.extend([top_ext[0][0], top_ext[1][0]])
+                    ys.extend([top_ext[0][1], top_ext[1][1]])
                 if bottom_ext:
                     xs.extend([bottom_ext[0][0], bottom_ext[1][0]])
-
-                if xs:
+                    ys.extend([bottom_ext[0][1], bottom_ext[1][1]])
+                for p in poly:
+                    ys.append(p[1])
+                if xs and angle_deg<25:
                     min_x = min(xs)
                     max_x = max(xs)
 
                     min_y = min(p[1] for p in poly)
                     max_y = max(p[1] for p in poly)
+                    # min_y = min(ys)
+                    # max_y = max(ys)
 
                     x0 = max(int(min_x), 0)
                     x1 = min(int(max_x), int(raw_img.shape[1]))
                     y0 = max(int(min_y) - vertical_expand, 0)
                     y1 = min(int(max_y) + vertical_expand, int(raw_img.shape[0]))
+                else:
+                    for p in poly:
+                        xs.append(p[0])
 
-                    if x1 > x0 and y1 > y0:
+                    min_x = min(xs)
+                    max_x = max(xs)
+
+                    top_dx = top_ext[1][0] - top_ext[0][0]
+                    top_dy = top_ext[1][1] - top_ext[0][1]
+                    top_length = np.sqrt(top_dx ** 2 + top_dy ** 2)
+                    top_perp_x = -top_dy / top_length
+                    top_perp_y = top_dx / top_length
+
+                    bottom_dx = bottom_ext[1][0] - bottom_ext[0][0]
+                    bottom_dy = bottom_ext[1][1] - bottom_ext[0][1]
+                    bottom_length = np.sqrt(bottom_dx ** 2 + bottom_dy ** 2)
+                    bottom_perp_x = -bottom_dy / bottom_length
+                    bottom_perp_y = bottom_dx / bottom_length
+
+                    print(f"top_ext 方向: ({top_dx:.2f}, {top_dy:.2f})")
+                    print(f"top_ext 垂直方向: ({top_perp_x:.2f}, {top_perp_y:.2f})")
+                    print(f"bottom_ext 方向: ({bottom_dx:.2f}, {bottom_dy:.2f})")
+                    print(f"bottom_ext 垂直方向: ({bottom_perp_x:.2f}, {bottom_perp_y:.2f})")
+
+                    poly_np = np.array(poly)
+                    poly_min_y = np.min(poly_np[:, 1])
+                    poly_max_y = np.max(poly_np[:, 1])
+                    poly_min_x = np.min(poly_np[:, 0])
+                    poly_max_x = np.max(poly_np[:, 0])
+
+                    top_ext_start = np.array(top_ext[0])
+                    top_ext_end = np.array(top_ext[1])
+                    bottom_ext_start = np.array(bottom_ext[0])
+                    bottom_ext_end = np.array(bottom_ext[1])
+
+                    top_ext_start_perp = top_ext_start + np.array([top_perp_x, top_perp_y]) * vertical_expand
+                    top_ext_end_perp = top_ext_end + np.array([top_perp_x, top_perp_y]) * vertical_expand
+                    bottom_ext_start_perp = bottom_ext_start + np.array(
+                        [bottom_perp_x, bottom_perp_y]) * vertical_expand
+                    bottom_ext_end_perp = bottom_ext_end + np.array([bottom_perp_x, bottom_perp_y]) * vertical_expand
+
+                    all_x = [poly_min_x, poly_max_x,
+                             top_ext_start_perp[0], top_ext_end_perp[0],
+                             bottom_ext_start_perp[0], bottom_ext_end_perp[0]]
+                    all_y = [poly_min_y, poly_max_y,
+                             top_ext_start_perp[1], top_ext_end_perp[1],
+                             bottom_ext_start_perp[1], bottom_ext_end_perp[1]]
+
+                    exp_min_x = min(all_x)
+                    exp_max_x = max(all_x)
+                    exp_min_y = min(all_y)
+                    exp_max_y = max(all_y)
+
+                    x0 = max(int(exp_min_x), 0)
+                    x1 = min(int(exp_max_x), img.shape[1])
+                    y0 = max(int(exp_min_y), 0)
+                    y1 = min(int(exp_max_y), img.shape[0])
+                if x1 > x0 and y1 > y0:
                         patch = raw_img[y0:y1, x0:x1]
 
                         # 确保文件名安全，不包含中文或非法字符
@@ -165,8 +268,10 @@ class Visualizer:
                         except Exception as e:
                             logger.error(f"保存小图片失败: {output_path}, {e}")
                             continue
-
-                        color_info = detect_color_presence_bgr(patch)
+                        if "X8" in text or "SF" in text:
+                            print(top_ext)
+                            print(bottom_ext)
+                        color_info = detect_color_presence_bgr(patch, text=name)
 
                         # Calculate relative coordinates in the micro image
                         # The poly coordinates are global. We subtract x0, y0.

@@ -86,6 +86,6 @@ def main(image_paths):
         logger.info(f"OCR{image_path}完成，文字结果已保存")
 
 if __name__ == "__main__":
-    img_path= ["img/t9.jpg","img/t8.jpg","img/t5.jpg"]
-    #img_path = ["img/t5.jpg"]# "img/t9.jpg","img/t8.jpg"," "img/t9.jpg","img/t8.jpg","img/t5.jpg"
+    img_path= ["img/t9.jpg","img/t8.jpg","img/t5.jpg","img/t2.jpg"]
+    img_path = ["img/t9.jpg"]# "img/t9.jpg","img/t8.jpg"," "img/t9.jpg","img/t8.jpg","img/t5.jpg"
     main(img_path)

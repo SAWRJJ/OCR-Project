@@ -176,7 +176,7 @@ class ImageProcessor:
                 return p1, p2_ext
             elif text and 'S' in text.upper():
                 return p1_ext, p2
-            return None
+            # return None
 
         # 返回非黑白像素较多的那个延伸方向
         if ext2_count >= ext1_count:

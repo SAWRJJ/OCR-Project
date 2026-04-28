@@ -375,7 +375,7 @@ def visualize_with_original(img, regions, output_path):
 
 if __name__ == "__main__":
     test_dir = r"./test/test5"
-    image_path = "micro_0008_XII0.jpg"
+    image_path = "micro_0010_X4.jpg"
     json_path = image_path.replace(".jpg", ".json")
     output_dir = test_dir
     os.makedirs(output_dir, exist_ok=True)
