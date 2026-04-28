@@ -104,7 +104,7 @@ def process_micro_images(micro_img_dir):
             continue
 
         # micro_0005_S
-        if filename == "micro_0016_S_I1362_202.jpg":
+        if filename == "micro_0017_S.jpg":
             print(-1)
         img_path = os.path.join(micro_img_dir, filename)
         json_path = os.path.join(micro_img_dir, os.path.splitext(filename)[0] + ".json")
@@ -375,8 +375,7 @@ def process_micro_images(micro_img_dir):
                         "matched_key": filename_matched_key
                     }
 
-                    if filename_matched_key and ((
-                            "S" in filename_matched_key or "X" in filename_matched_key)):
+                    if filename_matched_key:
                         is_match, black_pixel_count, template_match_res, color_centers_separate, black_radio = detect_colors(
                             img_path,
                             filename_matched_key,
@@ -781,14 +780,15 @@ def save_results_to_excel(all_results, output_file="ocr_results.xlsx", micro_img
                     "template_match_score": detail.get("template_match_score", ""),
                     "black_pixel_count": detail.get("black_pixel_count", ""),
                     "black_radio": detail.get("black_radio", ""),
-                    "color_blue": "Yes" if color_presence.get("blue") else "No",
-                    "color_green": "Yes" if color_presence.get("green") else "No",
-                    "color_yellow": "Yes" if color_presence.get("yellow") else "No",
-                    "color_red": "Yes" if color_presence.get("red") else "No",
+                    # "color_blue": "Yes" if color_presence.get("blue") else "No",
+                    # "color_green": "Yes" if color_presence.get("green") else "No",
+                    # "color_yellow": "Yes" if color_presence.get("yellow") else "No",
+                    # "color_red": "Yes" if color_presence.get("red") else "No",
                     "color_white": "Yes" if color_presence.get("white") else "No",
                     "red_centers":rl,
                     "yellow_centers": yl,
                     "green_centers": gl,
+                    "blue_centers": len(color_centers.get("blue", [])),
                     }
                 data_list.append(row)
 
@@ -799,9 +799,9 @@ def save_results_to_excel(all_results, output_file="ocr_results.xlsx", micro_img
     df = pd.DataFrame(data_list)
     df = df.sort_values(by="matched_key", key=lambda x: x.str.lower() if x.dtype == object else x, ascending=False)
     columns = ["filename", "matched_key", "confidence", "template_name", "template_match_res", "template_match_score",
-               "black_pixel_count", "black_radio", "color_blue", "color_green", "color_yellow", "color_red",
+               "black_pixel_count", "black_radio",
                "color_white",
-               "red_centers", "yellow_centers", "green_centers"]
+               "red_centers", "yellow_centers", "green_centers","blue_centers"] # "color_blue", "color_green", "color_yellow", "color_red",
     final_columns = [c for c in columns if c in df.columns]
     df = df[final_columns]
 

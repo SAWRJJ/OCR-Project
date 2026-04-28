@@ -384,6 +384,8 @@ def calculate_black_pixels(img, polygon, json_path, data):
     返回:
         int: 黑色像素总数量
     """
+    filename = os.path.basename(json_path)
+    name, ext = os.path.splitext(filename)
     mask = np.zeros(img.shape[:2], dtype=np.uint8)
     cv2.fillPoly(mask, [np.array(polygon)], 255)
 
@@ -391,8 +393,8 @@ def calculate_black_pixels(img, polygon, json_path, data):
 
     gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
     _, black_mask = cv2.threshold(gray, 50, 255, cv2.THRESH_BINARY_INV)
-    cv2.imwrite('output/black_mask.png', black_mask)
-    print(f"black_mask已保存到: output/black_mask.png")
+    cv2.imwrite(f'output/{name}_black_mask.png', black_mask)
+    print(f"black_mask已保存到: output/{name}_black_mask.png")
 
     polygon_arr = np.array(polygon)
 
@@ -447,8 +449,8 @@ def calculate_black_pixels(img, polygon, json_path, data):
     x_min, x_max = max(0, int(x_min)), min(img.shape[1], int(x_max))
     y_min, y_max = max(0, int(y_min)), min(img.shape[0], int(y_max))
     polygon_roi = img[y_min:y_max, x_min:x_max]
-    cv2.imwrite('output/polygon_roi.png', polygon_roi)
-    print(f"polygon范围图像已保存到: output/polygon_roi.png")
+    cv2.imwrite(f'output/{name}_polygon_roi.png', polygon_roi)
+    print(f"polygon范围图像已保存到: output/{name}_polygon_roi.png")
 
     data['polygon_total_pixels'] = int(polygon_total_pixels)
     data['black_pixels_in_polygon'] = int(black_pixels_in_polygon)
@@ -775,16 +777,21 @@ def detect_colors(image_path, target_char, debug=True, threshold=100):
     lower_green = np.array([40, 100, 100])
     upper_green = np.array([70, 255, 255])
 
+    lower_blue = np.array([100, 100, 100])
+    upper_blue = np.array([130, 255, 255])
+
     mask_red1 = cv2.inRange(hsv, lower_red1, upper_red1)
     mask_red2 = cv2.inRange(hsv, lower_red2, upper_red2)
     mask_red = mask_red1 + mask_red2
 
     mask_yellow = cv2.inRange(hsv, lower_yellow, upper_yellow)
     mask_green = cv2.inRange(hsv, lower_green, upper_green)
+    mask_blue = cv2.inRange(hsv, lower_blue, upper_blue)
 
     red_pixels = cv2.countNonZero(mask_red)
     yellow_pixels = cv2.countNonZero(mask_yellow)
     green_pixels = cv2.countNonZero(mask_green)
+    blue_pixels = cv2.countNonZero(mask_blue)
 
     total_pixels = img.shape[0] * img.shape[1]
 
@@ -792,6 +799,7 @@ def detect_colors(image_path, target_char, debug=True, threshold=100):
     print(f"红色像素: {red_pixels} ({red_pixels / total_pixels * 100:.2f}%)")
     print(f"黄色像素: {yellow_pixels} ({yellow_pixels / total_pixels * 100:.2f}%)")
     print(f"绿色像素: {green_pixels} ({green_pixels / total_pixels * 100:.2f}%)")
+    print(f"蓝色像素: {blue_pixels} ({blue_pixels / total_pixels * 100:.2f}%)")
 
     def calculate_center(mask):
         if cv2.countNonZero(mask) == 0:
@@ -833,10 +841,12 @@ def detect_colors(image_path, target_char, debug=True, threshold=100):
     red_center = calculate_center(mask_red)
     yellow_center = calculate_center(mask_yellow)
     green_center = calculate_center(mask_green)
+    blue_center = calculate_center(mask_blue)
 
     red_centers = calculate_centers_separate(mask_red)
     yellow_centers = calculate_centers_separate(mask_yellow)
     green_centers = calculate_centers_separate(mask_green)
+    blue_centers = calculate_centers_separate(mask_blue)
 
     color_centers1 = []
     if red_center:
@@ -848,6 +858,9 @@ def detect_colors(image_path, target_char, debug=True, threshold=100):
     if green_center:
         color_centers1.append(green_center)
         print(f"绿色像素中心坐标: {green_center}")
+    # if blue_center:
+    #     color_centers1.append(blue_center)
+    #     print(f"蓝色像素中心坐标: {blue_center}")
 
     color_cs = {}
     if red_centers:
@@ -856,6 +869,8 @@ def detect_colors(image_path, target_char, debug=True, threshold=100):
         print(f"黄色独立区域中心坐标: {yellow_centers}")
     if green_centers:
         print(f"绿色独立区域中心坐标: {green_centers}")
+    if blue_centers:
+        print(f"蓝色独立区域中心坐标: {blue_centers}")
 
     vis_centers_img = img.copy()
     for center in red_centers:
@@ -870,6 +885,10 @@ def detect_colors(image_path, target_char, debug=True, threshold=100):
         cv2.circle(vis_centers_img, center, 3, (255, 0, 0), -1)
         cv2.putText(vis_centers_img, "G", (center[0] + 5, center[1] - 5),
                     cv2.FONT_HERSHEY_SIMPLEX, 0.4, (255, 0, 0), 1)
+    for center in blue_centers:
+        cv2.circle(vis_centers_img, center, 3, (255, 0, 0), -1)
+        cv2.putText(vis_centers_img, "B", (center[0] + 5, center[1] - 5),
+                    cv2.FONT_HERSHEY_SIMPLEX, 0.4, (255, 0, 0), 1)
 
     # centers_vis_path = image_path.rsplit('.', 1)[0] + '_centers_vis.jpg'
     # cv2.imwrite(centers_vis_path, vis_centers_img)
@@ -882,6 +901,8 @@ def detect_colors(image_path, target_char, debug=True, threshold=100):
         color_centers['黄色'] = yellow_center
     if green_center:
         color_centers['绿色'] = green_center
+    # if blue_center:
+    #     color_centers['蓝色'] = blue_center
 
     # analyze_color_relationships(color_centers)
     line_type = analyze_color_relationships1(color_centers1)
@@ -930,7 +951,8 @@ def detect_colors(image_path, target_char, debug=True, threshold=100):
     color_centers_separate = {
         'red': red_centers,
         'yellow': yellow_centers,
-        'green': green_centers
+        'green': green_centers,
+        'blue': blue_centers
     }
     if not is_linear and angle_diff < 75:
         return False, 0, 0, color_centers_separate, 0
@@ -980,7 +1002,7 @@ def detect_colors(image_path, target_char, debug=True, threshold=100):
             a1, b1 = extended_end[0] - extended_start[0], extended_end[1] - extended_start[1]
             a2, b2 = extended_right_start[0] - extended_start[0], extended_right_start[1] - extended_start[1]
             polygon_width = abs(a1 * b2 - a2 * b1) / ((a1 ** 2 + b1 ** 2) ** 0.5)
-            print(f"polygon_width:{polygon_width}")
+            print(f"{json_path.split('/')[-1]:10}  polygon_width:{polygon_width}")
             if polygon_width > 280:
                 return False, 0, 0, color_centers_separate, 0
             # filename = os.path.basename(image_path)
@@ -988,18 +1010,27 @@ def detect_colors(image_path, target_char, debug=True, threshold=100):
             # vis_debug_path = os.path.join('output', f'{name}_polygon_debug.png')
             # cv2.imwrite(vis_debug_path, vis_img)
             # print(f"polygon可视化已保存到: {vis_debug_path}")
+            img = find_drak_remove(img)
             black_pixel_count, polygon_total_pixels = calculate_black_pixels(img, polygon, json_path, data)
             black_radio = black_pixel_count / polygon_total_pixels * 100.0
-            if 1100 < black_pixel_count <= 1450:
+            if 1160 < black_pixel_count <= 1500:
                 template_match_res = 3
-            elif 400 < black_pixel_count <= 1100:
+            elif 400 < black_pixel_count <= 1160:
                 template_match_res = 1
             elif black_pixel_count <= 400:
                 template_match_res = 0
-            if template_match_res == 1 and black_pixel_count < 500:
+            print(f"{json_path.split('/')[-1]:10} polygon_total_pixels:{polygon_total_pixels}")
+            if template_match_res == 1 and 410<=black_pixel_count < 500:
                 template_match_res = 1
-            elif template_match_res == 1 and black_radio >= 32:
+            elif template_match_res == 1 and 33 <= black_radio<40:
                 template_match_res = 3
+            elif template_match_res == 1 and 40 <= black_radio:
+                template_match_res = 0
+
+            if template_match_res == 1 and black_pixel_count<410:
+                template_match_res = 0
+            if template_match_res == 1 and black_radio>40:
+                template_match_res = 0
             if polygon_total_pixels <= 1500 and 16 < black_radio <= 30 and 100 < black_pixel_count:
                 template_match_res = 2
         else:
@@ -1865,7 +1896,7 @@ def process_leftmost_pixels(img, mask_red, mask_yellow, mask_green, red_center, 
             length = ((dx ** 2) + (dy ** 2)) ** 0.5
 
             # 计算两点连线的角度（弧度）
-            line_angle = np.arctan2(dy, dx)
+            line_angle = np.arctan2(-dy, dx)
             # 计算与文本框角度的差值
             angle_diff = abs(line_angle - angle)
             print(
@@ -2101,9 +2132,10 @@ def process_rightmost_pixels(img, mask_red, mask_yellow, mask_green, red_center,
             length = ((dx ** 2) + (dy ** 2)) ** 0.5
 
             # 计算两点连线的角度（弧度）
-            line_angle = np.arctan2(dy, dx)
+            line_angle = np.arctan2(-dy, dx)
             # 计算与文本框角度的差值
             angle_diff = abs(line_angle - angle)
+            # X8 连线角度: 57.85 度, 文本框角度: 23.48 度, 差值: 34.37 度
             print(
                 f"连线角度: {np.degrees(line_angle):.2f} 度, 文本框角度: {np.degrees(angle):.2f} 度, 差值: {np.degrees(angle_diff):.2f} 度")
 

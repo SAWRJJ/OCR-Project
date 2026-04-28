@@ -19,7 +19,7 @@ def parse_centers(value):
     return len(str(value).split(';'))
 
 
-def compare_xlsx_files(template_path, output_path):
+def compare_xlsx_files(template_path, output_path, filename):
     template_df = pd.read_excel(template_path, header=0)
     output_df = pd.read_excel(output_path, header=0)
 
@@ -30,15 +30,16 @@ def compare_xlsx_files(template_path, output_path):
     missing_in_output = template_keys - output_keys
 
     if missing_in_output:
-        print(f"[DIFF] Missing matched_keys in output ({len(missing_in_output)}):")
+        print(f"[DIFF] {filename} - Missing matched_keys in output ({len(missing_in_output)}):")
         for key in sorted(missing_in_output):
-            print(f"  - {key}")
+            t_row = template_df[template_df['matched_key'].astype(str) == key].iloc[0]
+            t_fn = str(t_row['filename']).strip() if 'filename' in t_row and not pd.isna(t_row['filename']) else ''
+            print(f"  - {key} ({t_fn})")
         print()
 
     fields_to_compare = [
-        'template_match_res',
-        'color_blue', 'color_green', 'color_yellow', 'color_red', 'color_white',
-        'red_centers', 'yellow_centers', 'green_centers'
+        'template_match_res','color_white',
+        'red_centers', 'yellow_centers', 'green_centers',"blue_centers"
     ]
 
     all_match = True
@@ -60,11 +61,15 @@ def compare_xlsx_files(template_path, output_path):
             t_str = str(t_val).strip() if not pd.isna(t_val) else ''
             o_str = str(o_val).strip() if not pd.isna(o_val) else ''
             if t_str != o_str:
-                diffs.append(f"  [{field}] template='{t_str}', output='{o_str}'")
+                t_num = float(t_str) if t_str.replace('.', '').replace('-', '').isdigit() else None
+                o_num = float(o_str) if o_str.replace('.', '').replace('-', '').isdigit() else None
+                if not (t_num == 0 and o_num == 0):
+                    diffs.append(f"  [{field}] template='{t_str}', output='{o_str}'")
 
         if diffs:
             all_match = False
-            print(f"[DIFF] {key}:")
+            t_filename = str(t_row['filename']).strip() if 'filename' in t_row and not pd.isna(t_row['filename']) else ''
+            print(f"[DIFF] {filename} - {t_filename} - {key}:")
             for d in diffs:
                 print(d)
 
@@ -90,6 +95,6 @@ if __name__ == "__main__":
             print(f"Comparing: {filename}")
             print(f"Template: {template_files[filename]}")
             print(f"Output:   {output_files[filename]}")
-            compare_xlsx_files(template_files[filename], output_files[filename])
+            compare_xlsx_files(template_files[filename], output_files[filename], filename)
         else:
             print(f"\n[MISSING] {filename} not found in output folder.")

@@ -39,51 +39,23 @@ def count_dark_pixels_in_radius(point, img, radius=3, threshold=100):
 
 
 def calculate_textbox_angle(poly):
-    """
-    计算文本框的倾斜角度
+    poly = np.array(poly, dtype=np.float32)
 
-    参数:
-        poly: 文本框的四个顶点坐标列表
-
-    返回:
-        float: 倾斜角度（弧度），正值表示顺时针倾斜
-        tuple: (上边中点, 下边中点) 用于确定文本方向
-    """
-    poly = np.array(poly)
-
-    if len(poly) != 4:
+    if poly.shape[0] != 4:
         return 0.0, None
 
-    center = np.mean(poly, axis=0)
+    # 点顺序：左上、右上、右下、左下
+    p0, p1, p2, p3 = poly
 
-    distances = [np.linalg.norm(poly[i] - center) for i in range(4)]
-    sorted_indices = np.argsort(distances)
+    # 上边中点、下边中点
+    top_mid = (p0 + p1) / 2
+    bottom_mid = (p2 + p3) / 2
 
-    edges = []
-    for i in range(4):
-        p1 = poly[i]
-        p2 = poly[(i + 1) % 4]
-        edge_length = np.linalg.norm(p2 - p1)
-        edges.append((i, edge_length, p1, p2))
-
-    edges.sort(key=lambda x: x[1], reverse=True)
-
-    long_edge1 = edges[0]
-    long_edge2 = edges[1]
-
-    mid1 = (long_edge1[2] + long_edge1[3]) / 2
-    mid2 = (long_edge2[2] + long_edge2[3]) / 2
-
-    if mid1[1] < mid2[1]:
-        top_mid = mid1
-        bottom_mid = mid2
-    else:
-        top_mid = mid2
-        bottom_mid = mid1
-
+    # 从上到下的方向向量
     dx = bottom_mid[0] - top_mid[0]
     dy = bottom_mid[1] - top_mid[1]
 
+    # 角度（相对于竖直方向）
     angle = np.arctan2(dx, dy)
 
     return angle, (tuple(top_mid.astype(int)), tuple(bottom_mid.astype(int)))
@@ -777,16 +749,21 @@ def detect_colors(image_path, target_char, debug=True, threshold=100):
     lower_green = np.array([40, 100, 100])
     upper_green = np.array([70, 255, 255])
 
+    lower_blue = np.array([100, 100, 100])
+    upper_blue = np.array([130, 255, 255])
+
     mask_red1 = cv2.inRange(hsv, lower_red1, upper_red1)
     mask_red2 = cv2.inRange(hsv, lower_red2, upper_red2)
     mask_red = mask_red1 + mask_red2
 
     mask_yellow = cv2.inRange(hsv, lower_yellow, upper_yellow)
     mask_green = cv2.inRange(hsv, lower_green, upper_green)
+    mask_blue = cv2.inRange(hsv, lower_blue, upper_blue)
 
     red_pixels = cv2.countNonZero(mask_red)
     yellow_pixels = cv2.countNonZero(mask_yellow)
     green_pixels = cv2.countNonZero(mask_green)
+    blue_pixels = cv2.countNonZero(mask_blue)
 
     total_pixels = img.shape[0] * img.shape[1]
 
@@ -794,6 +771,7 @@ def detect_colors(image_path, target_char, debug=True, threshold=100):
     print(f"红色像素: {red_pixels} ({red_pixels / total_pixels * 100:.2f}%)")
     print(f"黄色像素: {yellow_pixels} ({yellow_pixels / total_pixels * 100:.2f}%)")
     print(f"绿色像素: {green_pixels} ({green_pixels / total_pixels * 100:.2f}%)")
+    print(f"蓝色像素: {blue_pixels} ({blue_pixels / total_pixels * 100:.2f}%)")
 
     def calculate_center(mask):
         if cv2.countNonZero(mask) == 0:
@@ -835,10 +813,12 @@ def detect_colors(image_path, target_char, debug=True, threshold=100):
     red_center = calculate_center(mask_red)
     yellow_center = calculate_center(mask_yellow)
     green_center = calculate_center(mask_green)
+    blue_center = calculate_center(mask_blue)
 
     red_centers = calculate_centers_separate(mask_red)
     yellow_centers = calculate_centers_separate(mask_yellow)
     green_centers = calculate_centers_separate(mask_green)
+    blue_centers = calculate_centers_separate(mask_blue)
 
     color_centers1 = []
     if red_center:
@@ -850,6 +830,9 @@ def detect_colors(image_path, target_char, debug=True, threshold=100):
     if green_center:
         color_centers1.append(green_center)
         print(f"绿色像素中心坐标: {green_center}")
+    # if blue_center:
+    #     color_centers1.append(blue_center)
+    #     print(f"蓝色像素中心坐标: {blue_center}")
 
     color_cs = {}
     if red_centers:
@@ -858,6 +841,8 @@ def detect_colors(image_path, target_char, debug=True, threshold=100):
         print(f"黄色独立区域中心坐标: {yellow_centers}")
     if green_centers:
         print(f"绿色独立区域中心坐标: {green_centers}")
+    if blue_centers:
+        print(f"蓝色独立区域中心坐标: {blue_centers}")
 
     vis_centers_img = img.copy()
     for center in red_centers:
@@ -872,6 +857,10 @@ def detect_colors(image_path, target_char, debug=True, threshold=100):
         cv2.circle(vis_centers_img, center, 3, (255, 0, 0), -1)
         cv2.putText(vis_centers_img, "G", (center[0] + 5, center[1] - 5),
                     cv2.FONT_HERSHEY_SIMPLEX, 0.4, (255, 0, 0), 1)
+    for center in blue_centers:
+        cv2.circle(vis_centers_img, center, 3, (255, 0, 0), -1)
+        cv2.putText(vis_centers_img, "B", (center[0] + 5, center[1] - 5),
+                    cv2.FONT_HERSHEY_SIMPLEX, 0.4, (255, 0, 0), 1)
 
     # centers_vis_path = image_path.rsplit('.', 1)[0] + '_centers_vis.jpg'
     # cv2.imwrite(centers_vis_path, vis_centers_img)
@@ -884,6 +873,8 @@ def detect_colors(image_path, target_char, debug=True, threshold=100):
         color_centers['黄色'] = yellow_center
     if green_center:
         color_centers['绿色'] = green_center
+    # if blue_center:
+    #     color_centers['蓝色'] = blue_center
 
     # analyze_color_relationships(color_centers)
     line_type = analyze_color_relationships1(color_centers1)
@@ -932,8 +923,11 @@ def detect_colors(image_path, target_char, debug=True, threshold=100):
     color_centers_separate = {
         'red': red_centers,
         'yellow': yellow_centers,
-        'green': green_centers
+        'green': green_centers,
+        'blue': blue_centers
     }
+    if "D" in target_char:
+        return False, 0, 0, color_centers_separate, 0
     if not is_linear and angle_diff < 75:
         return False, 0, 0, color_centers_separate, 0
     # red_rightmost = calculate_rightmost(mask_red)
@@ -990,12 +984,12 @@ def detect_colors(image_path, target_char, debug=True, threshold=100):
             # vis_debug_path = os.path.join('output', f'{name}_polygon_debug.png')
             # cv2.imwrite(vis_debug_path, vis_img)
             # print(f"polygon可视化已保存到: {vis_debug_path}")
-            img = find_drak_remove(img)
+            # img = find_drak_remove(img)
             black_pixel_count, polygon_total_pixels = calculate_black_pixels(img, polygon, json_path, data)
             black_radio = black_pixel_count / polygon_total_pixels * 100.0
-            if 1160 < black_pixel_count <= 1500:
+            if 1170 < black_pixel_count <= 1500:
                 template_match_res = 3
-            elif 400 < black_pixel_count <= 1160:
+            elif 400 < black_pixel_count <= 1170:
                 template_match_res = 1
             elif black_pixel_count <= 400:
                 template_match_res = 0
@@ -1434,7 +1428,7 @@ def single_line_detection(img, json_path, target_char, linear_point, origin_img,
                         current_pos = [int(round(current_pos[0])), int(round(current_pos[1]))]
                     else:
                         current_pos = [
-                            found_pixel[0] - dir_x * ex_p1,
+                            found_pixel[0] + dir_x * ex_p1,
                             found_pixel[1]
                         ]
 
@@ -1876,7 +1870,7 @@ def process_leftmost_pixels(img, mask_red, mask_yellow, mask_green, red_center, 
             length = ((dx ** 2) + (dy ** 2)) ** 0.5
 
             # 计算两点连线的角度（弧度）
-            line_angle = np.arctan2(dy, dx)
+            line_angle = np.arctan2(-dy, dx)
             # 计算与文本框角度的差值
             angle_diff = abs(line_angle - angle)
             print(
@@ -2112,9 +2106,10 @@ def process_rightmost_pixels(img, mask_red, mask_yellow, mask_green, red_center,
             length = ((dx ** 2) + (dy ** 2)) ** 0.5
 
             # 计算两点连线的角度（弧度）
-            line_angle = np.arctan2(dy, dx)
+            line_angle = np.arctan2(-dy, dx)
             # 计算与文本框角度的差值
             angle_diff = abs(line_angle - angle)
+            # X8 连线角度: 57.85 度, 文本框角度: 23.48 度, 差值: 34.37 度
             print(
                 f"连线角度: {np.degrees(line_angle):.2f} 度, 文本框角度: {np.degrees(angle):.2f} 度, 差值: {np.degrees(angle_diff):.2f} 度")
 
