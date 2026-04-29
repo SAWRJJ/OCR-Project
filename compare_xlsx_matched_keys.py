@@ -61,10 +61,14 @@ def compare_xlsx_files(template_path, output_path, filename):
             t_str = str(t_val).strip() if not pd.isna(t_val) else ''
             o_str = str(o_val).strip() if not pd.isna(o_val) else ''
             if t_str != o_str:
-                t_num = float(t_str) if t_str.replace('.', '').replace('-', '').isdigit() else None
-                o_num = float(o_str) if o_str.replace('.', '').replace('-', '').isdigit() else None
-                if not (t_num == 0 and o_num == 0):
-                    diffs.append(f"  [{field}] template='{t_str}', output='{o_str}'")
+                try:
+                    t_num = float(t_str) if t_str.replace('.', '').replace('-', '').isdigit() else None
+                    o_num = float(o_str) if o_str.replace('.', '').replace('-', '').isdigit() else None
+                    if t_num is not None and o_num is not None and t_num == o_num:
+                        continue
+                except:
+                    pass
+                diffs.append(f"  [{field}] template='{t_str}', output='{o_str}'")
 
         if diffs:
             all_match = False

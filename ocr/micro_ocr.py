@@ -104,7 +104,7 @@ def process_micro_images(micro_img_dir):
             continue
 
         # micro_0005_S
-        if filename == "micro_0017_S.jpg":
+        if filename == "micro_0042_D.jpg":
             print(-1)
         img_path = os.path.join(micro_img_dir, filename)
         json_path = os.path.join(micro_img_dir, os.path.splitext(filename)[0] + ".json")
@@ -552,8 +552,7 @@ def process_micro_images(micro_img_dir):
                                     "matched_key": current_key
                                 }
 
-                                if current_key and (
-                                        ("S" in current_key or "X" in current_key)):
+                                if current_key:
                                     is_match, black_pixel_count, template_match_res, color_centers_separate, black_radio = detect_colors(
                                         img_path,
                                         current_key,
