@@ -1010,9 +1010,9 @@ def detect_colors(image_path, target_char, debug=True, threshold=100):
                                                       textbox_angle=textbox_angle)
 
     black_pixel_count = 0
+    img = find_drak_remove(img, save_circle=True, remove_color_adjacent=True)
     if is_linear and len(sorted_centers) > 0:
         print("执行单线检测")
-        img = find_drak_remove(img,save_circle=True,remove_color_adjacent=True)
         vis_img, found_pixel, left_black, right_black, template_match_res = single_line_detection(vis_img, json_path,
                                                                                                   target_char,
                                                                                                   linear_point, img,
