@@ -17,8 +17,8 @@ ocr = PaddleOCR(
     use_doc_unwarping=False,
     use_textline_orientation=False) # 更换 PP-OCRv5_mobile 模型
 
-image_dir = r"/test/test2/micro_img"
-output_dir = r"/test/test2/outpit"
+image_dir = r"test/test2/micro_img"
+output_dir = r"test/test2/outpit"
 
 if not os.path.exists(output_dir):
     os.makedirs(output_dir)

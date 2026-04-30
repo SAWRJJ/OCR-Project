@@ -681,11 +681,11 @@ def build_sorted_centers_list(red_centers, yellow_centers, green_centers, sort_b
         list: 合并并排序后的中心坐标列表
     """
     processed_yellow_centers = []
-
+    # processed_yellow_centers0 = find_cluster_centers(yellow_centers)
     if len(yellow_centers) == 3:
-        processed_yellow_centers = [yellow_centers[1]]
+        processed_yellow_centers = find_cluster_centers(yellow_centers)
     elif len(yellow_centers) == 6:
-        processed_yellow_centers = [yellow_centers[1], yellow_centers[4]]
+        processed_yellow_centers = find_cluster_centers(yellow_centers)
 
     all_centers = []
     for centers, color_name in [(red_centers, 'red'), (processed_yellow_centers, 'yellow'), (green_centers, 'green')]:
@@ -696,6 +696,14 @@ def build_sorted_centers_list(red_centers, yellow_centers, green_centers, sort_b
                 'x': center[0],
                 'y': center[1]
             })
+    # for centers, color_name in [(red_centers, 'red'),(green_centers, 'green')]:
+    #     for center in centers:
+    #         all_centers.append({
+    #             'center': center,
+    #             'color': color_name,
+    #             'x': center[0],
+    #             'y': center[1]
+    #         })
 
     if sort_by == 'x':
         all_centers.sort(key=lambda item: item['x'], reverse=reverse)
@@ -704,6 +712,49 @@ def build_sorted_centers_list(red_centers, yellow_centers, green_centers, sort_b
 
     return [item['center'] for item in all_centers]
 
+def find_cluster_centers(points, distance_threshold=30):
+    """
+    根据距离聚集点集，并返回每个聚集点集的中心点
+
+    参数:
+        points: 点集列表，如 [(x1,y1), (x2,y2), ...]
+        distance_threshold: 聚集距离阈值，默认30
+
+    返回:
+        center_points: 中心点列表，如 [(cx1,cy1), (cx2,cy2), ...]
+    """
+    points = np.array(points)
+    n = len(points)
+    visited = [False] * n
+    clusters = []
+
+    for i in range(n):
+        if visited[i]:
+            continue
+        cluster = [i]
+        visited[i] = True
+        queue = [i]
+
+        while queue:
+            current = queue.pop(0)
+            for j in range(n):
+                if not visited[j]:
+                    dist = np.sqrt((points[current][0] - points[j][0])**2 + (points[current][1] - points[j][1])**2)
+                    if dist < distance_threshold:
+                        visited[j] = True
+                        cluster.append(j)
+                        queue.append(j)
+        clusters.append(cluster)
+
+    center_points = []
+    for cluster in clusters:
+        cluster_points_arr = points[cluster]
+        centroid = np.mean(cluster_points_arr, axis=0)
+        distances = [np.sqrt((p[0] - centroid[0])**2 + (p[1] - centroid[1])**2) for p in cluster_points_arr]
+        min_idx = np.argmin(distances)
+        center_points.append(tuple(cluster_points_arr[min_idx]))
+
+    return center_points
 
 def detect_colors(image_path, target_char, debug=True, threshold=100):
     """
@@ -961,6 +1012,7 @@ def detect_colors(image_path, target_char, debug=True, threshold=100):
     black_pixel_count = 0
     if is_linear and len(sorted_centers) > 0:
         print("执行单线检测")
+        img = find_drak_remove(img,save_circle=True,remove_color_adjacent=True)
         vis_img, found_pixel, left_black, right_black, template_match_res = single_line_detection(vis_img, json_path,
                                                                                                   target_char,
                                                                                                   linear_point, img,
@@ -1128,6 +1180,19 @@ def analyze_color_relationships1(color_centers):
     print(f"所有中心点都在矩形范围内，判定为单线")
     return 'single_line'
 
+def find_nearest(closed_regions, textbox_center):
+    min_dist = ((closed_regions[0]["center"][0] - textbox_center[0]) ** 2 + (
+                closed_regions[0]["center"][1] - textbox_center[1]) ** 2) ** 0.5
+    nearest_center = closed_regions[0]["center"]
+    for r in closed_regions:
+        if 'center' in r:
+            cx, cy = r['center']
+            dist = ((cx - textbox_center[0]) ** 2 + (cy - textbox_center[1]) ** 2) ** 0.5
+            if dist < min_dist:
+                min_dist = dist
+                nearest_center = r['center']
+
+    return min_dist, nearest_center
 
 def single_line_detection(img, json_path, target_char, linear_point, origin_img, textbox_angle=0.0, debug=True,
                           far_points=None):
@@ -1249,15 +1314,7 @@ def single_line_detection(img, json_path, target_char, linear_point, origin_img,
         # TODO: 计算 closed_regions 与 textbox_center 的距离 找到最近的圆心
         # 计算 closed_regions 与 textbox_center 的距离 找到最近的圆心
         if closed_regions and "center" in closed_regions[0]:
-            min_dist = ((closed_regions[0]["center"][0] - textbox_center[0]) ** 2 + (closed_regions[0]["center"][1] - textbox_center[1]) ** 2) ** 0.5
-            nearest_center = closed_regions[0]["center"]
-            for r in closed_regions:
-                if 'center' in r:
-                    cx, cy = r['center']
-                    dist = ((cx - textbox_center[0]) ** 2 + (cy - textbox_center[1]) ** 2) ** 0.5
-                    if dist < min_dist:
-                        min_dist = dist
-                        nearest_center = r['center']
+            min_dist, nearest_center = find_nearest(closed_regions,textbox_center)
             if nearest_center:
                 red_point_pos3 = (int(nearest_center[0] - unit_dx_far * 4),
                                   int(nearest_center[1] - unit_dy_far * 4))
@@ -1538,6 +1595,11 @@ def single_line_detection(img, json_path, target_char, linear_point, origin_img,
                                     template_match_res = 1
                                 elif black_count == 6:
                                     template_match_res = 3
+                                # elif black_count == 2 and len(closed_regions)>0:
+                                #     min_dist, nearest_center = find_nearest(closed_regions,stop_pos)
+                                #     print(f"{filename} stop_pos与closed_regions的最短距离: {min_dist:.2f} 像素")
+                                #     if min_dist > 10:
+                                #         template_match_res = 1
 
                                 print(f"根据black_count={black_count}设置template_match_res={template_match_res}")
 

@@ -91,6 +91,7 @@ def find_closed_dark_regions(img_path, dark_threshold=125, min_circularity=0.7):
 
             if hole_pixels > 0:
                 circularity, largest_contour = calculate_circularity(r, (h, w))
+                print(f"区域 {r['label']} 的圆度: {circularity:.4f}")
                 if circularity >= min_circularity:
                     center, radius = calculate_circle_from_contour(largest_contour)
                     r['center'] = center
@@ -148,11 +149,12 @@ def calculate_circle_from_contour(contour):
     return center, radius
 
 
-def find_boundary_connected_dark_pixels(img_path, dark_threshold=125):
+def find_boundary_connected_dark_pixels(img_path, dark_threshold=125, remove_color_adjacent=False):
     """
     找出与边界相连的深色像素连通区域
     使用BFS进行连通区域标记
     img_path: 可以是图片路径(str)或图片数组(numpy.ndarray)
+    remove_color_adjacent: 如果为True，则排除与彩色像素相邻的深色区域
     """
     if isinstance(img_path, np.ndarray):
         img = img_path
@@ -214,6 +216,26 @@ def find_boundary_connected_dark_pixels(img_path, dark_threshold=125):
         )
         if touches_boundary:
             boundary_regions.append(r)
+
+    if remove_color_adjacent:
+        filtered_regions = []
+        white_threshold = 200
+        for r in boundary_regions:
+            touches_color = False
+            for pixel in r['pixels']:
+                row, col = pixel
+                for nr, nc in [(row-1, col), (row+1, col), (row, col-1), (row, col+1)]:
+                    if 0 <= nr < h and 0 <= nc < w:
+                        if dark_mask[nr, nc] == 0:
+                            pixel_color = img[nr, nc]
+                            if not (pixel_color[0] >= white_threshold and pixel_color[1] >= white_threshold and pixel_color[2] >= white_threshold):
+                                touches_color = True
+                                break
+                if touches_color:
+                    break
+            if not touches_color:
+                filtered_regions.append(r)
+        boundary_regions = filtered_regions
 
     print(f"图像尺寸: {w}x{h}")
     print(f"深色阈值: {dark_threshold}")
@@ -379,14 +401,15 @@ def visualize_with_original(img, regions, output_path):
 
     return vis_img
 
-def find_drak_remove(image_path, dark_threshold=200, output_path=None,use_circle = True):
+def find_drak_remove(image_path, dark_threshold=200, output_path=None, save_circle=True, remove_color_adjacent=False):
     """
     找出并移除深色像素（边界连通 + 闭合圆环）
     image_path: 可以是图片路径(str)或图片数组(numpy.ndarray)
+    remove_color_adjacent: 如果为True，则排除与彩色像素相邻的深色区域
     """
-    img, boundary_regions = find_boundary_connected_dark_pixels(image_path, dark_threshold=dark_threshold)
+    img, boundary_regions = find_boundary_connected_dark_pixels(image_path, dark_threshold=dark_threshold, remove_color_adjacent=remove_color_adjacent)
     closed_regions = []
-    if use_circle:
+    if not save_circle:
         closed_regions = find_closed_dark_regions(image_path, dark_threshold=dark_threshold)
     return remove_dark_regions(img, boundary_regions, closed_regions, output_path)
 

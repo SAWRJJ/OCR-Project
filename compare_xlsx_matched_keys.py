@@ -73,7 +73,8 @@ def compare_xlsx_files(template_path, output_path, filename):
         if diffs:
             all_match = False
             t_filename = str(t_row['filename']).strip() if 'filename' in t_row and not pd.isna(t_row['filename']) else ''
-            print(f"[DIFF] {filename} - {t_filename} - {key}:")
+            o_filename = str(o_row['filename']).strip() if 'filename' in o_row and not pd.isna(o_row['filename']) else ''
+            print(f"[DIFF] {filename} - template: {t_filename}, output: {o_filename} - {key}:")
             for d in diffs:
                 print(d)
 

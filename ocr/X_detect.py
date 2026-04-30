@@ -111,7 +111,7 @@ def draw_poly_comparison(json_path, output_dir, expand_pixels=5):
     print(f'原始多边形: {original_poly}')
     print(f'外扩后多边形: {expanded_poly}')
 
-def find_first_non_white_column_along_tilt(poly, gray_img, angle, debug_img=None, output_path=None):
+def find_first_non_white_column_along_tilt(poly, gray_img, angle, debug_img=None, output_path=None,ex_p = 70):
     """
     利用文本框的横向倾斜角度，从图片最左侧开始沿着倾斜方向扫描
     找到第一列（有非白色像素的列），然后向右外扩像素
@@ -221,8 +221,8 @@ def find_first_non_white_column_along_tilt(poly, gray_img, angle, debug_img=None
     expand_x = None
     expand_y = None
     if first_non_white_col is not None:
-        expand_x = check_x + 70 * math.cos(tilt_angle)
-        expand_y = y + 70 * math.sin(tilt_angle)
+        expand_x = check_x + ex_p * math.cos(tilt_angle)
+        expand_y = y + ex_p * math.sin(tilt_angle)
         expand_line_start = (int(expand_x - perp_dx * scan_line_length), int(expand_y - perp_dy * scan_line_length))
         expand_line_end = (int(expand_x + perp_dx * scan_line_length), int(expand_y + perp_dy * scan_line_length))
         print(f"向右外扩像素: x={expand_x}, y={expand_y}")
@@ -249,6 +249,77 @@ def find_first_non_white_column_along_tilt(poly, gray_img, angle, debug_img=None
         print(f"可视化图片已保存到: {output_path}")
 
     return first_non_white_col, found_scan_line_start, found_scan_line_end, non_white_pixels, expand_x, expand_y, expand_line_start, expand_line_end
+
+
+def shift_poly_along_angle(poly, angle, shift_distance=100, debug_img=None, output_path=None):
+    """
+    沿文本框倾斜角度向右平移多边形左侧边界，组合成新的多边形
+
+    参数:
+        poly: 文本框四边形顶点 [[x0,y0], [x1,y1], [x2,y2], [x3,y3]]
+        angle: 文本框倾斜角度（弧度），正值表示右倾斜，负值表示左倾斜
+        shift_distance: 平移距离（像素），默认100
+        debug_img: 用于可视化的BGR图像，如果为None则创建
+        output_path: 可视化图片保存路径
+
+    返回:
+        new_poly: 新的多边形顶点（平移后的左侧边 + 原始上下右边）
+        shift_line_start: 平移线起点
+        shift_line_end: 平移线终点
+    """
+    poly = np.array(poly, dtype=np.float64)
+
+    tilt_angle = -angle
+    print(f"平移角度: {math.degrees(tilt_angle):.2f} 度, 平移距离: {shift_distance} 像素")
+
+    left_y_center = (poly[0, 1] + poly[3, 1]) / 2
+    left_x = poly[0, 0]
+
+    shift_dx = shift_distance * math.cos(tilt_angle)
+    shift_dy = shift_distance * math.sin(tilt_angle)
+
+    shifted_left_poly = poly.copy()
+    shifted_left_poly[0, 0] += shift_dx
+    shifted_left_poly[0, 1] += shift_dy
+    shifted_left_poly[3, 0] += shift_dx
+    shifted_left_poly[3, 1] += shift_dy
+
+    new_poly = np.array([
+        shifted_left_poly[0],
+        shifted_left_poly[3],
+        poly[3],
+        poly[0]
+    ], dtype=np.float64)
+
+    vis_img = None
+    if debug_img is not None:
+        vis_img = debug_img.copy()
+    else:
+        vis_img = np.zeros((500, 500, 3), dtype=np.uint8)
+        print("警告: 未提供debug_img，可视化可能不准确")
+
+    cv2.polylines(vis_img, [np.array(poly, dtype=np.int32)], True, (0, 255, 0), 2)
+    cv2.polylines(vis_img, [np.array(new_poly, dtype=np.int32)], True, (255, 0, 0), 2)
+
+    shift_line_start = (int(left_x), int(left_y_center))
+    shift_line_end = (int(left_x + shift_dx), int(left_y_center + shift_dy))
+    cv2.arrowedLine(vis_img, shift_line_start, shift_line_end, (0, 255, 255), 2)
+
+    cv2.putText(vis_img, f"Original (Green)", (10, 20), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 255, 0), 1)
+    cv2.putText(vis_img, f"New Poly (Blue)", (10, 40), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (255, 0, 0), 1)
+    cv2.putText(vis_img, f"Angle: {math.degrees(tilt_angle):.2f}deg, Dist: {shift_distance}px",
+                (10, 60), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 255, 255), 1)
+
+    if output_path is not None:
+        os.makedirs(os.path.dirname(output_path), exist_ok=True)
+        cv2.imwrite(output_path, vis_img)
+        print(f"可视化图片已保存到: {output_path}")
+
+    print(f"原始多边形: {poly.tolist()}")
+    print(f"新多边形: {new_poly.tolist()}")
+    print(f"平移向量: dx={shift_dx:.2f}, dy={shift_dy:.2f}")
+
+    return new_poly, shift_line_start, shift_line_end
 
 
 def calculate_horizontal_tilt_angle(poly):

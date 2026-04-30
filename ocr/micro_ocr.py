@@ -2,13 +2,17 @@ import os
 import json
 import logging
 import math
+
+from sqlalchemy import true
+
 from .ocr_engine import OCREngine
 from .LW_detect import detect_colors, calculate_textbox_angle
 from .config import Config
 from .X_detect import expand_poly_vertical, count_dark_pixels_in_expanded_region, \
-    find_first_non_white_column_along_tilt, calculate_horizontal_tilt_angle, expand_poly
+    find_first_non_white_column_along_tilt, calculate_horizontal_tilt_angle, expand_poly,shift_poly_along_angle
 from .find_boundary_dark import find_drak_remove
 from .utils import calculate_shift_params
+from .scan_dark_pixels import process_image_high_circularity_to_white
 import cv2
 import numpy as np
 
@@ -56,8 +60,11 @@ def load_target_definitions():
         return {}
 
 
-def check_text(potential_text):
-    target_defs = load_target_definitions()
+def check_text(potential_text,target_defs0=None):
+    if target_defs0:
+        target_defs = target_defs0
+    else:
+        target_defs = load_target_definitions()
     filename_matched_key = None
     found_match_in_filename = False
     for key, variants in target_defs.items():
@@ -104,7 +111,7 @@ def process_micro_images(micro_img_dir):
             continue
 
         # micro_0005_S
-        if filename == "micro_0042_D.jpg":
+        if filename == "micro_0006_D4.jpg": # micro_0064_DOQOOSN micro_0048_XI micro_0093_XL_I_HO_00.json_input.png
             print(-1)
         img_path = os.path.join(micro_img_dir, filename)
         json_path = os.path.join(micro_img_dir, os.path.splitext(filename)[0] + ".json")
@@ -135,17 +142,7 @@ def process_micro_images(micro_img_dir):
 
             if potential_text == "XI":
                 print(potential_text)
-            filename_matched_key = None
-            found_match_in_filename = False
-            for key, variants in target_defs.items():
-                for variant in variants:
-                    if variant in potential_text:
-                        filename_matched_key = key
-                        found_match_in_filename = True
-                        break
-                if found_match_in_filename:
-                    break
-
+            filename_matched_key, found_match_in_filename = check_text(potential_text)
             # 新增判断：如果匹配到 S 或 X，但文件名中的文本不是精确的 S 或 X，则强制二次 OCR
             if filename_matched_key in ('S', 'X') and potential_text != filename_matched_key:
                 logger.info(
@@ -173,16 +170,20 @@ def process_micro_images(micro_img_dir):
                         first_poly,
                         expand_poly_vertical(first_poly, 5),
                         dark_threshold=128)
+                    textbox_angle, _ = calculate_textbox_angle(first_poly)
                     if dark_ratio:
                         print("execute test5 detect")
-                        textbox_angle, _ = calculate_textbox_angle(first_poly)
+
                         img0 = find_drak_remove(img, dark_threshold=230)
                         gray = cv2.cvtColor(img0, cv2.COLOR_BGR2GRAY)
                         _, binary = cv2.threshold(gray, 200, 255, cv2.THRESH_BINARY)
                         debug_vis_path = os.path.join(micro_img_dir, 'debug',
                                                       filename.replace('.jpg', '_scan_debug.jpg'))
+                        ex_px =70
+                        if "L" in filename_matched_key or "Z" in filename_matched_key:
+                            ex_px = 95
                         first_non_white_col, found_scan_line_start, found_scan_line_end, non_white_pixels, expand_x, expand_y, final_scan_line_start, final_scan_line_end = find_first_non_white_column_along_tilt(
-                            first_poly, binary, textbox_angle, debug_img=img0, output_path=debug_vis_path)
+                            first_poly, binary, textbox_angle, debug_img=img0, output_path=debug_vis_path,ex_p=ex_px)
                         if first_non_white_col is not None and expand_x is not None and expand_y is not None and final_scan_line_start is not None and final_scan_line_end is not None:
                             left_line = sorted([found_scan_line_start, found_scan_line_end], key=lambda p: p[0])[0]
                             right_line = sorted([final_scan_line_start, final_scan_line_end], key=lambda p: p[0])[1]
@@ -198,8 +199,18 @@ def process_micro_images(micro_img_dir):
                             os.makedirs(os.path.dirname(debug_path), exist_ok=True)
                             cropped_path = os.path.join(micro_img_dir, 'debug',
                                                         filename.replace('.jpg', '_cropped.jpg'))
+                            cropped_path1 = os.path.join(micro_img_dir, 'debug',
+                                                        filename.replace('.jpg', '_cropped1.jpg'))
 
                             cropped0 = find_drak_remove(cropped)
+                            if "L" in filename_matched_key or "Z" in filename_matched_key:
+                                _, binary_img, _ = process_image_high_circularity_to_white(
+                                    cropped0,
+                                    dark_threshold=200,
+                                    min_circularity=0.75,
+                                    binary_output_path=cropped_path1
+                                )
+                                cropped0 = cv2.cvtColor(binary_img, cv2.COLOR_GRAY2BGR)
                             cv2.imwrite(cropped_path, cropped0)
                             results = ocr_engine.ocr.predict(cropped0)
                             for result in results:
@@ -252,6 +263,32 @@ def process_micro_images(micro_img_dir):
                         else:
                             print("X识别错误")
                     else:
+                        x_coords = [p[0] for p in first_poly]
+                        y_coords = [p[1] for p in first_poly]
+                        min_x, max_x = min(x_coords), max(x_coords)
+                        min_y, max_y = min(y_coords), max(y_coords)
+
+                        rect_width = max_x - min_x
+                        if rect_width > 130:
+                            ex_px =70
+                            if "L" in filename_matched_key or "Z" in filename_matched_key or "V" in filename_matched_key:
+                                ex_px = 95
+                            debug_vis_path = os.path.join(micro_img_dir, 'debug',
+                                                          filename.replace('.jpg', '_shift_poly.jpg'))
+                            shifted_poly, shift_line_start, shift_line_end = shift_poly_along_angle(
+                                first_poly,
+                                textbox_angle,
+                                shift_distance=ex_px,
+                                debug_img=img,
+                                output_path=debug_vis_path
+                            )
+                            if os.path.exists(json_path):
+                                with open(json_path, 'r', encoding='utf-8') as f:
+                                    json_data = json.load(f)
+                                shifted_poly_list = [[int(point[0]), int(point[1])] for point in shifted_poly]
+                                json_data['micro_poly'] = shifted_poly_list
+                                with open(json_path, 'w', encoding='utf-8') as f:
+                                    json.dump(json_data, f, ensure_ascii=False, indent=2)
                         # 如果文件名已经包含了 key，则跳过 OCR，直接构造结果
                         logger.info(f"文件名匹配成功，跳过 OCR: {filename} -> {filename_matched_key}")
                         matched_keys.append(filename_matched_key)
@@ -586,11 +623,13 @@ def process_micro_images(micro_img_dir):
             for res in detailed_results:
                 res["color_presence"] = existing_color_presence
                 res["color_stats"] = existing_color_stats
-                if res.get("text") == "X":
-                    print(1)
                 # 检查并更新全局最佳结果
                 m_key = res.get("matched_key")
-                if m_key:
+                if m_key == "D4":
+                    print(0)
+                if m_key :
+                    if "D" in m_key and "D" not in filename:
+                        continue
                     # 构造最终结果项
                     final_item = {
                         "filename": filename,
