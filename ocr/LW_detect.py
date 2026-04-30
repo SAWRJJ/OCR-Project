@@ -688,15 +688,7 @@ def build_sorted_centers_list(red_centers, yellow_centers, green_centers, sort_b
         processed_yellow_centers = find_cluster_centers(yellow_centers)
 
     all_centers = []
-    for centers, color_name in [(red_centers, 'red'), (processed_yellow_centers, 'yellow'), (green_centers, 'green')]:
-        for center in centers:
-            all_centers.append({
-                'center': center,
-                'color': color_name,
-                'x': center[0],
-                'y': center[1]
-            })
-    # for centers, color_name in [(red_centers, 'red'),(green_centers, 'green')]:
+    # for centers, color_name in [(red_centers, 'red'), (processed_yellow_centers, 'yellow'), (green_centers, 'green')]:
     #     for center in centers:
     #         all_centers.append({
     #             'center': center,
@@ -704,6 +696,14 @@ def build_sorted_centers_list(red_centers, yellow_centers, green_centers, sort_b
     #             'x': center[0],
     #             'y': center[1]
     #         })
+    for centers, color_name in [(red_centers, 'red'),(green_centers, 'green')]:
+        for center in centers:
+            all_centers.append({
+                'center': center,
+                'color': color_name,
+                'x': center[0],
+                'y': center[1]
+            })
 
     if sort_by == 'x':
         all_centers.sort(key=lambda item: item['x'], reverse=reverse)
@@ -1263,11 +1263,11 @@ def single_line_detection(img, json_path, target_char, linear_point, origin_img,
     gray = cv2.cvtColor(origin_img, cv2.COLOR_BGR2GRAY)
     gray0 = copy.deepcopy(gray)
     _, black_mask = cv2.threshold(gray, 60, 255, cv2.THRESH_BINARY_INV)
-
+    filename = os.path.basename(json_path).replace('_res.json', '')
     if debug:
         if not os.path.exists('output'):
             os.makedirs('output')
-        filename = os.path.basename(json_path).replace('_res.json', '')
+        # filename = os.path.basename(json_path).replace('_res.json', '')
         mask_output_path = os.path.join('output', f'{filename}_black_mask.png')
         cv2.imwrite(mask_output_path, black_mask)
         print(f"已保存黑色像素掩码到: {mask_output_path}")
@@ -1277,9 +1277,10 @@ def single_line_detection(img, json_path, target_char, linear_point, origin_img,
         print(1)
 
     found_pixel = None
-    extend_length = 220
+    extend_length = 230
     expand_px = 15
     distance_linear_center = 120
+    add_length = 40
     far_vis_img = origin_img.copy()
     if linear_point is not None:
         dx_linear = linear_point[0] - textbox_center[0]
@@ -1398,7 +1399,8 @@ def single_line_detection(img, json_path, target_char, linear_point, origin_img,
             if length_far > 0:
                 unit_dx_far = dx_far / length_far
                 unit_dy_far = dy_far / length_far
-
+                if distance_linear_center > extend_length:
+                    extend_length = extend_length+add_length
                 if target_char.startswith('X'):
                     extend_start = (int(point1[0] - unit_dx_far * extend_length),
                                     int(point1[1] - unit_dy_far * extend_length))
@@ -1595,11 +1597,14 @@ def single_line_detection(img, json_path, target_char, linear_point, origin_img,
                                     template_match_res = 1
                                 elif black_count == 6:
                                     template_match_res = 3
-                                # elif black_count == 2 and len(closed_regions)>0:
-                                #     min_dist, nearest_center = find_nearest(closed_regions,stop_pos)
-                                #     print(f"{filename} stop_pos与closed_regions的最短距离: {min_dist:.2f} 像素")
-                                #     if min_dist > 10:
-                                #         template_match_res = 1
+                                elif black_count == 2 and len(closed_regions)>0:
+                                    min_dist, nearest_center = find_nearest(closed_regions,stop_pos)
+                                    print(f"{filename} stop_pos与closed_regions的最短距离: {min_dist:.2f} 像素")
+                                    dis_threth = 27
+                                    if distance_linear_center > extend_length:
+                                        dis_threth = dis_threth+add_length
+                                    if min_dist > dis_threth:
+                                        template_match_res = 1
 
                                 print(f"根据black_count={black_count}设置template_match_res={template_match_res}")
 

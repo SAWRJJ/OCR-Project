@@ -83,8 +83,7 @@ def compare_xlsx_files(template_path, output_path, filename):
     else:
         print(f"\n[INFO] Found differences in above fields.")
 
-
-if __name__ == "__main__":
+def mainc():
     template_dir = r"./template"
     output_dir = r"./output"
 
@@ -103,3 +102,6 @@ if __name__ == "__main__":
             compare_xlsx_files(template_files[filename], output_files[filename], filename)
         else:
             print(f"\n[MISSING] {filename} not found in output folder.")
+
+if __name__ == "__main__":
+    mainc()

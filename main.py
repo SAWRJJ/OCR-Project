@@ -8,7 +8,7 @@ from ocr.image_processor import ImageProcessor
 from ocr.data_handler import DataHandler
 from ocr.visualizer import Visualizer
 from ocr.micro_ocr import process_micro_images, save_results_to_excel
-
+from compare_xlsx_matched_keys import *
 # Setup logging
 logger = setup_logging()
 
@@ -87,6 +87,7 @@ def main(image_paths):
 
 if __name__ == "__main__":
     img_path= ["img/t9.jpg","img/t8.jpg","img/t5.jpg","img/t2.jpg","img/t3.jpg","img/t6.jpg"]
-    # img_path = ["img/t2.jpg"]# "img/t9.jpg","img/t8.jpg"," "img/t9.jpg","img/t8.jpg","img/t5.jpg"
+    # img_path = ["img/t6.jpg"]# "img/t9.jpg","img/t8.jpg"," "img/t9.jpg","img/t8.jpg","img/t5.jpg"
     # img_path = ["img/元龙站.jpg","img/凤阁岭站.jpg","img/武功站.jpg","img/杨陵站场.jpg","img/新建河站.jpg"]#
     main(img_path)
+    mainc()
