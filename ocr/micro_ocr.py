@@ -806,7 +806,7 @@ def save_results_to_excel(all_results, output_file="ocr_results.xlsx", micro_img
                 elif yellow_length <= 7:
                     yl = 2
                 if len(color_centers.get("green", [])) > 0:
-                    gl = 1
+                    gl = len(color_centers.get("green", []))
                 if len(color_centers.get("red", [])) > 0:
                     rl = 1
                 row = {

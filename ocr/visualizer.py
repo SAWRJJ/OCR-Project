@@ -27,9 +27,6 @@ def detect_color_presence_bgr(
             "valid_pixels": 0,
         }
 
-    kernel = np.ones((3, 3), np.uint8)
-    img_bgr = cv2.erode(img_bgr, kernel, iterations=1)
-    img_bgr = cv2.dilate(img_bgr, kernel, iterations=1)
 
     hsv = cv2.cvtColor(img_bgr, cv2.COLOR_BGR2HSV)
     h = hsv[:, :, 0]
@@ -67,10 +64,10 @@ def detect_color_presence_bgr(
         "red": ((_mask_in_range(0, 10) | _mask_in_range(170, 179)) & valid_color),
         "white": valid_white,
     }
-    if text == "D9" or text == "D15":
+    if text == "SF":
         yellow_mask_vis = np.zeros_like(img_bgr)
-        yellow_mask_vis[masks["blue"]] = [0, 0, 255]
-        save_path = f"/Users/saw/WorkSpace/work/OCR-Project/debug_output/debug_{text}.jpg"
+        yellow_mask_vis[masks["yellow"]] = [0, 255, 255]
+        save_path = f"/Users/saw/WorkSpace/work/OCR-Project/test/test6/debug_SF_{img_bgr.shape[0]}x{img_bgr.shape[1]}.jpg"
         cv2.imwrite(save_path, yellow_mask_vis)
         logger.info(f"已保存 SF debug 黄色掩码: {save_path}")
 
@@ -93,6 +90,11 @@ def detect_color_presence_bgr(
             }
         else:
             positions[name] = {"x_min": None, "x_max": None, "y_min": None, "y_max": None}
+
+    if text == "SF":
+        logger.info(f"=== SF debug color positions ===")
+        for name, pos in positions.items():
+            logger.info(f"  {name}: x=[{pos['x_min']}, {pos['x_max']}], y=[{pos['y_min']}, {pos['y_max']}]")
 
     return {"presence": presence, "stats": stats, "valid_pixels": valid_count, "positions": positions}
 
@@ -155,7 +157,7 @@ class Visualizer:
             bottom_ext = ImageProcessor.extend_opposite_side_for_small_box(bottom_line[0], bottom_line[1], bottom_ext,
                                                                            box_width)
 
-            if "X8" in text:
+            if "X8" in text or "SF" in text:
                 print(top_ext)
                 print(bottom_ext)
             if not top_ext and not bottom_ext:

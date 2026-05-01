@@ -4,6 +4,7 @@ import cv2
 import numpy as np
 import json
 import os
+import math
 
 from paddleocr import PaddleOCR
 from .scan_dark_pixels import find_left_to_right_dark_region, remove_dark_region
@@ -756,6 +757,9 @@ def find_cluster_centers(points, distance_threshold=30):
 
     return center_points
 
+def calculate_distance(point1, point2):
+    return math.sqrt((point1[0] - point2[0])**2 + (point1[1] - point2[1])**2)
+
 def detect_colors(image_path, target_char, debug=True, threshold=100):
     """
     检测图像中的颜色像素并分析位置关系
@@ -943,6 +947,7 @@ def detect_colors(image_path, target_char, debug=True, threshold=100):
 
     textbox_angle = 0.0
     dt_polys = data.get('micro_poly', [])
+    poly = None
     if len(dt_polys) > 0:
         if len(dt_polys[0]) == 2:
             dt_polys = [dt_polys]
@@ -977,6 +982,22 @@ def detect_colors(image_path, target_char, debug=True, threshold=100):
         'green': green_centers,
         'blue': blue_centers
     }
+    if poly and len(color_centers_separate["green"])>1:
+        x_coords = [point[0] for point in poly]
+        y_coords = [point[1] for point in poly]
+        min_x = min(x_coords)
+        max_x = max(x_coords)
+        min_y = min(y_coords)
+        max_y = max(y_coords)
+        textbox_center = ((min_x + max_x) // 2, (min_y + max_y) // 2)
+        print(f"文本框中心坐标: {textbox_center}")
+        green_cs = color_centers_separate["green"]
+        diss = [calculate_distance(textbox_center, gc) for gc in green_cs]
+
+        # 如果差异很大，说明有干扰点 → 只保留最近的
+        if max(diss) - min(diss) > 200:
+            min_index = diss.index(min(diss))
+            color_centers_separate["green"] = [green_cs[min_index]]
     if "D" in target_char:
         return False, 0, 0, color_centers_separate, 0
     if not is_linear and angle_diff < 75:
