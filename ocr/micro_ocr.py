@@ -6,7 +6,7 @@ import math
 from sqlalchemy import true
 
 from .ocr_engine import OCREngine
-from .LW_detect import detect_colors, calculate_textbox_angle
+from .LW_detect import detect_colors, calculate_textbox_angle,find_cluster_centers
 from .config import Config
 from .X_detect import expand_poly_vertical, count_dark_pixels_in_expanded_region, \
     find_first_non_white_column_along_tilt, calculate_horizontal_tilt_angle, expand_poly,shift_poly_along_angle
@@ -111,7 +111,7 @@ def process_micro_images(micro_img_dir):
             continue
 
         # micro_0005_S
-        if filename == "micro_0090_X.jpg": # micro_0064_DOQOOSN micro_0048_XI micro_0093_XL_I_HO_00.json_input.png
+        if filename == "micro_0103_XN_K1224.jpg": # micro_0064_DOQOOSN micro_0048_XI micro_0093_XL_I_HO_00.json_input.png
             print(-1)
         img_path = os.path.join(micro_img_dir, filename)
         json_path = os.path.join(micro_img_dir, os.path.splitext(filename)[0] + ".json")
@@ -816,15 +816,10 @@ def save_results_to_excel(all_results, output_file="ocr_results.xlsx", micro_img
                     return ";".join([f"({c[0]},{c[1]})" for c in centers])
 
                 yellow_length = len(color_centers.get("yellow", []))
-                yl = 0
+                yr = find_cluster_centers(color_centers.get("yellow", []))
+                yl = len(yr)
                 gl = 0
                 rl = 0
-                if yellow_length == 0:
-                    yl = 0
-                elif yellow_length <= 4:
-                    yl = 1
-                elif yellow_length <= 7:
-                    yl = 2
                 if len(color_centers.get("green", [])) > 0:
                     gl = len(color_centers.get("green", []))
                 if len(color_centers.get("red", [])) > 0:
