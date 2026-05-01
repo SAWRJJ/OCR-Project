@@ -1062,9 +1062,9 @@ def detect_colors(image_path, target_char, debug=True, threshold=100):
             black_radio = black_pixel_count / polygon_total_pixels * 100.0
             if 1170 < black_pixel_count <= 1500:
                 template_match_res = 3
-            elif 400 < black_pixel_count <= 1170:
+            elif 410 < black_pixel_count <= 1170:
                 template_match_res = 1
-            elif black_pixel_count <= 400:
+            elif black_pixel_count <= 410:
                 template_match_res = 0
             print(f"{json_path.split('/')[-1]:10} polygon_total_pixels:{polygon_total_pixels}")
             if template_match_res == 1 and 410<=black_pixel_count < 500:
@@ -1078,7 +1078,7 @@ def detect_colors(image_path, target_char, debug=True, threshold=100):
                 template_match_res = 0
             if template_match_res == 1 and black_radio>40:
                 template_match_res = 0
-            if polygon_total_pixels <= 1500 and 16 < black_radio <= 30 and 100 < black_pixel_count:
+            if polygon_total_pixels <= 1495 and 16 < black_radio <= 30 and 100 < black_pixel_count:
                 template_match_res = 2
         else:
             template_match_res = 0
@@ -1607,6 +1607,12 @@ def single_line_detection(img, json_path, target_char, linear_point, origin_img,
                                 rect_stop_p4 = (int(stop_line[1][0] - expand_dx), int(stop_line[1][1] - expand_dy))
 
                                 stop_rect = [rect_stop_p1, rect_stop_p2, rect_stop_p3, rect_stop_p4]
+
+                                img_h, img_w = origin_img.shape[:2]
+                                stop_rect = [
+                                    (max(0, min(img_w-1, pt[0])), max(0, min(img_h-1, pt[1])))
+                                    for pt in stop_rect
+                                ]
 
                                 black_count = bwb_line_detect(origin_img, stop_rect, True)
                                 print(f"bwb_line_detect结果（白色后出现黑色次数）: {black_count}")
