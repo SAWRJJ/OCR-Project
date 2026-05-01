@@ -111,7 +111,7 @@ def process_micro_images(micro_img_dir):
             continue
 
         # micro_0005_S
-        if filename == "micro_0093_XL_I_HO_00.jpg": # micro_0064_DOQOOSN micro_0048_XI micro_0093_XL_I_HO_00.json_input.png
+        if filename == "micro_0090_X.jpg": # micro_0064_DOQOOSN micro_0048_XI micro_0093_XL_I_HO_00.json_input.png
             print(-1)
         img_path = os.path.join(micro_img_dir, filename)
         json_path = os.path.join(micro_img_dir, os.path.splitext(filename)[0] + ".json")
@@ -144,11 +144,11 @@ def process_micro_images(micro_img_dir):
                 print(potential_text)
             filename_matched_key, found_match_in_filename = check_text(potential_text)
             # 新增判断：如果匹配到 S 或 X，但文件名中的文本不是精确的 S 或 X，则强制二次 OCR
-            if filename_matched_key in ('S', 'X') and potential_text != filename_matched_key:
-                logger.info(
-                    f"文件名中匹配到 '{filename_matched_key}' 但非完全匹配 ('{potential_text}'), 将执行二次OCR: {filename}")
-                print("不完全为S 或者X 重新判断 识别名称")
-                filename_matched_key = None  # 作废文件名匹配，强制OCR
+            # if filename_matched_key in ('S', 'X') and potential_text != filename_matched_key:
+            #     logger.info(
+            #         f"文件名中匹配到 '{filename_matched_key}' 但非完全匹配 ('{potential_text}'), 将执行二次OCR: {filename}")
+            #     print("不完全为S 或者X 重新判断 识别名称")
+            #     filename_matched_key = None  # 作废文件名匹配，强制OCR
 
             if filename_matched_key:
                 initial_polys = None
@@ -263,6 +263,7 @@ def process_micro_images(micro_img_dir):
                         else:
                             print("X识别错误")
                     else:
+                        poly = first_poly
                         x_coords = [p[0] for p in first_poly]
                         y_coords = [p[1] for p in first_poly]
                         min_x, max_x = min(x_coords), max(x_coords)
@@ -282,6 +283,7 @@ def process_micro_images(micro_img_dir):
                                 debug_img=img,
                                 output_path=debug_vis_path
                             )
+                            poly = shifted_poly
                             if os.path.exists(json_path):
                                 with open(json_path, 'r', encoding='utf-8') as f:
                                     json_data = json.load(f)
@@ -289,6 +291,24 @@ def process_micro_images(micro_img_dir):
                                 json_data['micro_poly'] = shifted_poly_list
                                 with open(json_path, 'w', encoding='utf-8') as f:
                                     json.dump(json_data, f, ensure_ascii=False, indent=2)
+                        x_min = max(0, int(min(p[0] for p in poly)))
+                        x_max = min(img.shape[1], int(max(p[0] for p in poly)))
+                        y_min = max(0, int(min(p[1] for p in poly)))
+                        y_max = min(img.shape[0], int(max(p[1] for p in poly)))
+                        cropped = img[y_min:y_max, x_min:x_max]
+                        debug_path = os.path.join(micro_img_dir, 'debug', filename.replace('.jpg', '_debug.jpg'))
+                        os.makedirs(os.path.dirname(debug_path), exist_ok=True)
+                        cropped_path = os.path.join(micro_img_dir, 'debug', filename.replace('.jpg', '_cropped_expect.jpg'))
+                        # vis_img = img.copy()
+                        # cv2.polylines(vis_img, [expanded_array], isClosed=True, color=(0, 255, 0), thickness=2)
+                        # cv2.rectangle(vis_img, (x_min, y_min), (x_max, y_max), (255, 0, 0), 2)
+                        cropped0 = find_drak_remove(cropped, dark_threshold=190)
+                        cv2.imwrite(cropped_path, cropped0)
+                        results = ocr_engine.ocr.predict(cropped0)
+                        if len(results) == 0:
+                            continue
+                        elif len(results[0]["rec_texts"]) == 0:
+                            continue
                         # 如果文件名已经包含了 key，则跳过 OCR，直接构造结果
                         logger.info(f"文件名匹配成功，跳过 OCR: {filename} -> {filename_matched_key}")
                         matched_keys.append(filename_matched_key)
@@ -625,7 +645,7 @@ def process_micro_images(micro_img_dir):
                 res["color_stats"] = existing_color_stats
                 # 检查并更新全局最佳结果
                 m_key = res.get("matched_key")
-                if m_key == "D4":
+                if m_key == "X":
                     print(0)
                 if m_key :
                     if "D" in m_key and "D" not in filename:
