@@ -111,7 +111,7 @@ def process_micro_images(micro_img_dir):
             continue
 
         # micro_0005_S
-        if filename == "micro_0004_X.jpg": # micro_0064_DOQOOSN micro_0048_XI micro_0093_XL_I_HO_00.json_input.png
+        if filename == "micro_0111_S15.jpg" or filename == "micro_0005_S15.jpg": # micro_0064_DOQOOSN micro_0048_XI micro_0093_XL_I_HO_00.json_input.png
             print(-1)
         img_path = os.path.join(micro_img_dir, filename)
         json_path = os.path.join(micro_img_dir, os.path.splitext(filename)[0] + ".json")
@@ -180,7 +180,10 @@ def process_micro_images(micro_img_dir):
                         debug_vis_path = os.path.join(micro_img_dir, 'debug',
                                                       filename.replace('.jpg', '_scan_debug.jpg'))
                         ex_px =70
-                        if "L" in filename_matched_key or "Z" in filename_matched_key:
+                        s = filename_matched_key[1:]
+                        if s.isdigit():
+                            s = int(s)
+                        if "L" in filename_matched_key or "Z" in filename_matched_key or len(filename_matched_key) >2:
                             ex_px = 95
                         first_non_white_col, found_scan_line_start, found_scan_line_end, non_white_pixels, expand_x, expand_y, final_scan_line_start, final_scan_line_end = find_first_non_white_column_along_tilt(
                             first_poly, binary, textbox_angle, debug_img=img0, output_path=debug_vis_path,ex_p=ex_px)
@@ -373,8 +376,8 @@ def process_micro_images(micro_img_dir):
                     print(textbox_length)
                     if textbox_length > 120 and potential_text[0] == "S":
                         expand_length = 55
-                        if "F" in filename_matched_key:
-                            expand_length = 85
+                        if "F" in filename_matched_key or len(filename_matched_key) >2 :
+                            expand_length = 120
                         second_poly, expanded_poly = calculate_shift_params(first_poly, extend_length=expand_length)
                     else:
                         expanded_poly = expand_poly(first_poly, expand_x=40, expand_y=6, angle=tilt_angle)

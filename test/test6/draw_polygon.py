@@ -4,7 +4,7 @@ import numpy as np
 import os
 
 
-def calculate_shift_params(micro_poly, input_angle=None):
+def calculate_shift_params(micro_poly, input_angle=None,extend_length = 55):
     """计算平移参数
 
     Args:
@@ -31,7 +31,7 @@ def calculate_shift_params(micro_poly, input_angle=None):
     else:
         angle = np.arctan2(dy, dx)
 
-    extend_length = 52
+
     length = np.sqrt(dx ** 2 + dy ** 2)
     if length > 0:
         ux = dx / length
@@ -158,7 +158,7 @@ def draw_polygon_with_shift(image_path, json_path, input_angle=None):
         print("没有找到 micro_poly")
         return img
 
-    params,_ = calculate_shift_params(micro_poly, input_angle)
+    params,_ = calculate_shift_params(micro_poly, input_angle,130)
 
     print(f"左侧两个点: {params['left_points']}")
     print(f"右侧两个点: {params['right_points']}")
@@ -176,7 +176,7 @@ def draw_polygon_with_shift(image_path, json_path, input_angle=None):
 
 
 if __name__ == "__main__":
-    image_path = r"d:\work\ocr+Transformer\test\test6\micro_0027_S_I1362_202.jpg"
-    json_path = r"d:\work\ocr+Transformer\test\test6\micro_0027_S_I1362_202.json"
+    image_path = r"./test/test6/micro_0005_S15.jpg"
+    json_path = r"./test/test6/micro_0005_S15.json"
 
     draw_polygon_with_shift(image_path, json_path)
