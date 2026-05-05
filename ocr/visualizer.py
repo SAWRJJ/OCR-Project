@@ -7,7 +7,7 @@ import logging
 import numpy as np
 from .utils import should_keep_text, safe_filename_component
 from .image_processor import ImageProcessor
-
+import re
 logger = logging.getLogger("ocr_system")
 
 
@@ -100,6 +100,7 @@ def detect_color_presence_bgr(
 
 
 class Visualizer:
+
     @staticmethod
     def draw_red_lines(img_path, rec_polys_with_text, out_path="ocr_result_with_red_lines.jpg",
                        target_chars=None, exclude_substrings=None, save_boxes_dir=None):
@@ -116,7 +117,7 @@ class Visualizer:
         if target_chars is None:
             target_chars = ["S", "X", "D"]
         if exclude_substrings is None:
-            exclude_substrings = ["/", "DG", "YD", "G"]
+            exclude_substrings = ["/", "DG", "G"]
 
         if save_boxes_dir:
             os.makedirs(save_boxes_dir, exist_ok=True)
@@ -250,54 +251,55 @@ class Visualizer:
                     y0 = max(int(exp_min_y), 0)
                     y1 = min(int(exp_max_y), img.shape[0])
                 if x1 > x0 and y1 > y0:
-                        patch = raw_img[y0:y1, x0:x1]
+                    patch = raw_img[y0:y1, x0:x1]
+                    if bool(re.search(r'[\u4e00-\u9fff]', str(text))):
+                        continue
 
-                        # 确保文件名安全，不包含中文或非法字符
-                        name = safe_filename_component(str(text))
-                        # 如果 name 中包含非 ASCII 字符，替换为 hex 或其他
-                        if not all(ord(c) < 128 for c in name):
-                            name = "".join(c if ord(c) < 128 else f"_{ord(c):x}_" for c in name)
+                    # 确保文件名安全，不包含中文或非法字符
+                    name = safe_filename_component(str(text))
+                    # 如果 name 中包含非 ASCII 字符，替换为 hex 或其他
+                    if not all(ord(c) < 128 for c in name):
+                        name = "".join(c if ord(c) < 128 else f"_{ord(c):x}_" for c in name)
 
-                        filename = f"micro_{saved_count:04d}_{name}.jpg" if name else f"micro_{saved_count:04d}.jpg"
+                    filename = f"micro_{saved_count:04d}_{name}.jpg" if name else f"micro_{saved_count:04d}.jpg"
+                    # 使用 imencode/imdecode 处理中文路径，或者确保路径不含中文
+                    # 这里文件名已经被我们处理过了，但是 save_boxes_dir 可能包含中文
+                    # cv2.imwrite 在 Windows 下不支持中文路径
+                    # 使用 cv2.imencode + file write 解决
+                    output_path = os.path.join(save_boxes_dir, filename)
+                    try:
+                        cv2.imencode('.jpg', patch)[1].tofile(output_path)
+                    except Exception as e:
+                        logger.error(f"保存小图片失败: {output_path}, {e}")
+                        continue
+                    if "X8" in text or "SF" in text:
+                        print(top_ext)
+                        print(bottom_ext)
+                    color_info = detect_color_presence_bgr(patch, text=name)
 
-                        # 使用 imencode/imdecode 处理中文路径，或者确保路径不含中文
-                        # 这里文件名已经被我们处理过了，但是 save_boxes_dir 可能包含中文
-                        # cv2.imwrite 在 Windows 下不支持中文路径
-                        # 使用 cv2.imencode + file write 解决
-                        output_path = os.path.join(save_boxes_dir, filename)
-                        try:
-                            cv2.imencode('.jpg', patch)[1].tofile(output_path)
-                        except Exception as e:
-                            logger.error(f"保存小图片失败: {output_path}, {e}")
-                            continue
-                        if "X8" in text or "SF" in text:
-                            print(top_ext)
-                            print(bottom_ext)
-                        color_info = detect_color_presence_bgr(patch, text=name)
+                    # Calculate relative coordinates in the micro image
+                    # The poly coordinates are global. We subtract x0, y0.
+                    relative_poly = [[p[0] - x0, p[1] - y0] for p in poly]
 
-                        # Calculate relative coordinates in the micro image
-                        # The poly coordinates are global. We subtract x0, y0.
-                        relative_poly = [[p[0] - x0, p[1] - y0] for p in poly]
+                    info_data = {
+                        "micro_image_name": filename,
+                        "text": text,
+                        "global_poly": poly,  # Global coordinates
+                        "micro_poly": relative_poly,  # Coordinates in the micro image
+                        "source_split_image": os.path.basename(source_split),  # Which split image
+                        "split_poly": split_poly,  # Coordinates in the split image
+                        "color_presence": color_info["presence"],
+                        "color_stats": color_info["stats"],
+                        "color_valid_pixels": color_info["valid_pixels"],
+                    }
 
-                        info_data = {
-                            "micro_image_name": filename,
-                            "text": text,
-                            "global_poly": poly,  # Global coordinates
-                            "micro_poly": relative_poly,  # Coordinates in the micro image
-                            "source_split_image": os.path.basename(source_split),  # Which split image
-                            "split_poly": split_poly,  # Coordinates in the split image
-                            "color_presence": color_info["presence"],
-                            "color_stats": color_info["stats"],
-                            "color_valid_pixels": color_info["valid_pixels"],
-                        }
+                    # Save JSON for this specific image
+                    json_filename = os.path.splitext(filename)[0] + ".json"
+                    json_path = os.path.join(save_boxes_dir, json_filename)
+                    with open(json_path, "w", encoding="utf-8") as f:
+                        json.dump(info_data, f, ensure_ascii=False, indent=2)
 
-                        # Save JSON for this specific image
-                        json_filename = os.path.splitext(filename)[0] + ".json"
-                        json_path = os.path.join(save_boxes_dir, json_filename)
-                        with open(json_path, "w", encoding="utf-8") as f:
-                            json.dump(info_data, f, ensure_ascii=False, indent=2)
-
-                        saved_count += 1
+                    saved_count += 1
 
             # 绘制红线
             if top_ext:

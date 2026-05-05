@@ -111,7 +111,7 @@ def process_micro_images(micro_img_dir):
             continue
 
         # micro_0005_S
-        if filename == "micro_0111_S15.jpg" or filename == "micro_0005_S15.jpg": # micro_0064_DOQOOSN micro_0048_XI micro_0093_XL_I_HO_00.json_input.png
+        if filename == "micro_0038_D26.jpg" or filename =="micro_0082_XI.jpg": # micro_0110_2300_1X5 # micro_0085__5c0f_D # micro_0064_DOQOOSN micro_0048_XI micro_0093_XL_I_HO_00.json_input.png
             print(-1)
         img_path = os.path.join(micro_img_dir, filename)
         json_path = os.path.join(micro_img_dir, os.path.splitext(filename)[0] + ".json")
@@ -279,6 +279,8 @@ def process_micro_images(micro_img_dir):
                             # 'XⅣ'
                             if "F" in filename_matched_key or "L" in filename_matched_key or "Z" in filename_matched_key or "Ⅳ" in filename_matched_key or "V" in filename_matched_key:
                                 ex_px = 120
+                            elif "XD" in potential_text :
+                                ex_px = 130
                             debug_vis_path = os.path.join(micro_img_dir, 'debug',
                                                           filename.replace('.jpg', '_shift_poly.jpg'))
                             shifted_poly, shift_line_start, shift_line_end = shift_poly_along_angle(

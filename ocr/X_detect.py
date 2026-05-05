@@ -320,6 +320,102 @@ def shift_poly_along_angle(poly, angle, shift_distance=100, debug_img=None, outp
     print(f"平移向量: dx={shift_dx:.2f}, dy={shift_dy:.2f}")
 
     return new_poly, shift_line_start, shift_line_end
+def shift_poly_along_angle1(poly, img, shift_point=None, target_char=None, output_path=None):
+    """
+    根据target_char选择左侧或右侧边，以nearest_center为中心，
+    沿边的倾斜角度上下外扩55px得到110px线段，
+    再将线段平移回被平移边位置，组合成新的多边形
+
+    参数:
+        poly: 文本框四边形顶点 [[x0,y0], [x1,y1], [x2,y2], [x3,y3]]
+        img: 原始图像
+        shift_point: 平移目标点/圆心 (nearest_center)
+        target_char: 目标字符，'X'选右侧边，'S'选左侧边
+        output_path: 可视化图片保存路径
+
+    返回:
+        new_poly: 新的多边形顶点
+        shift_line_start: 平移线起点
+        shift_line_end: 平移线终点
+    """
+    poly = np.array(poly, dtype=np.float64)
+    h, w = img.shape[:2]
+
+    if target_char and 'X' in target_char.upper():
+        edge_start = poly[1].tolist()
+        edge_end = poly[2].tolist()
+        edge_name = "右侧"
+    else:
+        edge_start = poly[0].tolist()
+        edge_end = poly[3].tolist()
+        edge_name = "左侧"
+
+    print(f"选择{edge_name}边: {edge_start} -> {edge_end}")
+
+    dx = float(edge_end[0]) - float(edge_start[0])
+    dy = float(edge_end[1]) - float(edge_start[1])
+    edge_length = np.sqrt(dx**2 + dy**2)
+    if edge_length == 0:
+        edge_length = 1
+
+    tilt_angle = np.arctan2(dy, dx)
+    print(f"边倾斜角度: {np.degrees(tilt_angle):.2f} 度")
+
+    cos_a = np.cos(tilt_angle)
+    sin_a = np.sin(tilt_angle)
+
+    extend_length = 55
+    if shift_point is not None:
+        center_x, center_y = float(shift_point[0]), float(shift_point[1])
+
+        line_start = (center_x - cos_a * extend_length, center_y - sin_a * extend_length)
+        line_end = (center_x + cos_a * extend_length, center_y + sin_a * extend_length)
+
+        print(f"以nearest_center为中点的110px线段: {line_start} -> {line_end}")
+
+        shift_dx = float(edge_start[0]) - line_start[0]
+        shift_dy = float(edge_start[1]) - line_start[1]
+
+        shifted_line_start = (line_start[0] + shift_dx, line_start[1] + shift_dy)
+        shifted_line_end = (line_end[0] + shift_dx, line_end[1] + shift_dy)
+    else:
+        shift_dx = 0
+        shift_dy = 0
+        line_start = (float(edge_start[0]), float(edge_start[1]))
+        line_end = (float(edge_end[0]), float(edge_end[1]))
+        shifted_line_start = line_start
+        shifted_line_end = line_end
+
+    print(f"平移回被平移边后: {shifted_line_start} -> {shifted_line_end}")
+
+    new_poly = np.array([
+        [shifted_line_start[0], shifted_line_start[1]],
+        [shifted_line_end[0], shifted_line_end[1]],
+        [line_end[0], line_end[1]],
+        [line_start[0], line_start[1]]
+    ], dtype=np.int32)
+
+    vis_img = img.copy()
+
+    cv2.line(vis_img, (int(line_start[0]), int(line_start[1])), (int(line_end[0]), int(line_end[1])), (255, 255, 0), 2)
+    cv2.line(vis_img, (int(shifted_line_start[0]), int(shifted_line_start[1])), (int(shifted_line_end[0]), int(shifted_line_end[1])), (255, 0, 0), 2)
+
+    if shift_point is not None:
+        cv2.circle(vis_img, (int(center_x), int(center_y)), 5, (0, 255, 255), -1)
+
+    cv2.putText(vis_img, f"110px Line (Yellow)", (10, 20), cv2.FONT_HERSHEY_SIMPLEX, 0.4, (255, 255, 0), 1)
+    cv2.putText(vis_img, f"Shifted Line (Blue)", (10, 40), cv2.FONT_HERSHEY_SIMPLEX, 0.4, (255, 0, 0), 1)
+    cv2.putText(vis_img, f"Center Point (Cyan)", (10, 60), cv2.FONT_HERSHEY_SIMPLEX, 0.4, (0, 255, 255), 1)
+
+    if output_path is not None:
+        os.makedirs(os.path.dirname(output_path), exist_ok=True)
+        cv2.imwrite(output_path, vis_img)
+        print(f"可视化图片已保存到: {output_path}")
+
+    print(f"原始边起点: {edge_start}, 终点: {edge_end}")
+    print(f"新多边形: {new_poly.tolist()}")
+
+    return new_poly, (int(shifted_line_start[0]), int(shifted_line_start[1])), (int(shifted_line_end[0]), int(shifted_line_end[1]))
 
 
 def calculate_horizontal_tilt_angle(poly):
