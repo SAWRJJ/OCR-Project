@@ -9,7 +9,8 @@ from .ocr_engine import OCREngine
 from .LW_detect import detect_colors, calculate_textbox_angle,find_cluster_centers
 from .config import Config
 from .X_detect import expand_poly_vertical, count_dark_pixels_in_expanded_region, \
-    find_first_non_white_column_along_tilt, calculate_horizontal_tilt_angle, expand_poly,shift_poly_along_angle
+    find_first_non_white_column_along_tilt, calculate_horizontal_tilt_angle, expand_poly,shift_poly_along_angle,\
+    count_vertical_strokes
 from .find_boundary_dark import find_drak_remove
 from .utils import calculate_shift_params
 from .scan_dark_pixels import process_image_high_circularity_to_white
@@ -111,7 +112,7 @@ def process_micro_images(micro_img_dir):
             continue
 
         # micro_0005_S
-        if filename == "micro_0038_D26.jpg" or filename =="micro_0082_XI.jpg": # micro_0110_2300_1X5 # micro_0085__5c0f_D # micro_0064_DOQOOSN micro_0048_XI micro_0093_XL_I_HO_00.json_input.png
+        if filename == "micro_0050_XVII.jpg" or filename =="micro_0082_XI.jpg": # micro_0110_2300_1X5 # micro_0085__5c0f_D # micro_0064_DOQOOSN micro_0048_XI micro_0093_XL_I_HO_00.json_input.png
             print(-1)
         img_path = os.path.join(micro_img_dir, filename)
         json_path = os.path.join(micro_img_dir, os.path.splitext(filename)[0] + ".json")
@@ -321,6 +322,12 @@ def process_micro_images(micro_img_dir):
                             for result in results:
                                 for i in range(len(result['rec_texts'])):
                                     potential_text = result['rec_texts'][i]
+                                    if "VII" in potential_text or "VI" in potential_text or "VⅢ" in potential_text:
+                                        VII_count = count_vertical_strokes(cropped0)
+                                        if VII_count <= 2:
+                                            potential_text = "XVII"
+                                        elif VII_count == 3:
+                                            potential_text = "XVIII"
                                     first_confidence = result['rec_scores'][i]
                                     rec_poly = result['rec_polys'][i]
                                     restored_poly = [[int(point[i] + x_min), int(point[1] + y_min)] for point in rec_poly]
@@ -400,10 +407,17 @@ def process_micro_images(micro_img_dir):
                     cropped0 = find_drak_remove(cropped,dark_threshold=190)
                     cv2.imwrite(cropped_path, cropped0)
                     results = ocr_engine.ocr.predict(cropped0)
+
                     for result in results:
                         if len(result) >= 2 and len(result['rec_texts']) > 0:
                             for i in range(len(result['rec_texts'])):
                                 text = ''.join(results[i]['rec_texts']).replace(' ', '')
+                                if "VII" in text or "VI" in text:
+                                    VII_count = count_vertical_strokes(cropped0)
+                                    if VII_count <=2:
+                                        text = "SVII"
+                                    elif VII_count ==3:
+                                        text = "SVIII"
                                 conf = result['rec_scores'][i]
                                 rec_poly = result['rec_polys'][i]
                                 restored_poly = [[int(point[i] + x_min), int(point[1] + y_min)] for point in rec_poly]

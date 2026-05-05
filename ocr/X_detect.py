@@ -486,6 +486,52 @@ def expand_poly(poly, expand_x=10, expand_y=5, angle=0):
 
     return [[int(p[0]), int(p[1])] for p in final_poly]
 
+def count_vertical_strokes(image, debug=False,json_path=None):
+    """
+    输入:
+        image: BGR / 灰度图 (np.ndarray)
+    输出:
+        竖线数量（int）
+    """
+
+    # 1. 灰度
+    if len(image.shape) == 3:
+        gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
+    else:
+        gray = image.copy()
+
+    # 2. 二值化（建议自适应更稳）
+    _, binary = cv2.threshold(gray, 0, 255, cv2.THRESH_BINARY_INV + cv2.THRESH_OTSU)
+
+    # 3. 垂直投影（按列求和）
+    projection = np.sum(binary // 255, axis=0)
+
+    # 4. 平滑（去噪）
+    kernel_size = 5
+    projection_smooth = np.convolve(projection, np.ones(kernel_size)/kernel_size, mode='same')
+
+    # 5. 峰值检测
+    threshold = np.max(projection_smooth) * 0.7
+    peaks = projection_smooth > threshold
+
+    # 6. 统计连续峰段数量
+    count = 0
+    in_peak = False
+    for val in peaks:
+        if val and not in_peak:
+            count += 1
+            in_peak = True
+        elif not val:
+            in_peak = False
+
+    # if debug:
+    #     import matplotlib.pyplot as plt
+    #     plt.plot(projection_smooth)
+    #     plt.title(f"Peaks: {count}")
+    #     plt.show()
+
+    return count
+
 
 if __name__ == '__main__':
     json_path = r'd:\work\ocr+Transformer\test4\micro_0060_X.json'

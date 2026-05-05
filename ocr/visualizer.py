@@ -9,7 +9,7 @@ from .utils import should_keep_text, safe_filename_component
 from .image_processor import ImageProcessor
 import re
 logger = logging.getLogger("ocr_system")
-
+import  copy
 
 def detect_color_presence_bgr(
         img_bgr,
@@ -112,7 +112,7 @@ class Visualizer:
             logger.error("无法读取图像")
             return
 
-        raw_img = img.copy()
+        raw_img = copy.deepcopy(img)
 
         if target_chars is None:
             target_chars = ["S", "X", "D"]
@@ -123,6 +123,32 @@ class Visualizer:
             os.makedirs(save_boxes_dir, exist_ok=True)
 
         saved_count = 0
+        for item in rec_polys_with_text:
+            if len(item) == 5:
+                poly, text, source_split, split_poly, score = item
+                if text == 'X_3a0_0':
+                    print(1)
+            else:
+                poly, text = item
+                source_split = "unknown"
+                split_poly = []
+
+            if len(poly) != 4:
+                continue
+            text = text.replace("π", "II")
+            if "." in text:
+                mask = np.zeros(raw_img.shape[:2], dtype=np.uint8)
+                cv2.fillPoly(mask, [np.array(poly, dtype=np.int32)], 255)
+                is_white = np.all(raw_img > 200, axis=2)
+                for c in range(3):
+                    raw_img[:, :, c] = np.where(mask > 0, np.where(is_white, raw_img[:, :, c], 0), raw_img[:, :, c])
+                # cv2.polylines(img, [np.array(poly, dtype=np.int32)], True, (0, 0, 255), 2)
+                #
+                # output_path = img_path.rsplit('.', 1)[0] + '_processed0.jpg'
+                # output_path1 = img_path.rsplit('.', 1)[0] + '_processed1.jpg'
+                # cv2.imwrite(output_path, raw_img)
+                # cv2.imwrite(output_path1, img)
+                # print(f"处理后的图片已保存: {output_path}")
 
         for item in rec_polys_with_text:
             # Handle both 2-element (legacy) and 4-element (new) tuples
@@ -137,10 +163,16 @@ class Visualizer:
 
             if len(poly) != 4:
                 continue
-
+            text = text.replace("π", "II")
             if "X8" in text or 'SF' in text:
                 print(0)
-            text = text.replace("π","II")
+            # if "K" in text or "." in text:
+            #     mask = np.zeros(img.shape[:2], dtype=np.uint8)
+            #     cv2.fillPoly(mask, [np.array(poly, dtype=np.int32)], 255)
+            #     is_white = np.all(img > 200, axis=2)
+            #     for c in range(3):
+            #         raw_img[:, :, c] = np.where(mask > 0, np.where(is_white, img[:, :, c], 0), img[:, :, c])
+            #
             if not should_keep_text(text, target_chars=target_chars, exclude_substrings=exclude_substrings):
                 continue
             text = text.upper()
