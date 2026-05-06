@@ -136,12 +136,19 @@ class Visualizer:
             if len(poly) != 4:
                 continue
             text = text.replace("π", "II")
-            if "." in text:
+            if len(text) >0 and text[-1].isdigit():
                 mask = np.zeros(raw_img.shape[:2], dtype=np.uint8)
                 cv2.fillPoly(mask, [np.array(poly, dtype=np.int32)], 255)
-                is_white = np.all(raw_img > 200, axis=2)
+                hsv = cv2.cvtColor(raw_img, cv2.COLOR_BGR2HSV)
+                lower_red1 = np.array([0, 100, 100])
+                upper_red1 = np.array([10, 255, 255])
+                lower_red2 = np.array([160, 100, 100])
+                upper_red2 = np.array([180, 255, 255])
+                mask_red1 = cv2.inRange(hsv, lower_red1, upper_red1)
+                mask_red2 = cv2.inRange(hsv, lower_red2, upper_red2)
+                mask_red = mask_red1 + mask_red2
                 for c in range(3):
-                    raw_img[:, :, c] = np.where(mask > 0, np.where(is_white, raw_img[:, :, c], 0), raw_img[:, :, c])
+                    raw_img[:, :, c] = np.where(mask > 0, np.where(mask_red > 0, 0, raw_img[:, :, c]), raw_img[:, :, c])
                 # cv2.polylines(img, [np.array(poly, dtype=np.int32)], True, (0, 0, 255), 2)
                 #
                 # output_path = img_path.rsplit('.', 1)[0] + '_processed0.jpg'
