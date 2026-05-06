@@ -27,8 +27,8 @@ class DataHandler:
                     
                     if len(rec_polys) != len(rec_texts):
                         continue
-                    if "X" in rec_texts:
-                        print(1)
+                    # if "X" in rec_texts:
+                    #     print(1)
                     input_path = data.get("input_path", "")
                     if input_path and "split_" in input_path:
                         parts = input_path.split("_")

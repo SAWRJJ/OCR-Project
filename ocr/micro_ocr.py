@@ -14,6 +14,7 @@ from .X_detect import expand_poly_vertical, count_dark_pixels_in_expanded_region
 from .find_boundary_dark import find_drak_remove
 from .utils import calculate_shift_params
 from .scan_dark_pixels import process_image_high_circularity_to_white
+from .shift_VII import shift_step
 import cv2
 import numpy as np
 
@@ -77,7 +78,33 @@ def check_text(potential_text,target_defs0=None):
         if found_match_in_filename:
             break
     return filename_matched_key, found_match_in_filename
+def rotate_image_and_poly(img, poly, angle, center_point):
+    angle_deg = np.degrees(angle)
+    h, w = img.shape[:2]
+    rotation_matrix = cv2.getRotationMatrix2D(center_point, -angle_deg, 1.0)
+    rotated_img = cv2.warpAffine(img, rotation_matrix, (w, h))
 
+    poly = np.array(poly, dtype=np.float32)
+    ones = np.ones((poly.shape[0], 1))
+    poly_hom = np.hstack([poly, ones])
+    rotated_poly = rotation_matrix @ poly_hom.T
+    rotated_poly = rotated_poly.T.astype(np.int32)
+
+    return rotated_img, rotated_poly
+
+
+def rotate_polys_back(poly, angle, center_point, original_shape):
+    angle_deg = np.degrees(angle)
+    h, w = original_shape[:2]
+    rotation_matrix = cv2.getRotationMatrix2D(center_point, angle_deg, 1.0)
+    rotated_polys = []
+    # for poly in polys:
+    poly = np.array(poly, dtype=np.float32)
+    ones = np.ones((poly.shape[0], 1))
+    poly_hom = np.hstack([poly, ones])
+    rotated = rotation_matrix @ poly_hom.T
+    rotated_polys.append(rotated.T.astype(np.int32))
+    return rotated_polys[0]
 
 def process_micro_images(micro_img_dir):
     """
@@ -112,7 +139,7 @@ def process_micro_images(micro_img_dir):
             continue
 
         # micro_0005_S
-        if filename == "micro_0050_XVII.jpg" or filename =="micro_0082_XI.jpg": # micro_0110_2300_1X5 # micro_0085__5c0f_D # micro_0064_DOQOOSN micro_0048_XI micro_0093_XL_I_HO_00.json_input.png
+        if filename == "micro_0087_YSC.jpg" or "YSC" in filename: # micro_0110_2300_1X5 # micro_0085__5c0f_D # micro_0064_DOQOOSN micro_0048_XI micro_0093_XL_I_HO_00.json_input.png
             print(-1)
         img_path = os.path.join(micro_img_dir, filename)
         json_path = os.path.join(micro_img_dir, os.path.splitext(filename)[0] + ".json")
@@ -165,14 +192,15 @@ def process_micro_images(micro_img_dir):
                 img = cv2.imread(img_path)
                 filename_matched_key1 = None
                 found_match_in_filename1 = False
+                textbox_angle, _ = calculate_textbox_angle(first_poly)
+
                 if "X" in filename_matched_key:
                     dark_count, total_count, dark_ratio = count_dark_pixels_in_expanded_region(
                         cv2.imdecode(np.fromfile(img_path, dtype=np.uint8), cv2.IMREAD_COLOR),
                         first_poly,
                         expand_poly_vertical(first_poly, 5),
                         dark_threshold=128)
-                    textbox_angle, _ = calculate_textbox_angle(first_poly)
-                    if dark_ratio:
+                    if dark_ratio > 0.07:
                         print("execute test5 detect")
 
                         img0 = find_drak_remove(img, dark_threshold=230)
@@ -224,15 +252,9 @@ def process_micro_images(micro_img_dir):
                                         conf = result['rec_scores'][i]
                                         rec_poly = result['rec_polys'][i]
                                         restored_poly = [[int(point[0] + left), int(point[1])] for point in rec_poly]
-                                        for key, variants in target_defs.items():
-                                            for variant in variants:
-                                                if variant in text:
-                                                    filename_matched_key1 = key
-                                                    matched_keys.append(filename_matched_key1)
-                                                    found_match_in_filename1 = True
-                                                    break
-                                            if found_match_in_filename1:
-                                                break
+                                        filename_matched_key1, found_match_in_filename1 = check_text(text)
+                                        if found_match_in_filename1 and filename_matched_key1 not in matched_keys:
+                                            matched_keys.append(filename_matched_key1)
                                         if found_match_in_filename1:
                                             break
                                     if found_match_in_filename1:
@@ -268,7 +290,7 @@ def process_micro_images(micro_img_dir):
                         else:
                             print("X识别错误")
                     else:
-                        poly = first_poly
+                        shifted_poly = first_poly
                         x_coords = [p[0] for p in first_poly]
                         y_coords = [p[1] for p in first_poly]
                         min_x, max_x = min(x_coords), max(x_coords)
@@ -280,8 +302,11 @@ def process_micro_images(micro_img_dir):
                             # 'XⅣ'
                             if "F" in filename_matched_key or "L" in filename_matched_key or "Z" in filename_matched_key or "Ⅳ" in filename_matched_key or "V" in filename_matched_key:
                                 ex_px = 120
+                            elif "YXD" in potential_text :
+                                ex_px = 155
                             elif "XD" in potential_text :
                                 ex_px = 130
+
                             debug_vis_path = os.path.join(micro_img_dir, 'debug',
                                                           filename.replace('.jpg', '_shift_poly.jpg'))
                             shifted_poly, shift_line_start, shift_line_end = shift_poly_along_angle(
@@ -291,19 +316,28 @@ def process_micro_images(micro_img_dir):
                                 debug_img=img,
                                 output_path=debug_vis_path
                             )
-                            poly = shifted_poly
+                        x_min = max(0, int(min(p[0] for p in shifted_poly)))
+                        x_max = min(img.shape[1], int(max(p[0] for p in shifted_poly)))
+                        y_min = max(0, int(min(p[1] for p in shifted_poly)))
+                        y_max = min(img.shape[0], int(max(p[1] for p in shifted_poly)))
+                        cropped = img[y_min:y_max, x_min:x_max]
+                        if "X" in potential_text and potential_text[0].isdigit():
+                            debug_path = os.path.join(micro_img_dir, 'debug', filename.replace('.jpg', '_debug.jpg'))
+                            os.makedirs(os.path.dirname(debug_path), exist_ok=True)
+                            output_path = os.path.join(micro_img_dir, 'debug',
+                                                        filename.replace('.jpg', '_poly_output.jpg'))
                             if os.path.exists(json_path):
                                 with open(json_path, 'r', encoding='utf-8') as f:
-                                    json_data = json.load(f)
-                                shifted_poly_list = [[int(point[0]), int(point[1])] for point in shifted_poly]
-                                json_data['micro_poly'] = shifted_poly_list
-                                with open(json_path, 'w', encoding='utf-8') as f:
-                                    json.dump(json_data, f, ensure_ascii=False, indent=2)
-                        x_min = max(0, int(min(p[0] for p in poly)))
-                        x_max = min(img.shape[1], int(max(p[0] for p in poly)))
-                        y_min = max(0, int(min(p[1] for p in poly)))
-                        y_max = min(img.shape[0], int(max(p[1] for p in poly)))
-                        cropped = img[y_min:y_max, x_min:x_max]
+                                    data = json.load(f)
+                                target_poly, cropped = shift_step(img,data,textbox_angle=textbox_angle,output_path=output_path)
+                                shifted_poly = target_poly
+                        if os.path.exists(json_path):
+                            with open(json_path, 'r', encoding='utf-8') as f:
+                                json_data = json.load(f)
+                            shifted_poly_list = [[int(point[0]), int(point[1])] for point in shifted_poly]
+                            json_data['micro_poly'] = shifted_poly_list
+                            with open(json_path, 'w', encoding='utf-8') as f:
+                                json.dump(json_data, f, ensure_ascii=False, indent=2)
                         debug_path = os.path.join(micro_img_dir, 'debug', filename.replace('.jpg', '_debug.jpg'))
                         os.makedirs(os.path.dirname(debug_path), exist_ok=True)
                         cropped_path = os.path.join(micro_img_dir, 'debug', filename.replace('.jpg', '_cropped_expect.jpg'))
@@ -331,14 +365,9 @@ def process_micro_images(micro_img_dir):
                                     first_confidence = result['rec_scores'][i]
                                     rec_poly = result['rec_polys'][i]
                                     restored_poly = [[int(point[i] + x_min), int(point[1] + y_min)] for point in rec_poly]
-                                    for key, variants in target_defs.items():
-                                        for variant in variants:
-                                            if variant in potential_text:
-                                                filename_matched_key = key
-                                                found_match_in_filename1 = True
-                                                break
-                                        if found_match_in_filename1:
-                                            break
+                                    filename_matched_key, found_match_in_filename1 = check_text(potential_text)
+                                    if found_match_in_filename1 and filename_matched_key not in matched_keys:
+                                        matched_keys.append(filename_matched_key)
                                     if found_match_in_filename1:
                                         if os.path.exists(json_path):
                                             with open(json_path, 'r', encoding='utf-8') as f:
@@ -382,6 +411,13 @@ def process_micro_images(micro_img_dir):
                     tilt_angle = calculate_horizontal_tilt_angle(first_poly)
                     x_coords = [point[0] for point in first_poly]
                     textbox_length = max(x_coords) - min(x_coords)
+                    first_poly_array = np.array(first_poly)
+                    poly_center_x = int(np.mean(first_poly_array[:, 0]))
+                    poly_center_y = int(np.mean(first_poly_array[:, 1]))
+                    center_point = (poly_center_x, poly_center_y)
+                    if abs(np.degrees(textbox_angle)) > 40:
+                        print(f"角度大于40度，进行旋转校正...")
+                        img, first_poly= rotate_image_and_poly(img, first_poly, textbox_angle, center_point)
                     print(textbox_length)
                     if textbox_length > 120 and potential_text[0] == "S":
                         expand_length = 55
@@ -406,8 +442,12 @@ def process_micro_images(micro_img_dir):
                     cv2.imwrite(cropped_path0, cropped)
                     cropped0 = find_drak_remove(cropped,dark_threshold=190)
                     cv2.imwrite(cropped_path, cropped0)
+                    expanded_textbox_angle, _ = calculate_textbox_angle(expanded_poly)
+                    # if abs(np.degrees(expanded_textbox_angle)) > 40:
+                    #     print(f"角度大于40度，进行旋转校正...")
+                    #     cropped0,expanded_poly = rotate_image_and_poly(cropped0, expanded_poly, expanded_textbox_angle, center_point)
+                    #     cv2.imwrite(cropped_path, cropped0)
                     results = ocr_engine.ocr.predict(cropped0)
-
                     for result in results:
                         if len(result) >= 2 and len(result['rec_texts']) > 0:
                             for i in range(len(result['rec_texts'])):
@@ -420,16 +460,14 @@ def process_micro_images(micro_img_dir):
                                         text = "SVIII"
                                 conf = result['rec_scores'][i]
                                 rec_poly = result['rec_polys'][i]
+                                if abs(np.degrees(textbox_angle)) > 40:
+                                    rec_poly = rotate_polys_back(rec_poly, textbox_angle,
+                                                                               center_point,
+                                                                               img.shape)
                                 restored_poly = [[int(point[i] + x_min), int(point[1] + y_min)] for point in rec_poly]
-                                for key, variants in target_defs.items():
-                                    for variant in variants:
-                                        if variant in text:
-                                            filename_matched_key1 = key
-                                            matched_keys.append(filename_matched_key1)
-                                            found_match_in_filename1 = True
-                                            break
-                                    if found_match_in_filename1:
-                                        break
+                                filename_matched_key1, found_match_in_filename1 = check_text(text)
+                                if found_match_in_filename1 and filename_matched_key1 not in matched_keys:
+                                    matched_keys.append(filename_matched_key1)
                                 if found_match_in_filename1:
                                     break
                             if found_match_in_filename1:
@@ -556,17 +594,9 @@ def process_micro_images(micro_img_dir):
                                     clean_text = text.strip()
                                     current_key = None
                                     found_match = False
-                                    for key, variants in target_defs.items():
-                                        for variant in variants:
-                                            if variant in clean_text:
-                                                current_key = key
-                                                if key not in matched_keys:
-                                                    matched_keys.append(key)
-                                                found_match = True
-                                                break
-                                        if found_match:
-                                            break
-
+                                    current_key, found_match = check_text(clean_text)
+                                    if found_match and current_key not in matched_keys:
+                                        matched_keys.append(current_key)
                                     detail_item = {
                                         "text": text,
                                         "confidence": score,
@@ -637,16 +667,9 @@ def process_micro_images(micro_img_dir):
                                 # 遍历 target_defs 查找匹配
                                 current_key = None
                                 found_match = False
-                                for key, variants in target_defs.items():
-                                    for variant in variants:
-                                        if variant in clean_text:
-                                            current_key = key
-                                            if key not in matched_keys:
-                                                matched_keys.append(key)
-                                            found_match = True
-                                            break
-                                    if found_match:
-                                        break
+                                current_key, found_match = check_text(clean_text)
+                                if found_match and current_key not in matched_keys:
+                                    matched_keys.append(current_key)
 
                                 # 记录详细结果
                                 detail_item = {

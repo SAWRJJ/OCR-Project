@@ -5,8 +5,9 @@ import sys
 sys.path.insert(0, '/Users/saw/WorkSpace/work/OCR-Project')
 from ocr.X_detect import shift_poly_along_angle
 
-image_path = '/Users/saw/WorkSpace/work/OCR-Project/test/test10/micro_0110_2300_1X5.jpg'
-json_path = '/Users/saw/WorkSpace/work/OCR-Project/test/test10/micro_0110_2300_1X5.json'
+filename = "micro_0049_2300_1XVII"
+image_path = f'/Users/saw/WorkSpace/work/OCR-Project/test/test10/{filename}.jpg'
+json_path = f'/Users/saw/WorkSpace/work/OCR-Project/test/test10/{filename}.json'
 
 def calculate_textbox_angle(poly):
     poly = np.array(poly, dtype=np.float32)
@@ -24,7 +25,11 @@ with open(json_path, 'r', encoding='utf-8') as f:
     data = json.load(f)
 
 poly = np.array(data['micro_poly'], dtype=np.int32)
+poly = np.array([[0, 61], [270, 40], [276, 114], [6, 135]], dtype=np.int32)
 text = data["text"]
+text_list = list(text)
+index0 = text_list.index("X")
+print(f"index0:{index0}")
 img = cv2.imread(image_path)
 
 textbox_angle, _ = calculate_textbox_angle(poly)
@@ -48,12 +53,12 @@ print(f"水平距离(dx): {dx:.2f}")
 print(f"垂直距离(dy): {dy:.2f}")
 print(f"勾股定理距离: {euclidean_distance:.2f} 像素")
 
-output_path = '/Users/saw/WorkSpace/work/OCR-Project/test/test10/test_shift_poly_output.png'
+output_path = f'/Users/saw/WorkSpace/work/OCR-Project/test/test10/{filename}_poly_output.png'
 
 new_poly, shift_line_start, shift_line_end = shift_poly_along_angle(
     poly=poly,
     angle=textbox_angle,
-    shift_distance=euclidean_distance*6/len(text),
+    shift_distance=32*6,
     debug_img=img,
     output_path=output_path
 )

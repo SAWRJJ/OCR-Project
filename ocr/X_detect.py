@@ -320,6 +320,203 @@ def shift_poly_along_angle(poly, angle, shift_distance=100, debug_img=None, outp
     print(f"平移向量: dx={shift_dx:.2f}, dy={shift_dy:.2f}")
 
     return new_poly, shift_line_start, shift_line_end
+
+
+def shift_poly_along_angle_step(poly, angle, step_size=5, debug_img=None, output_path=None, target_first_black_index=None, shift_after_black=5):
+    """
+    沿文本框倾斜角度方向,每5像素逐步平移左侧边直到右侧边位置
+
+    参数:
+        poly: 文本框四边形顶点 [[x0,y0], [x1,y1], [x2,y2], [x3,y3]]
+        angle: 文本框倾斜角度（弧度），正值表示右倾斜，负值表示左倾斜
+        step_size: 每步平移像素数，默认5
+        debug_img: 用于可视化的BGR图像，如果为None则创建
+        output_path: 可视化图片保存路径
+        target_first_black_index: 当找黑检测线的个数等于此值时，用该检测线后再平移shift_after_black次的检测线和右侧边组成新poly
+        shift_after_black: 在找到黑检测线后再平移的次数，默认5
+
+    返回:
+        all_polys: 所有平移过程中的多边形列表
+        final_poly: 最终多边形（左侧边到达右侧边位置）
+        shift_info: 每步的平移信息列表
+        black_pixel_positions: 检测到黑色像素的位置列表
+        first_black_lines: 首次出现黑色的检测线索引列表
+        target_poly: 目标新poly（当target_first_black_index匹配时）
+        target_crop_img: 根据target_poly截取的图像
+    """
+    poly = np.array(poly, dtype=np.float64)
+
+    tilt_angle = -angle
+    print(f"平移角度: {math.degrees(tilt_angle):.2f} 度, 步长: {step_size} 像素")
+
+    left_top = poly[0]
+    left_bottom = poly[3]
+    right_top = poly[1]
+    right_bottom = poly[2]
+
+    left_center_y = (left_top[1] + left_bottom[1]) / 2
+    right_center_y = (right_top[1] + right_bottom[1]) / 2
+
+    dx_per_step = step_size * math.cos(tilt_angle)
+    dy_per_step = step_size * math.sin(tilt_angle)
+
+    current_left_top = left_top.copy()
+    current_left_bottom = left_bottom.copy()
+
+    right_top_x = right_top[0]
+    right_bottom_x = right_bottom[0]
+
+    all_polys = []
+    shift_info = []
+    black_pixel_positions = []
+
+    step_count = 0
+    while True:
+        if current_left_top[0] >= right_top_x and current_left_bottom[0] >= right_bottom_x:
+            break
+
+        shifted_poly = np.array([
+            current_left_top,
+            current_left_bottom,
+            right_bottom,
+            right_top
+        ], dtype=np.float64)
+
+        all_polys.append(shifted_poly.copy())
+        shift_info.append({
+            'step': step_count,
+            'left_top': tuple(current_left_top),
+            'left_bottom': tuple(current_left_bottom)
+        })
+
+        current_left_top[0] += dx_per_step
+        current_left_top[1] += dy_per_step
+        current_left_bottom[0] += dx_per_step
+        current_left_bottom[1] += dy_per_step
+        step_count += 1
+
+        if step_count > 1000:
+            print("警告: 达到最大迭代次数1000，可能存在无限循环问题")
+            break
+
+    final_poly = np.array([
+        current_left_top,
+        current_left_bottom,
+        right_bottom,
+        right_top
+    ], dtype=np.float64)
+
+    vis_img = None
+    if debug_img is not None:
+        vis_img = debug_img.copy()
+    else:
+        h, w = 500, 500
+        if debug_img is None:
+            vis_img = np.zeros((h, w, 3), dtype=np.uint8)
+            print("警告: 未提供debug_img，可视化可能不准确")
+
+    cv2.polylines(vis_img, [np.array(poly, dtype=np.int32)], True, (0, 255, 0), 2)
+    cv2.polylines(vis_img, [np.array(final_poly, dtype=np.int32)], True, (255, 0, 0), 2)
+
+    original_left_top = tuple(map(int, left_top))
+    original_left_bottom = tuple(map(int, left_bottom))
+
+    first_black_lines = []
+    prev_had_black = False
+
+    for i, info in enumerate(shift_info):
+        left_edge_start = tuple(map(int, info['left_top']))
+        left_edge_end = tuple(map(int, info['left_bottom']))
+
+        has_black = False
+
+        num_steps = max(1, int(np.sqrt((left_edge_end[0] - left_edge_start[0])**2 + (left_edge_end[1] - left_edge_start[1])**2)))
+
+        for j in range(num_steps):
+            t = j / num_steps
+            x = int(left_edge_start[0] + t * (left_edge_end[0] - left_edge_start[0]))
+            y = int(left_edge_start[1] + t * (left_edge_end[1] - left_edge_start[1]))
+
+            if 0 <= y < debug_img.shape[0] and 0 <= x < debug_img.shape[1]:
+                pixel_val = debug_img[y, x]
+                if np.mean(pixel_val) < 100:
+                    has_black = True
+                    black_pixel_positions.append((x, y))
+
+        if has_black and not prev_had_black:
+            color = (255, 0, 0)
+            first_black_lines.append(i)
+        elif has_black:
+            color = (0, 0, 255)
+        else:
+            color = (128, 128, 128)
+
+        prev_had_black = has_black
+        cv2.line(vis_img, left_edge_start, left_edge_end, color, 1)
+
+    cv2.putText(vis_img, f"Original (Green)", (10, 20), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 255, 0), 1)
+    cv2.putText(vis_img, f"First Black (Blue)", (10, 40), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (255, 0, 0), 1)
+    cv2.putText(vis_img, f"Steps: {step_count}, Size: {step_size}px, First Black: {len(first_black_lines)}",
+                (10, 60), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (128, 128, 128), 1)
+
+    for bx, by in black_pixel_positions:
+        cv2.circle(vis_img, (bx, by), 1, (0, 0, 255), -1)
+
+    if output_path is not None:
+        os.makedirs(os.path.dirname(output_path), exist_ok=True)
+        cv2.imwrite(output_path, vis_img)
+        print(f"可视化图片已保存到: {output_path}")
+
+    print(f"原始多边形: {poly.tolist()}")
+    print(f"最终多边形: {final_poly.tolist()}")
+    print(f"总共平移步数: {step_count}")
+    print(f"检测到黑色像素数量: {len(black_pixel_positions)}")
+    print(f"首次出现黑色的检测线索引: {first_black_lines}")
+
+    target_poly = None
+    target_crop_img = None
+
+    if target_first_black_index is not None and len(first_black_lines) >= target_first_black_index:
+        target_line_idx = first_black_lines[target_first_black_index - 1]
+        shifted_line_idx = target_line_idx + shift_after_black
+
+        if shifted_line_idx >= len(shift_info):
+            shifted_line_idx = len(shift_info) - 1
+            print(f"警告: shift_after_black={shift_after_black}超出范围，使用最后一条检测线(索引={shifted_line_idx})")
+
+        shifted_info = shift_info[shifted_line_idx]
+
+        left_top = shifted_info['left_top']
+        left_bottom = shifted_info['left_bottom']
+
+        left_top_x = left_top[0]
+        left_bottom_x = left_bottom[0]
+
+        left_edge_near_right_x = max(left_top_x, left_bottom_x)
+
+        new_left_top = (left_edge_near_right_x, left_top[1])
+        new_left_bottom = (left_edge_near_right_x, left_bottom[1])
+
+        target_poly = np.array([
+            new_left_top,
+            new_left_bottom,
+            right_bottom,
+            right_top
+        ], dtype=np.int32)
+        print(f"使用第 {target_first_black_index} 个找黑检测线(索引={target_line_idx})后平移{shift_after_black}次(索引={shifted_line_idx})创建新poly")
+        print(f"  原始检测线: left_top={left_top}, left_bottom={left_bottom}")
+        print(f"  左侧靠近右侧边的x坐标: {left_edge_near_right_x}")
+        print(f"  新poly: {target_poly.tolist()}")
+
+        x_min = max(0, int(np.min(target_poly[:, 0])) - 5)
+        x_max = min(debug_img.shape[1], int(np.max(target_poly[:, 0])) + 5)
+        y_min = max(0, int(np.min(target_poly[:, 1])) - 5)
+        y_max = min(debug_img.shape[0], int(np.max(target_poly[:, 1])) + 5)
+
+        target_crop_img = debug_img[y_min:y_max, x_min:x_max]
+        cv2.polylines(vis_img, [target_poly], True, (0, 255, 255), 2)
+
+    return all_polys, final_poly, shift_info, black_pixel_positions, first_black_lines, target_poly, target_crop_img
 def shift_poly_along_angle1(poly, img, shift_point=None, target_char=None, output_path=None):
     """
     根据target_char选择左侧或右侧边，以nearest_center为中心，

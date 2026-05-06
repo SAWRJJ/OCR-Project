@@ -117,7 +117,7 @@ class Visualizer:
         if target_chars is None:
             target_chars = ["S", "X", "D"]
         if exclude_substrings is None:
-            exclude_substrings = ["/", "DG", "G"]
+            exclude_substrings = ["/", "DG", "G","SB","SK"]
 
         if save_boxes_dir:
             os.makedirs(save_boxes_dir, exist_ok=True)
@@ -126,8 +126,8 @@ class Visualizer:
         for item in rec_polys_with_text:
             if len(item) == 5:
                 poly, text, source_split, split_poly, score = item
-                if text == 'X_3a0_0':
-                    print(1)
+                # if text == 'X_3a0_0':
+                #     print(1)
             else:
                 poly, text = item
                 source_split = "unknown"
@@ -154,8 +154,8 @@ class Visualizer:
             # Handle both 2-element (legacy) and 4-element (new) tuples
             if len(item) == 5:
                 poly, text, source_split, split_poly, score = item
-                if text == 'X_3a0_0':
-                    print(1)
+                # if text == 'X_3a0_0':
+                #     print(1)
             else:
                 poly, text = item
                 source_split = "unknown"
@@ -164,7 +164,7 @@ class Visualizer:
             if len(poly) != 4:
                 continue
             text = text.replace("π", "II")
-            if "X8" in text or 'SF' in text:
+            if "HSBII" in text:
                 print(0)
             # if "K" in text or "." in text:
             #     mask = np.zeros(img.shape[:2], dtype=np.uint8)
@@ -190,9 +190,6 @@ class Visualizer:
             bottom_ext = ImageProcessor.extend_opposite_side_for_small_box(bottom_line[0], bottom_line[1], bottom_ext,
                                                                            box_width)
 
-            if "X8" in text or "SF" in text:
-                print(top_ext)
-                print(bottom_ext)
             if not top_ext and not bottom_ext:
                 continue
             dx = poly[1][0] - poly[0][0]  # 10310 - 10227 = 83
@@ -244,10 +241,10 @@ class Visualizer:
                     bottom_perp_x = -bottom_dy / bottom_length
                     bottom_perp_y = bottom_dx / bottom_length
 
-                    print(f"top_ext 方向: ({top_dx:.2f}, {top_dy:.2f})")
-                    print(f"top_ext 垂直方向: ({top_perp_x:.2f}, {top_perp_y:.2f})")
-                    print(f"bottom_ext 方向: ({bottom_dx:.2f}, {bottom_dy:.2f})")
-                    print(f"bottom_ext 垂直方向: ({bottom_perp_x:.2f}, {bottom_perp_y:.2f})")
+                    # print(f"top_ext 方向: ({top_dx:.2f}, {top_dy:.2f})")
+                    # print(f"top_ext 垂直方向: ({top_perp_x:.2f}, {top_perp_y:.2f})")
+                    # print(f"bottom_ext 方向: ({bottom_dx:.2f}, {bottom_dy:.2f})")
+                    # print(f"bottom_ext 垂直方向: ({bottom_perp_x:.2f}, {bottom_perp_y:.2f})")
 
                     poly_np = np.array(poly)
                     poly_min_y = np.min(poly_np[:, 1])
@@ -304,9 +301,9 @@ class Visualizer:
                     except Exception as e:
                         logger.error(f"保存小图片失败: {output_path}, {e}")
                         continue
-                    if "X8" in text or "SF" in text:
-                        print(top_ext)
-                        print(bottom_ext)
+                    # if "X8" in text or "SF" in text:
+                    #     print(top_ext)
+                    #     print(bottom_ext)
                     color_info = detect_color_presence_bgr(patch, text=name)
 
                     # Calculate relative coordinates in the micro image
