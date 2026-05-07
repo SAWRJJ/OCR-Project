@@ -136,12 +136,95 @@ class Visualizer:
             if len(poly) != 4:
                 continue
             text = text.replace("π", "II")
-            if "." in text:
-                mask = np.zeros(raw_img.shape[:2], dtype=np.uint8)
-                cv2.fillPoly(mask, [np.array(poly, dtype=np.int32)], 255)
-                is_white = np.all(raw_img > 200, axis=2)
-                for c in range(3):
-                    raw_img[:, :, c] = np.where(mask > 0, np.where(is_white, raw_img[:, :, c], 0), raw_img[:, :, c])
+            # micro_0102_1700XL1_80_00.jpg
+            if "1700xL1" in text: #'1700xL1-80-00O0'
+                print(0)
+            def calculate_centers_separate(mask, min_area=10, min_circularity=0.6, min_radius=7):
+                """
+                计算mask中每个独立连通域的中心坐标，并返回非圆形区域的mask
+
+                参数:
+                    mask: 二值图像mask
+                    min_area: 最小连通域面积阈值，小于此值的区域将被忽略
+                    min_circularity: 最小圆度阈值，圆度大于此值的区域被认为是圆形，将被排除
+                    min_radius: 最小半径阈值，当圆度满足条件时，半径也需要大于此值才被认为是圆形
+
+                返回:
+                    tuple: (centers, non_circular_mask)
+                    centers: 每个连通域的中心坐标列表 [(cx1, cy1), (cx2, cy2), ...]
+                    non_circular_mask: 非圆形区域的mask（圆度<=min_circularity的区域）
+                """
+                if cv2.countNonZero(mask) == 0:
+                    return [], np.zeros_like(mask)
+
+                num_labels, labels, stats, centroids = cv2.connectedComponentsWithStats(mask, connectivity=8)
+
+                centers = []
+                non_circular_mask = np.zeros_like(mask)
+
+                for i in range(1, num_labels):
+                    area = stats[i, cv2.CC_STAT_AREA]
+                    if area < min_area:
+                        continue
+
+                    component_mask = (labels == i).astype(np.uint8) * 255
+
+                    contours, _ = cv2.findContours(component_mask, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
+                    if len(contours) == 0:
+                        continue
+                    perimeter = cv2.arcLength(contours[0], True)
+
+                    circularity = 4 * np.pi * area / (perimeter * perimeter)
+
+                    radius = np.sqrt(area / np.pi)
+
+                    if circularity <= min_circularity or radius <= min_radius:
+                        cx = int(centroids[i][0])
+                        cy = int(centroids[i][1])
+                        centers.append((cx, cy))
+                        non_circular_mask = cv2.bitwise_or(non_circular_mask, component_mask)
+
+                return centers, non_circular_mask
+
+            if "." in text or (len(text) >= 4 and text[-1].isdigit()):
+
+                poly_np = np.array(poly, dtype=np.int32)
+
+                x, y, w, h = cv2.boundingRect(poly_np)
+
+                roi = raw_img[y:y + h, x:x + w]
+
+                # ROI mask
+                roi_poly = poly_np - [x, y]
+
+                roi_mask = np.zeros((h, w), dtype=np.uint8)
+
+                cv2.fillPoly(roi_mask, [roi_poly], 255)
+
+                # HSV only on ROI
+                hsv = cv2.cvtColor(roi, cv2.COLOR_BGR2HSV)
+
+                lower_red1 = np.array([0, 50, 50])
+                upper_red1 = np.array([20, 255, 255])
+
+                lower_red2 = np.array([150, 50, 50])
+                upper_red2 = np.array([180, 255, 255])
+
+                mask_red1 = cv2.inRange(hsv, lower_red1, upper_red1)
+                mask_red2 = cv2.inRange(hsv, lower_red2, upper_red2)
+
+                mask_red = cv2.bitwise_or(mask_red1, mask_red2)
+
+                # 只保留poly内部
+                mask_red = cv2.bitwise_and(mask_red, roi_mask)
+
+                if cv2.countNonZero(mask_red) > 0:
+
+                    red_centers, non_circular_mask = calculate_centers_separate(mask_red)
+
+                    if cv2.countNonZero(non_circular_mask) > 0:
+                        roi[non_circular_mask > 0] = 255
+
                 # cv2.polylines(img, [np.array(poly, dtype=np.int32)], True, (0, 0, 255), 2)
                 #
                 # output_path = img_path.rsplit('.', 1)[0] + '_processed0.jpg'
@@ -164,8 +247,8 @@ class Visualizer:
             if len(poly) != 4:
                 continue
             text = text.replace("π", "II")
-            if "HSBII" in text:
-                print(0)
+            # if "HSBII" in text:
+            #     print(0)
             # if "K" in text or "." in text:
             #     mask = np.zeros(img.shape[:2], dtype=np.uint8)
             #     cv2.fillPoly(mask, [np.array(poly, dtype=np.int32)], 255)
@@ -179,16 +262,17 @@ class Visualizer:
             # 假设四边形的四个点顺序是：左上、右上、右下、左下
             top_line = [poly[0], poly[1]]
             bottom_line = [poly[3], poly[2]]
-
+            # if "D48" in text:
+            #     print(0)
             box_width = max(p[0] for p in poly) - min(p[0] for p in poly)
             top_ext = ImageProcessor.choose_one_sided_extension(raw_img, top_line[0], top_line[1], extend_length=300,
-                                                                min_non_bw_pixels=150, text=text)
+                                                                min_non_bw_pixels=150, text=text,black_thresh=15)
             bottom_ext = ImageProcessor.choose_one_sided_extension(raw_img, bottom_line[0], bottom_line[1],
-                                                                   extend_length=300, min_non_bw_pixels=150, text=text)
+                                                                   extend_length=300, min_non_bw_pixels=150, text=text,black_thresh=15)
 
-            top_ext = ImageProcessor.extend_opposite_side_for_small_box(top_line[0], top_line[1], top_ext, box_width)
+            top_ext = ImageProcessor.extend_opposite_side_for_small_box(top_line[0], top_line[1], top_ext, box_width,opposite_extend=80)
             bottom_ext = ImageProcessor.extend_opposite_side_for_small_box(bottom_line[0], bottom_line[1], bottom_ext,
-                                                                           box_width)
+                                                                           box_width,opposite_extend=80)
 
             if not top_ext and not bottom_ext:
                 continue
@@ -328,6 +412,7 @@ class Visualizer:
                     with open(json_path, "w", encoding="utf-8") as f:
                         json.dump(info_data, f, ensure_ascii=False, indent=2)
 
+                    # print(saved_count)
                     saved_count += 1
 
             # 绘制红线

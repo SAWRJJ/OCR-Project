@@ -5,16 +5,16 @@ import math
 
 from sqlalchemy import true
 
-from .ocr_engine import OCREngine
-from .LW_detect import detect_colors, calculate_textbox_angle,find_cluster_centers
-from .config import Config
-from .X_detect import expand_poly_vertical, count_dark_pixels_in_expanded_region, \
+from ocr.ocr_engine import OCREngine
+from ocr.LW_detect import detect_colors, calculate_textbox_angle,find_cluster_centers
+from ocr.config import Config
+from ocr.X_detect import expand_poly_vertical, count_dark_pixels_in_expanded_region, \
     find_first_non_white_column_along_tilt, calculate_horizontal_tilt_angle, expand_poly,shift_poly_along_angle,\
     count_vertical_strokes
-from .find_boundary_dark import find_drak_remove
-from .utils import calculate_shift_params
-from .scan_dark_pixels import process_image_high_circularity_to_white
-from .shift_VII import shift_step
+from ocr.find_boundary_dark import find_drak_remove
+from ocr.utils import calculate_shift_params
+from ocr.scan_dark_pixels import process_image_high_circularity_to_white
+from ocr.shift_VII import shift_step
 import cv2
 import numpy as np
 
@@ -78,6 +78,7 @@ def check_text(potential_text,target_defs0=None):
         if found_match_in_filename:
             break
     return filename_matched_key, found_match_in_filename
+
 def rotate_image_and_poly(img, poly, angle, center_point):
     angle_deg = np.degrees(angle)
     h, w = img.shape[:2]
@@ -91,7 +92,6 @@ def rotate_image_and_poly(img, poly, angle, center_point):
     rotated_poly = rotated_poly.T.astype(np.int32)
 
     return rotated_img, rotated_poly
-
 
 def rotate_polys_back(poly, angle, center_point, original_shape):
     angle_deg = np.degrees(angle)
@@ -783,7 +783,6 @@ def process_micro_images(micro_img_dir):
     logger.info(f"小窗口二次OCR识别完成，共处理 {count} 张图片")
     return all_matched_keys
 
-
 def save_results_to_excel(all_results, output_file="ocr_results.xlsx", micro_img_dir=None):
     """
     将 OCR 结果保存为 Excel 文件
@@ -934,7 +933,6 @@ def save_results_to_excel(all_results, output_file="ocr_results.xlsx", micro_img
     except Exception as e:
         logger.error(f"保存 Excel 失败: {e}")
 
-
 def adjust_textbox_edge(img, poly, direction, json_path, crop_size=40):
     import cv2
     import numpy as np
@@ -1025,3 +1023,8 @@ def adjust_textbox_edge(img, poly, direction, json_path, crop_size=40):
             print(f"已设置调整后的边缘: {adjusted_edge}")
 
     return use_adjusted_edge, adjusted_edge, crop_ocr_result
+
+if __name__ == '__main__':
+    micro_dir = "test/test16/micro"
+    res = process_micro_images(micro_dir)
+    print(res)
