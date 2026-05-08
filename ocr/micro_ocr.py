@@ -5,16 +5,16 @@ import math
 
 from sqlalchemy import true
 
-from .ocr_engine import OCREngine
-from .LW_detect import detect_colors, calculate_textbox_angle,find_cluster_centers
-from .config import Config
-from .X_detect import expand_poly_vertical, count_dark_pixels_in_expanded_region, \
+from ocr.ocr_engine import OCREngine
+from ocr.LW_detect import detect_colors, calculate_textbox_angle,find_cluster_centers
+from ocr.config import Config
+from ocr.X_detect import expand_poly_vertical, count_dark_pixels_in_expanded_region, \
     find_first_non_white_column_along_tilt, calculate_horizontal_tilt_angle, expand_poly,shift_poly_along_angle,\
     count_vertical_strokes
-from .find_boundary_dark import find_drak_remove
-from .utils import calculate_shift_params
-from .scan_dark_pixels import process_image_high_circularity_to_white
-from .shift_VII import shift_step
+from ocr.find_boundary_dark import find_drak_remove
+from ocr.utils import calculate_shift_params
+from ocr.scan_dark_pixels import process_image_high_circularity_to_white
+from ocr.shift_VII import shift_step
 import cv2
 import numpy as np
 
@@ -1034,3 +1034,10 @@ def adjust_textbox_edge(img, poly, direction, json_path, crop_size=40):
             print(f"已设置调整后的边缘: {adjusted_edge}")
 
     return use_adjusted_edge, adjusted_edge, crop_ocr_result
+
+if __name__ == '__main__':
+    micro_dir = "test/test16/micro"
+    res = process_micro_images(micro_dir)
+    print(len(res))
+    for r in res:
+        print(r)
