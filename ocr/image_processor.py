@@ -77,7 +77,44 @@ class ImageProcessor:
 
         white_mask = np.all(pixels >= int(white_thresh), axis=1)
         black_mask = np.all(pixels <= int(black_thresh), axis=1)
-        return int(np.sum(~(white_mask | black_mask)))
+        # 灰色判断
+        gray_thresh = 20
+
+        gray_mask = (np.max(pixels, axis=1) - np.min(pixels, axis=1)
+                    ) <= gray_thresh
+        non_bw_count = int(np.sum(~(white_mask | black_mask | gray_mask)))
+        debug_output = None
+        if debug_output is not None:
+            os.makedirs(debug_output, exist_ok=True)
+            vis_img = img.copy()
+
+            white_vis = np.zeros((h, w), dtype=np.uint8)
+            black_vis = np.zeros((h, w), dtype=np.uint8)
+            non_bw_vis = np.zeros((h, w), dtype=np.uint8)
+
+            mask_indices = np.where(mask == 255)
+            for idx in range(len(mask_indices[0])):
+                y, x = mask_indices[0][idx], mask_indices[1][idx]
+                if white_mask[idx]:
+                    white_vis[y, x] = 255
+                elif black_mask[idx]:
+                    black_vis[y, x] = 255
+                elif not (white_mask[idx] or black_mask[idx]):
+                    non_bw_vis[y, x] = 255
+
+            white_overlay = vis_img.copy()
+            white_overlay[white_vis == 255] = [255, 255, 0]
+            black_overlay = white_overlay.copy()
+            black_overlay[black_vis == 255] = [0, 0, 255]
+            final_overlay = black_overlay.copy()
+            final_overlay[non_bw_vis == 255] = [0, 255, 0]
+
+            cv2.imwrite(os.path.join(debug_output, "white_black_overlay.png"), final_overlay)
+            cv2.imwrite(os.path.join(debug_output, "white_mask.png"), white_vis)
+            cv2.imwrite(os.path.join(debug_output, "black_mask.png"), black_vis)
+            cv2.imwrite(os.path.join(debug_output, "non_bw_mask.png"), non_bw_vis)
+
+        return non_bw_count
 
     @staticmethod
     def choose_one_sided_extension(img, p1, p2, extend_length=220, line_thickness=3, white_thresh=245, black_thresh=5, min_non_bw_pixels=5, text=None):
@@ -179,9 +216,12 @@ class ImageProcessor:
             # return None
 
         # 返回非黑白像素较多的那个延伸方向
-        if ext2_count >= ext1_count:
+        if ext2_count > ext1_count:
             return p1, p2_ext
-        return p1_ext, p2
+        elif ext2_count<ext1_count:
+            return p1_ext, p2
+        else:
+            return p1_ext, p2_ext
 
     @staticmethod
     def extend_opposite_side_for_small_box(p1, p2, seg, box_width, width_threshold=100, opposite_extend=70):

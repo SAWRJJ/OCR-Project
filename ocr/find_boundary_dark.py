@@ -149,12 +149,13 @@ def calculate_circle_from_contour(contour):
     return center, radius
 
 
-def find_boundary_connected_dark_pixels(img_path, dark_threshold=125, remove_color_adjacent=False):
+def find_boundary_connected_dark_pixels(img_path, dark_threshold=125, remove_color_adjacent=False, find_adjacent_color_regions=False):
     """
     找出与边界相连的深色像素连通区域
     使用BFS进行连通区域标记
     img_path: 可以是图片路径(str)或图片数组(numpy.ndarray)
     remove_color_adjacent: 如果为True，则排除与彩色像素相邻的深色区域
+    find_adjacent_color_regions: 如果为True，在现有基础上额外找到与黑色像素相连的彩色像素区域
     """
     if isinstance(img_path, np.ndarray):
         img = img_path
@@ -237,10 +238,57 @@ def find_boundary_connected_dark_pixels(img_path, dark_threshold=125, remove_col
                 filtered_regions.append(r)
         boundary_regions = filtered_regions
 
+    adjacent_color_regions = []
+    if find_adjacent_color_regions:
+        dark_pixels_set = set()
+        for r in boundary_regions:
+            for pixel in r['pixels']:
+                dark_pixels_set.add(pixel)
+
+        white_threshold = 200
+        non_white_mask = ~(
+            (img[:, :, 0] >= white_threshold) &
+            (img[:, :, 1] >= white_threshold) &
+            (img[:, :, 2] >= white_threshold)
+        )
+        visited = set(dark_pixels_set)
+        queue = deque(dark_pixels_set)
+        adjacent_pixels = set()
+
+        while queue:
+            row, col = queue.popleft()
+            for nr, nc in [
+                (row - 1, col), (row + 1, col), (row, col - 1), (row, col + 1),
+                (row - 1, col - 1), (row - 1, col + 1), (row + 1, col - 1), (row + 1, col + 1),
+            ]:
+                if not (0 <= nr < h and 0 <= nc < w) or (nr, nc) in visited:
+                    continue
+                if not non_white_mask[nr, nc]:
+                    continue
+
+                visited.add((nr, nc))
+                queue.append((nr, nc))
+                if (nr, nc) not in dark_pixels_set:
+                    adjacent_pixels.add((nr, nc))
+
+        if adjacent_pixels:
+            adjacent_color_regions.append({
+                'label': label + 1,
+                'pixels': list(adjacent_pixels),
+                'min_col': min(p[1] for p in adjacent_pixels),
+                'max_col': max(p[1] for p in adjacent_pixels),
+                'min_row': min(p[0] for p in adjacent_pixels),
+                'max_row': max(p[0] for p in adjacent_pixels),
+            })
+
+        boundary_regions = boundary_regions + adjacent_color_regions
+
     print(f"图像尺寸: {w}x{h}")
     print(f"深色阈值: {dark_threshold}")
     print(f"总连通区域数: {len(regions)}")
     print(f"与边界相连的深色区域数: {len(boundary_regions)}")
+    if find_adjacent_color_regions:
+        print(f"与黑色像素相连的非白色区域数: {len(adjacent_color_regions)}")
 
     for i, r in enumerate(boundary_regions):
         boundary_sides = []
@@ -401,21 +449,25 @@ def visualize_with_original(img, regions, output_path):
 
     return vis_img
 
-def find_drak_remove(image_path, dark_threshold=200, output_path=None, save_circle=True, remove_color_adjacent=False):
+def find_drak_remove(image_path, dark_threshold=200, output_path=None, save_circle=True, remove_color_adjacent=False, find_adjacent_color_regions=False):
     """
     找出并移除深色像素（边界连通 + 闭合圆环）
     image_path: 可以是图片路径(str)或图片数组(numpy.ndarray)
     remove_color_adjacent: 如果为True，则排除与彩色像素相邻的深色区域
+    find_adjacent_color_regions: 如果为True，额外找到与黑色像素相连的彩色像素区域
     """
-    img, boundary_regions = find_boundary_connected_dark_pixels(image_path, dark_threshold=dark_threshold, remove_color_adjacent=remove_color_adjacent)
+    img, boundary_regions = find_boundary_connected_dark_pixels(
+        image_path, dark_threshold=dark_threshold, remove_color_adjacent=remove_color_adjacent,
+        find_adjacent_color_regions=find_adjacent_color_regions)
     closed_regions = []
     if not save_circle:
         closed_regions = find_closed_dark_regions(image_path, dark_threshold=dark_threshold)
-    return remove_dark_regions(img, boundary_regions, closed_regions, output_path)
+    result = remove_dark_regions(img, boundary_regions, closed_regions, output_path)
+    return result
 
 if __name__ == "__main__":
-    test_dir = r"d:\work\ocr+Transformer\test5"
-    image_path = os.path.join(test_dir, "micro_0018_0s3_cropped.jpg")
+    test_dir = r"test/test5/"
+    image_path = os.path.join(test_dir, "micro_0005_S15_cropped0.jpg")
 
     output_dir = test_dir
     os.makedirs(output_dir, exist_ok=True)
@@ -424,7 +476,7 @@ if __name__ == "__main__":
     print("查找与边界相连的深色像素连通区域")
     print("=" * 60)
 
-    img, boundary_regions = find_boundary_connected_dark_pixels(image_path, dark_threshold=200)
+    img, boundary_regions = find_boundary_connected_dark_pixels(image_path, dark_threshold=200,find_adjacent_color_regions=True)
 
     print("\n" + "=" * 60)
     print("查找闭合圆环（完全封闭的深色区域）")
@@ -443,7 +495,9 @@ if __name__ == "__main__":
                   f"圆度={circularity:.4f}")
     else:
         print("未找到闭合圆环")
-    remove_dark_regions(img, boundary_regions, closed_regions, None)
+
+    removed_path = os.path.join(output_dir, "removed_dark_pixels.png")
+    remove_dark_regions(img, boundary_regions, closed_regions, removed_path)
     # if img is not None:
     #     vis_path = os.path.join(output_dir, "boundary_dark_pixels.png")
     #     visualize_boundary_dark_pixels(img, boundary_regions, vis_path)

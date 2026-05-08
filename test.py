@@ -1,3 +1,2 @@
-s = "XⅣ"
-if "Ⅳ" in s:
-    print(0)
+import numpy as np
+print(np.degrees(0.6194264))

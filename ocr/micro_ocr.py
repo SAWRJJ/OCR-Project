@@ -139,7 +139,7 @@ def process_micro_images(micro_img_dir):
             continue
 
         # micro_0005_S
-        if filename == "micro_0087_YSC.jpg" or "YSC" in filename: # micro_0110_2300_1X5 # micro_0085__5c0f_D # micro_0064_DOQOOSN micro_0048_XI micro_0093_XL_I_HO_00.json_input.png
+        if filename == "micro_0018_D.jpg" or "YSC" in filename: # micro_0110_2300_1X5 # micro_0085__5c0f_D # micro_0064_DOQOOSN micro_0048_XI micro_0093_XL_I_HO_00.json_input.png
             print(-1)
         img_path = os.path.join(micro_img_dir, filename)
         json_path = os.path.join(micro_img_dir, os.path.splitext(filename)[0] + ".json")
@@ -331,13 +331,14 @@ def process_micro_images(micro_img_dir):
                                     data = json.load(f)
                                 target_poly, cropped = shift_step(img,data,textbox_angle=textbox_angle,output_path=output_path)
                                 shifted_poly = target_poly
+                                x_min = max(0, int(min(p[0] for p in shifted_poly)))
+                                x_max = min(img.shape[1], int(max(p[0] for p in shifted_poly)))
+                                y_min = max(0, int(min(p[1] for p in shifted_poly)))
+                                y_max = min(img.shape[0], int(max(p[1] for p in shifted_poly)))
                         if os.path.exists(json_path):
                             with open(json_path, 'r', encoding='utf-8') as f:
                                 json_data = json.load(f)
                             shifted_poly_list = [[int(point[0]), int(point[1])] for point in shifted_poly]
-                            json_data['micro_poly'] = shifted_poly_list
-                            with open(json_path, 'w', encoding='utf-8') as f:
-                                json.dump(json_data, f, ensure_ascii=False, indent=2)
                         debug_path = os.path.join(micro_img_dir, 'debug', filename.replace('.jpg', '_debug.jpg'))
                         os.makedirs(os.path.dirname(debug_path), exist_ok=True)
                         cropped_path = os.path.join(micro_img_dir, 'debug', filename.replace('.jpg', '_cropped_expect.jpg'))
@@ -415,7 +416,8 @@ def process_micro_images(micro_img_dir):
                     poly_center_x = int(np.mean(first_poly_array[:, 0]))
                     poly_center_y = int(np.mean(first_poly_array[:, 1]))
                     center_point = (poly_center_x, poly_center_y)
-                    if abs(np.degrees(textbox_angle)) > 40:
+                    angle_threshold = 40
+                    if abs(np.degrees(textbox_angle)) > angle_threshold:
                         print(f"角度大于40度，进行旋转校正...")
                         img, first_poly= rotate_image_and_poly(img, first_poly, textbox_angle, center_point)
                     print(textbox_length)
@@ -440,7 +442,7 @@ def process_micro_images(micro_img_dir):
                     # cv2.polylines(vis_img, [expanded_array], isClosed=True, color=(0, 255, 0), thickness=2)
                     # cv2.rectangle(vis_img, (x_min, y_min), (x_max, y_max), (255, 0, 0), 2)
                     cv2.imwrite(cropped_path0, cropped)
-                    cropped0 = find_drak_remove(cropped,dark_threshold=190)
+                    cropped0 = find_drak_remove(cropped,dark_threshold=190,find_adjacent_color_regions=True)
                     cv2.imwrite(cropped_path, cropped0)
                     expanded_textbox_angle, _ = calculate_textbox_angle(expanded_poly)
                     # if abs(np.degrees(expanded_textbox_angle)) > 40:
@@ -460,7 +462,7 @@ def process_micro_images(micro_img_dir):
                                         text = "SVIII"
                                 conf = result['rec_scores'][i]
                                 rec_poly = result['rec_polys'][i]
-                                if abs(np.degrees(textbox_angle)) > 40:
+                                if abs(np.degrees(textbox_angle)) > angle_threshold:
                                     rec_poly = rotate_polys_back(rec_poly, textbox_angle,
                                                                                center_point,
                                                                                img.shape)
@@ -659,6 +661,7 @@ def process_micro_images(micro_img_dir):
 
                             for i, text in enumerate(rec_texts):
                                 score = float(rec_scores[i]) if i < len(rec_scores) else 0.0
+                                poly = rec_polys[i]
                                 if score < 0.7:
                                     continue
                                 all_detected_texts.append(text)
@@ -680,6 +683,13 @@ def process_micro_images(micro_img_dir):
                                 }
 
                                 if current_key:
+                                    if os.path.exists(json_path):
+                                        with open(json_path, 'r', encoding='utf-8') as f:
+                                            json_data = json.load(f)
+                                        json_data['micro_poly'] = poly
+                                        json_data["text"] = current_key
+                                        with open(json_path, 'w', encoding='utf-8') as f:
+                                            json.dump(json_data, f, ensure_ascii=False, indent=2)
                                     is_match, black_pixel_count, template_match_res, color_centers_separate, black_radio = detect_colors(
                                         img_path,
                                         current_key,
@@ -968,8 +978,6 @@ def adjust_textbox_edge(img, poly, direction, json_path, crop_size=40):
         yellow_contour = [(yellow_box_left, min_y), (rightmost_x, min_y), (rightmost_x, max_y),
                           (yellow_box_left, max_y)]
         cv2.polylines(img, [np.array(yellow_contour)], isClosed=True, color=(0, 255, 255), thickness=2)
-        print(f"已绘制最右侧40长度的黄色轮廓: {yellow_contour}")
-
         x1 = int(yellow_box_left)
         y1 = int(min_y)
         x2 = int(rightmost_x)
@@ -986,7 +994,8 @@ def adjust_textbox_edge(img, poly, direction, json_path, crop_size=40):
         y1 = int(min_y)
         x2 = int(yellow_box_right)
         y2 = int(max_y)
-
+    else:
+        return use_adjusted_edge, adjusted_edge, crop_ocr_result
     height, width = img.shape[:2]
     x1 = max(0, x1)
     y1 = max(0, y1)

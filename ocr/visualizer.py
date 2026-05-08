@@ -64,12 +64,12 @@ def detect_color_presence_bgr(
         "red": ((_mask_in_range(0, 10) | _mask_in_range(170, 179)) & valid_color),
         "white": valid_white,
     }
-    if text == "SF":
-        yellow_mask_vis = np.zeros_like(img_bgr)
-        yellow_mask_vis[masks["yellow"]] = [0, 255, 255]
-        save_path = f"/Users/saw/WorkSpace/work/OCR-Project/test/test6/debug_SF_{img_bgr.shape[0]}x{img_bgr.shape[1]}.jpg"
-        cv2.imwrite(save_path, yellow_mask_vis)
-        logger.info(f"已保存 SF debug 黄色掩码: {save_path}")
+    # if text == "SF":
+    #     yellow_mask_vis = np.zeros_like(img_bgr)
+    #     yellow_mask_vis[masks["yellow"]] = [0, 255, 255]
+    #     save_path = f"/Users/saw/WorkSpace/work/OCR-Project/test/test6/debug_SF_{img_bgr.shape[0]}x{img_bgr.shape[1]}.jpg"
+    #     cv2.imwrite(save_path, yellow_mask_vis)
+    #     logger.info(f"已保存 SF debug 黄色掩码: {save_path}")
 
     presence = {}
     stats = {}
@@ -136,26 +136,109 @@ class Visualizer:
             if len(poly) != 4:
                 continue
             text = text.replace("π", "II")
-            if len(text) >0 and text[-1].isdigit():
-                mask = np.zeros(raw_img.shape[:2], dtype=np.uint8)
-                cv2.fillPoly(mask, [np.array(poly, dtype=np.int32)], 255)
-                hsv = cv2.cvtColor(raw_img, cv2.COLOR_BGR2HSV)
-                lower_red1 = np.array([0, 100, 100])
-                upper_red1 = np.array([10, 255, 255])
-                lower_red2 = np.array([160, 100, 100])
+            # micro_0102_1700XL1_80_00.jpg
+            if "1700xL1" in text: #'1700xL1-80-00O0'
+                print(0)
+            def calculate_centers_separate(mask, min_area=10, min_circularity=0.6, min_radius=7):
+                """
+                计算mask中每个独立连通域的中心坐标，并返回非圆形区域的mask
+
+                参数:
+                    mask: 二值图像mask
+                    min_area: 最小连通域面积阈值，小于此值的区域将被忽略
+                    min_circularity: 最小圆度阈值，圆度大于此值的区域被认为是圆形，将被排除
+                    min_radius: 最小半径阈值，当圆度满足条件时，半径也需要大于此值才被认为是圆形
+
+                返回:
+                    tuple: (centers, non_circular_mask)
+                    centers: 每个连通域的中心坐标列表 [(cx1, cy1), (cx2, cy2), ...]
+                    non_circular_mask: 非圆形区域的mask（圆度<=min_circularity的区域）
+                """
+                if cv2.countNonZero(mask) == 0:
+                    return [], np.zeros_like(mask)
+
+                num_labels, labels, stats, centroids = cv2.connectedComponentsWithStats(mask, connectivity=8)
+
+                centers = []
+                non_circular_mask = np.zeros_like(mask)
+
+                for i in range(1, num_labels):
+                    area = stats[i, cv2.CC_STAT_AREA]
+                    if area < min_area:
+                        continue
+
+                    component_mask = (labels == i).astype(np.uint8) * 255
+
+                    contours, _ = cv2.findContours(component_mask, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
+                    if len(contours) == 0:
+                        continue
+                    perimeter = cv2.arcLength(contours[0], True)
+
+                    circularity = 4 * np.pi * area / (perimeter * perimeter)
+
+                    radius = np.sqrt(area / np.pi)
+
+                    if circularity <= min_circularity or radius <= min_radius:
+                        cx = int(centroids[i][0])
+                        cy = int(centroids[i][1])
+                        centers.append((cx, cy))
+                        non_circular_mask = cv2.bitwise_or(non_circular_mask, component_mask)
+
+                return centers, non_circular_mask
+
+            if "." in text or (len(text) >= 4 and text[-1].isdigit()):
+
+                poly_np = np.array(poly, dtype=np.int32)
+
+                x, y, w, h = cv2.boundingRect(poly_np)
+
+                roi = raw_img[y:y + h, x:x + w]
+
+                # ROI mask
+                roi_poly = poly_np - [x, y]
+
+                roi_mask = np.zeros((h, w), dtype=np.uint8)
+
+                cv2.fillPoly(roi_mask, [roi_poly], 255)
+
+                # HSV only on ROI
+                hsv = cv2.cvtColor(roi, cv2.COLOR_BGR2HSV)
+
+                lower_red1 = np.array([0, 50, 50])
+                upper_red1 = np.array([20, 255, 255])
+
+                lower_red2 = np.array([150, 50, 50])
                 upper_red2 = np.array([180, 255, 255])
+
                 mask_red1 = cv2.inRange(hsv, lower_red1, upper_red1)
                 mask_red2 = cv2.inRange(hsv, lower_red2, upper_red2)
-                mask_red = mask_red1 + mask_red2
-                for c in range(3):
-                    raw_img[:, :, c] = np.where(mask > 0, np.where(mask_red > 0, 0, raw_img[:, :, c]), raw_img[:, :, c])
-                # cv2.polylines(img, [np.array(poly, dtype=np.int32)], True, (0, 0, 255), 2)
-                #
-                # output_path = img_path.rsplit('.', 1)[0] + '_processed0.jpg'
-                # output_path1 = img_path.rsplit('.', 1)[0] + '_processed1.jpg'
-                # cv2.imwrite(output_path, raw_img)
-                # cv2.imwrite(output_path1, img)
-                # print(f"处理后的图片已保存: {output_path}")
+
+                mask_red = cv2.bitwise_or(mask_red1, mask_red2)
+
+                # 只保留poly内部
+                mask_red = cv2.bitwise_and(mask_red, roi_mask)
+
+                if cv2.countNonZero(mask_red) > 0:
+
+                    red_centers, non_circular_mask = calculate_centers_separate(mask_red)
+
+                    if cv2.countNonZero(non_circular_mask) > 0:
+                        # 外扩1像素
+                        kernel = np.ones((3, 3), np.uint8)
+                        expanded_mask = cv2.dilate(
+                            non_circular_mask,
+                            kernel,
+                            iterations=1
+                        )
+                        roi[expanded_mask > 0] = 255
+        #
+        #         # cv2.polylines(img, [np.array(poly, dtype=np.int32)], True, (0, 0, 255), 2)
+        #         #
+        #         # output_path = img_path.rsplit('.', 1)[0] + '_processed0.jpg'
+        #         # output_path1 = img_path.rsplit('.', 1)[0] + '_processed1.jpg'
+        #         # cv2.imwrite(output_path, raw_img)
+        #         # cv2.imwrite(output_path1, img)
+        #         # print(f"处理后的图片已保存: {output_path}")
 
         for item in rec_polys_with_text:
             # Handle both 2-element (legacy) and 4-element (new) tuples

@@ -2,8 +2,8 @@ import cv2
 import numpy as np
 import json
 
-img_path = "/Users/saw/WorkSpace/work/OCR-Project/test/test10/micro_0110_2300_1X5.jpg"
-json_path = "/Users/saw/WorkSpace/work/OCR-Project/test/test10/micro_0110_2300_1X5.json"
+img_path = "/Users/saw/WorkSpace/work/OCR-Project/test/test10/micro_0018_D.jpg"
+json_path = "/Users/saw/WorkSpace/work/OCR-Project/test/test10/micro_0018_D.json"
 
 img = cv2.imread(img_path)
 if img is None:
@@ -17,7 +17,7 @@ micro_poly = np.array(data['micro_poly'], dtype=np.int32)
 text = data['text']
 print(text)
 print(len(text))
-# micro_poly = np.array([[7, 44], [107, 39], [107, 93], [7, 97]], dtype=np.int32)
+micro_poly = np.array([[241, 184], [269, 212], [246, 235], [218, 207]], dtype=np.int32)
 h, w = img.shape[:2]
 print(f"图片尺寸: {w}x{h}")
 

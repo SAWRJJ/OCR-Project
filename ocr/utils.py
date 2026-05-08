@@ -1,5 +1,7 @@
 import logging
 import os
+
+import cv2
 import numpy as np
 def calculate_shift_params(micro_poly, input_angle=None,extend_length = 55):
     """计算平移参数
@@ -60,14 +62,50 @@ def calculate_shift_params(micro_poly, input_angle=None,extend_length = 55):
         'p2_shifted': p2_shifted,
     },left_poly_format
 
+import logging
+import sys
+
+class ColorFormatter(logging.Formatter):
+
+    COLORS = {
+        logging.DEBUG: "\033[36m",     # 青色
+        logging.INFO: "\033[32m",      # 绿色
+        logging.WARNING: "\033[33m",   # 黄色
+        logging.ERROR: "\033[31m",     # 红色
+        logging.CRITICAL: "\033[41m",  # 红底
+    }
+
+    RESET = "\033[0m"
+
+    def format(self, record):
+
+        color = self.COLORS.get(record.levelno, self.RESET)
+
+        log_msg = super().format(record)
+
+        return f"{color}{log_msg}{self.RESET}"
+
+
 def setup_logging():
-    logging.basicConfig(
-        level=logging.INFO,
-        format="%(asctime)s - %(levelname)s - %(message)s"
-    )
+
     logger = logging.getLogger("ocr_system")
-    logging.getLogger("paddle").setLevel(logging.ERROR)
-    logging.getLogger("ppocr").setLevel(logging.ERROR)
+
+    logger.setLevel(logging.INFO)
+
+    if not logger.handlers:
+
+        handler = logging.StreamHandler(sys.stdout)
+
+        handler.setLevel(logging.INFO)
+
+        formatter = ColorFormatter(
+            "[%(asctime)s] - [%(levelname)s] - %(message)s"
+        )
+
+        handler.setFormatter(formatter)
+
+        logger.addHandler(handler)
+
     return logger
 
 logger = setup_logging()
