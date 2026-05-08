@@ -62,7 +62,7 @@ class ImageProcessor:
         return infos, valid_paths
 
     @staticmethod
-    def count_non_bw_pixels_along_line(img, p1, p2, line_thickness=3, white_thresh=245, black_thresh=10, mask=None, debug_output=None):
+    def count_non_bw_pixels_along_line(img, p1, p2, line_thickness=3, white_thresh=245, black_thresh=10, mask=None):
         if img is None or img.size == 0:
             return 0
 
@@ -77,44 +77,7 @@ class ImageProcessor:
 
         white_mask = np.all(pixels >= int(white_thresh), axis=1)
         black_mask = np.all(pixels <= int(black_thresh), axis=1)
-        # 灰色判断
-        gray_thresh = 20
-
-        gray_mask = (np.max(pixels, axis=1) - np.min(pixels, axis=1)
-                    ) <= gray_thresh
-        non_bw_count = int(np.sum(~(white_mask | black_mask | gray_mask)))
-        debug_output = None
-        if debug_output is not None:
-            os.makedirs(debug_output, exist_ok=True)
-            vis_img = img.copy()
-
-            white_vis = np.zeros((h, w), dtype=np.uint8)
-            black_vis = np.zeros((h, w), dtype=np.uint8)
-            non_bw_vis = np.zeros((h, w), dtype=np.uint8)
-
-            mask_indices = np.where(mask == 255)
-            for idx in range(len(mask_indices[0])):
-                y, x = mask_indices[0][idx], mask_indices[1][idx]
-                if white_mask[idx]:
-                    white_vis[y, x] = 255
-                elif black_mask[idx]:
-                    black_vis[y, x] = 255
-                elif not (white_mask[idx] or black_mask[idx]):
-                    non_bw_vis[y, x] = 255
-
-            white_overlay = vis_img.copy()
-            white_overlay[white_vis == 255] = [255, 255, 0]
-            black_overlay = white_overlay.copy()
-            black_overlay[black_vis == 255] = [0, 0, 255]
-            final_overlay = black_overlay.copy()
-            final_overlay[non_bw_vis == 255] = [0, 255, 0]
-
-            cv2.imwrite(os.path.join(debug_output, "white_black_overlay.png"), final_overlay)
-            cv2.imwrite(os.path.join(debug_output, "white_mask.png"), white_vis)
-            cv2.imwrite(os.path.join(debug_output, "black_mask.png"), black_vis)
-            cv2.imwrite(os.path.join(debug_output, "non_bw_mask.png"), non_bw_vis)
-
-        return non_bw_count
+        return int(np.sum(~(white_mask | black_mask)))
 
     @staticmethod
     def choose_one_sided_extension(img, p1, p2, extend_length=220, line_thickness=3, white_thresh=245, black_thresh=5, min_non_bw_pixels=5, text=None):
@@ -167,7 +130,7 @@ class ImageProcessor:
         # 只保留延伸部分的掩码（排除原始线段）
         ext1_mask = cv2.bitwise_and(cand1_mask, cv2.bitwise_not(base_mask))
 
-        if text == "D48":
+        if text == "XFS II":
             # 可视化：保存ext1_mask并在原图上显示
             cv2.imwrite(os.path.join(debug_dir, "ext1_mask.png"), ext1_mask)
             img_ext1_vis = img.copy()
@@ -175,12 +138,12 @@ class ImageProcessor:
                 img_ext1_vis = cv2.cvtColor(img_ext1_vis, cv2.COLOR_GRAY2BGR)
             img_ext1_vis[ext1_mask > 0] = [0, 255, 255]
             cv2.imwrite(os.path.join(debug_dir, "ext1_mask_overlay.png"), img_ext1_vis)
-        output = "debug_output"
+        
         # 统计延伸区域1中的总像素数和非黑白像素数量
         ext1_total = int(np.sum(ext1_mask > 0))
         ext1_count = ImageProcessor.count_non_bw_pixels_along_line(
             img, (0, 0), (0, 0), line_thickness, white_thresh, black_thresh, mask=ext1_mask
-        ,debug_output=debug_dir)
+        )
 
         # 延伸方向2：从p2向相同方向延伸
         p2_ext = [p2[0] + ux * extend_length, p2[1] + uy * extend_length]
@@ -190,19 +153,18 @@ class ImageProcessor:
         ext2_mask = cv2.bitwise_and(cand2_mask, cv2.bitwise_not(base_mask))
         
         # # 可视化：保存ext2_mask并在原图上显示
-        if text == "D48":
-            cv2.imwrite(os.path.join(debug_dir, "ext2_mask.png"), ext2_mask)
-            img_ext2_vis = img.copy()
-            if len(img_ext2_vis.shape) == 2:
-                img_ext2_vis = cv2.cvtColor(img_ext2_vis, cv2.COLOR_GRAY2BGR)
-            img_ext2_vis[ext2_mask > 0] = [0, 255, 255]
-            cv2.imwrite(os.path.join(debug_dir, "ext2_mask_overlay.png"), img_ext2_vis)
-
+        # cv2.imwrite(os.path.join(debug_dir, "ext2_mask.png"), ext2_mask)
+        # img_ext2_vis = img.copy()
+        # if len(img_ext2_vis.shape) == 2:
+        #     img_ext2_vis = cv2.cvtColor(img_ext2_vis, cv2.COLOR_GRAY2BGR)
+        # img_ext2_vis[ext2_mask > 0] = [0, 255, 255]
+        # cv2.imwrite(os.path.join(debug_dir, "ext2_mask_overlay.png"), img_ext2_vis)
+        
         # 统计延伸区域2中的总像素数和非黑白像素数量
         ext2_total = int(np.sum(ext2_mask > 0))
         ext2_count = ImageProcessor.count_non_bw_pixels_along_line(
             img, (0, 0), (0, 0), line_thickness, white_thresh, black_thresh, mask=ext2_mask
-        ,debug_output=debug_dir)
+        )
         if text and 'X' in text.upper():
             return p1, p2_ext
         elif text and 'S' in text.upper():
@@ -217,13 +179,9 @@ class ImageProcessor:
             # return None
 
         # 返回非黑白像素较多的那个延伸方向
-        if ext2_count > ext1_count:
+        if ext2_count >= ext1_count:
             return p1, p2_ext
-        elif ext2_count<ext1_count:
-            return p1_ext, p2
-        else:
-            return p1_ext, p2_ext
-
+        return p1_ext, p2
 
     @staticmethod
     def extend_opposite_side_for_small_box(p1, p2, seg, box_width, width_threshold=100, opposite_extend=70):

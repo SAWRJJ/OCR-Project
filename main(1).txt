@@ -1,10 +1,641 @@
-,
-  "Ⅰ": ["Ⅰ"],
-  "Ⅱ": ["Ⅱ"],
-  "Ⅲ": ["Ⅲ"],
-  "Ⅴ": ["Ⅴ"],
-  "Ⅳ": ["Ⅳ"],
-  "Ⅵ": ["Ⅵ"],
-  "Ⅶ": ["Ⅶ"],
-  "Ⅷ": ["Ⅷ"],
-  "Ⅸ": ["Ⅸ"]
+"""
+PaddleOCR 5.0 CPU 完整稳定版
+- 不使用任何已废弃参数
+- 仅使用 PaddleOCR(lang="ch")
+- 兼容 predict() 返回的异常结构
+- 支持：大图切分 → OCR → 合并 → 可视化 → 文本保存
+"""
+
+import os
+import cv2
+import time
+import logging
+import numpy as np
+
+# =========================
+# Paddle / 系统环境（最前）
+# =========================
+os.environ["FLAGS_use_mkldnn"] = "0"
+os.environ["OMP_NUM_THREADS"] = "1"
+os.environ["CPU_NUM_THREADS"] = "1"
+os.environ["FLAGS_enable_pir_api"] = "0"
+
+# =========================
+# 日志
+# =========================
+logging.basicConfig(
+    level=logging.INFO,
+    format="%(asctime)s - %(levelname)s - %(message)s"
+)
+logger = logging.getLogger(__name__)
+logging.getLogger("paddle").setLevel(logging.ERROR)
+logging.getLogger("ppocr").setLevel(logging.ERROR)
+
+ocr = None
+
+
+# =========================
+# OCR 初始化（PaddleOCR 5.0 唯一合法写法）
+# =========================
+def init_ocr():
+    global ocr
+    if ocr is not None:
+        return ocr
+
+    from paddleocr import PaddleOCR
+
+    logger.info("初始化 PaddleOCR 5.0（CPU）")
+    start = time.time()
+
+    # ⚠️ PaddleOCR 5.0 只能这样初始化
+    ocr = PaddleOCR(text_detection_model_name="PP-OCRv5_mobile_det",
+    text_recognition_model_name="PP-OCRv5_mobile_rec",
+    use_doc_orientation_classify=False,
+    use_doc_unwarping=False,
+    use_textline_orientation=False)
+    print(f"OCR 初始化完成，耗时 {time.time() - start:.2f}s")
+    logger.info(f"OCR 初始化完成，耗时 {time.time() - start:.2f}s")
+    return ocr
+
+
+# =========================
+# OCR 识别（带防御）
+# =========================
+def ocr_from_file(img_path, ocr):
+    # ocr = init_ocr()
+    results = []
+
+    raw = ocr.predict(img_path)
+    for index, res in enumerate(raw):
+        print(index)
+        # res.print()
+        res.save_to_img("output")
+        res.save_to_json("output")
+    if isinstance(img_path, list):
+        return
+    if not raw or not raw[0]:
+        return results
+
+    for item in raw[0]:
+        try:
+            # item 期望是 [box, info]
+            if not isinstance(item, (list, tuple)) or len(item) != 2:
+                continue
+
+            box, info = item
+
+            # ✅ PaddleOCR 5.0 防御：box 必须是 4 个点
+            if not (
+                    isinstance(box, (list, tuple)) and
+                    len(box) == 4 and
+                    all(isinstance(p, (list, tuple)) and len(p) == 2 for p in box)
+            ):
+                # 会遇到 ['i', ('n', 1.0)] 这种，直接跳过
+                continue
+
+            if not isinstance(info, (list, tuple)) or len(info) < 2:
+                continue
+
+            text = str(info[0])
+            conf = float(info[1])
+
+            results.append([box, (text, conf)])
+
+        except Exception as e:
+            logger.error(f"OCR 解析失败: {e}, 数据: {item}")
+
+    return results
+
+
+# =========================
+# 读取 output 文件夹中的 JSON 文件，获取 rec_polys 和对应的文本
+# =========================
+def load_rec_polys_from_json(output_dir):
+    import json
+    import os
+    rec_polys_with_text = []
+
+    for filename in os.listdir(output_dir):
+        if filename.endswith(".json"):
+            json_path = os.path.join(output_dir, filename)
+            try:
+                with open(json_path, "r", encoding="utf-8") as f:
+                    data = json.load(f)
+                if "rec_polys" in data and "rec_texts" in data:
+                    rec_polys = data["rec_polys"]
+                    rec_texts = data["rec_texts"]
+                    # 确保 rec_polys 和 rec_texts 长度一致
+                    if len(rec_polys) != len(rec_texts):
+                        continue
+
+                    # 获取当前文件对应的偏移量
+                    input_path = data["input_path"]
+                    if input_path and "split_" in input_path:
+                        # 从文件名中提取偏移量，格式：split_0_0_0.jpg
+                        parts = input_path.split("_")
+                        if len(parts) >= 4:
+                            try:
+                                ox = int(parts[-2])
+                                oy = int(parts[-1].split(".")[0])
+                                # 应用偏移量到 rec_polys
+                                for poly, text in zip(rec_polys, rec_texts):
+                                    offset_poly = [[p[0] + ox, p[1] + oy] for p in poly]
+                                    rec_polys_with_text.append((offset_poly, text))
+                            except ValueError:
+                                # 如果无法解析偏移量，跳过
+                                continue
+            except (json.JSONDecodeError, KeyError, Exception) as e:
+                logger.error(f"读取 JSON 文件失败: {e}, 文件: {json_path}")
+
+    return rec_polys_with_text
+
+
+# =========================
+# 检测两个矩形是否重合（使用IoU）
+# =========================
+def calculate_iou(box1, box2):
+    """
+    计算两个矩形的IoU（Intersection over Union）
+    box格式：[x1, y1, x2, y2]
+    """
+    # 计算交集区域
+    x1 = max(box1[0], box2[0])
+    y1 = max(box1[1], box2[1])
+    x2 = min(box1[2], box2[2])
+    y2 = min(box1[3], box2[3])
+
+    # 计算交集面积
+    inter_area = max(0, x2 - x1) * max(0, y2 - y1)
+
+    # 计算两个矩形的面积
+    box1_area = (box1[2] - box1[0]) * (box1[3] - box1[1])
+    box2_area = (box2[2] - box2[0]) * (box2[3] - box2[1])
+
+    # 计算并集面积
+    union_area = box1_area + box2_area - inter_area
+
+    # 计算IoU
+    iou = inter_area / union_area if union_area > 0 else 0
+
+    return iou
+
+
+# =========================
+# 整合所有 JSON 文件的数据（重合时选择文本更长的数据）
+# =========================
+def merge_all_json(output_dir, output_file="merged_output.json", iou_threshold=0.5):
+    import json
+    import os
+
+    # 初始化整合后的JSON数据列表
+    merged_dt_polys = []
+    merged_textline_orientation_angles = []
+    merged_rec_texts = []
+    merged_rec_scores = []
+    merged_rec_polys = []
+    merged_rec_boxes = []
+
+    # 读取所有JSON文件
+    for filename in os.listdir(output_dir):
+        if filename.endswith(".json"):
+            json_path = os.path.join(output_dir, filename)
+            try:
+                with open(json_path, "r", encoding="utf-8") as f:
+                    data = json.load(f)
+
+                # 获取当前文件对应的偏移量
+                input_path = data["input_path"]
+                ox, oy = 0, 0
+                if input_path and "split_" in input_path:
+                    # 从文件名中提取偏移量，格式：split_0_0_0.jpg
+                    parts = input_path.split("_")
+                    if len(parts) >= 4:
+                        try:
+                            ox = int(parts[-2])
+                            oy = int(parts[-1].split(".")[0])
+                        except ValueError:
+                            # 如果无法解析偏移量，跳过
+                            continue
+
+                # 确保所有必要字段都存在且长度一致
+                if not all(key in data for key in ["dt_polys", "rec_texts", "rec_scores", "rec_polys", "rec_boxes"]):
+                    continue
+
+                dt_polys = data["dt_polys"]
+                rec_texts = data["rec_texts"]
+                rec_scores = data["rec_scores"]
+                rec_polys = data["rec_polys"]
+                rec_boxes = data["rec_boxes"]
+
+                # 确保所有列表长度一致
+                if not (len(dt_polys) == len(rec_texts) == len(rec_scores) == len(rec_polys) == len(rec_boxes)):
+                    continue
+
+                # 处理每个数据项
+                for i in range(len(dt_polys)):
+                    # 应用偏移量
+                    offset_dt_poly = [[p[0] + ox, p[1] + oy] for p in dt_polys[i]]
+                    text = rec_texts[i]
+                    score = rec_scores[i]
+                    offset_rec_poly = [[p[0] + ox, p[1] + oy] for p in rec_polys[i]]
+                    offset_rec_box = [rec_boxes[i][0] + ox, rec_boxes[i][1] + oy,
+                                     rec_boxes[i][2] + ox, rec_boxes[i][3] + oy]
+
+                    # 检查是否与已合并的数据重合
+                    is_overlapped = False
+                    overlap_index = -1
+
+                    for j in range(len(merged_rec_boxes)):
+                        existing_box = merged_rec_boxes[j]
+                        iou = calculate_iou(offset_rec_box, existing_box)
+
+                        # 如果IoU大于阈值，认为是重合
+                        if iou > iou_threshold:
+                            is_overlapped = True
+                            overlap_index = j
+                            break
+
+                    if is_overlapped:
+                        # 比较文本长度，选择更长的
+                        existing_text = merged_rec_texts[overlap_index]
+                        if len(text) > len(existing_text):
+                            # 替换已合并的数据
+                            merged_dt_polys[overlap_index] = offset_dt_poly
+                            merged_rec_texts[overlap_index] = text
+                            merged_rec_scores[overlap_index] = score
+                            merged_rec_polys[overlap_index] = offset_rec_poly
+                            merged_rec_boxes[overlap_index] = offset_rec_box
+                            # 处理textline_orientation_angles
+                            if j < len(merged_textline_orientation_angles):
+                                if i < len(data.get("textline_orientation_angles", [])):
+                                    merged_textline_orientation_angles[j] = data["textline_orientation_angles"][i]
+                    else:
+                        # 没有重合，直接添加
+                        merged_dt_polys.append(offset_dt_poly)
+                        merged_rec_texts.append(text)
+                        merged_rec_scores.append(score)
+                        merged_rec_polys.append(offset_rec_poly)
+                        merged_rec_boxes.append(offset_rec_box)
+                        # 处理textline_orientation_angles
+                        if "textline_orientation_angles" in data and i < len(data["textline_orientation_angles"]):
+                            merged_textline_orientation_angles.append(data["textline_orientation_angles"][i])
+
+            except (json.JSONDecodeError, KeyError, Exception) as e:
+                logger.error(f"读取 JSON 文件失败: {e}, 文件: {json_path}")
+
+    # 构建整合后的JSON结构
+    merged_data = {
+        "input_path": "merged",
+        "page_index": None,
+        "model_settings": {},
+        "doc_preprocessor_res": {},
+        "dt_polys": merged_dt_polys,
+        "text_det_params": {},
+        "text_type": "general",
+        "textline_orientation_angles": merged_textline_orientation_angles,
+        "text_rec_score_thresh": 0.0,
+        "rec_texts": merged_rec_texts,
+        "rec_scores": merged_rec_scores,
+        "rec_polys": merged_rec_polys,
+        "rec_boxes": merged_rec_boxes
+    }
+
+    # 读取第一个JSON文件的配置信息
+    for filename in os.listdir(output_dir):
+        if filename.endswith(".json"):
+            json_path = os.path.join(output_dir, filename)
+            try:
+                with open(json_path, "r", encoding="utf-8") as f:
+                    data = json.load(f)
+                # 只保留第一个文件的 model_settings、doc_preprocessor_res 和 text_det_params
+                if "model_settings" in data:
+                    merged_data["model_settings"] = data["model_settings"]
+                if "doc_preprocessor_res" in data:
+                    merged_data["doc_preprocessor_res"] = data["doc_preprocessor_res"]
+                if "text_det_params" in data:
+                    merged_data["text_det_params"] = data["text_det_params"]
+                # 读取一次即可
+                break
+            except (json.JSONDecodeError, KeyError, Exception) as e:
+                logger.error(f"读取配置信息失败: {e}, 文件: {json_path}")
+                continue
+
+    # 保存整合后的JSON文件
+    with open(output_file, "w", encoding="utf-8") as f:
+        json.dump(merged_data, f, ensure_ascii=False, indent=2)
+
+    logger.info(f"整合后的JSON文件已保存: {output_file}")
+    logger.info(f"合并后的dt_polys数量: {len(merged_dt_polys)}")
+    logger.info(f"合并后的rec_texts数量: {len(merged_rec_texts)}")
+    return merged_data
+
+
+# =========================
+# 计算线段的延长线
+# =========================
+def extend_line(p1, p2, extend_length):
+    # 计算线段的方向向量
+    dx = p2[0] - p1[0]
+    dy = p2[1] - p1[1]
+
+    # 计算线段的长度
+    length = np.sqrt(dx**2 + dy**2)
+
+    # 如果线段长度为0，返回原线段
+    if length == 0:
+        return p1, p2
+
+    # 计算单位方向向量
+    unit_dx = dx / length
+    unit_dy = dy / length
+
+    # 计算延长后的起点和终点
+    extended_p1 = [p1[0] - unit_dx * extend_length, p1[1] - unit_dy * extend_length]
+    extended_p2 = [p2[0] + unit_dx * extend_length, p2[1] + unit_dy * extend_length]
+
+    return extended_p1, extended_p2
+
+
+# =========================
+# 根据 rec_polys 绘制红线（仅包含特定字符的）
+# =========================
+def draw_red_lines(img_path, rec_polys_with_text, out_path="ocr_result_with_red_lines.jpg"):
+    img = cv2.imread(img_path)
+    if img is None:
+        logger.error("无法读取图像")
+        return
+
+    # 定义需要绘制红线的特定字符
+    target_chars = ["S", "X", "D"]
+
+    for poly, text in rec_polys_with_text:
+        if len(poly) != 4:
+            continue
+
+        # 检查文本是否包含特定字符
+        if not any(char in text for char in target_chars):
+            continue
+
+        # 假设四边形的四个点顺序是：左上、右上、右下、左下
+        # 最上边是左上到右上
+        top_line = [poly[0], poly[1]]
+        # 最下边是左下到右下
+        bottom_line = [poly[3], poly[2]]
+
+        # 延长线段 220 像素
+        extended_top_p1, extended_top_p2 = extend_line(top_line[0], top_line[1], 220)
+        extended_bottom_p1, extended_bottom_p2 = extend_line(bottom_line[0], bottom_line[1], 220)
+
+        # 绘制红线
+        cv2.line(img, tuple(map(int, extended_top_p1)), tuple(map(int, extended_top_p2)), (0, 0, 255), 2)
+        cv2.line(img, tuple(map(int, extended_bottom_p1)), tuple(map(int, extended_bottom_p2)), (0, 0, 255), 2)
+
+    cv2.imwrite(out_path, img)
+    logger.info(f"绘制红线后的结果已保存: {out_path}")
+
+
+# =========================
+# 从整合后的JSON文件中绘制特定字符串的框
+# =========================
+def draw_boxes_from_merged_json(merged_json_path, img_path, out_path="merged_result_with_boxes.jpg", target_chars=["S", "X", "D"]):
+    import json
+
+    # 读取整合后的JSON文件
+    with open(merged_json_path, "r", encoding="utf-8") as f:
+        merged_data = json.load(f)
+
+    # 读取图像
+    img = cv2.imread(img_path)
+    if img is None:
+        logger.error("无法读取图像")
+        return
+
+    # 获取rec_polys和rec_texts
+    rec_polys = merged_data.get("rec_polys", [])
+    rec_texts = merged_data.get("rec_texts", [])
+
+    # 确保rec_polys和rec_texts长度一致
+    if len(rec_polys) != len(rec_texts):
+        logger.error("rec_polys和rec_texts长度不一致")
+        return
+
+    # 绘制特定字符串的框
+    for poly, text in zip(rec_polys, rec_texts):
+        if len(poly) != 4:
+            continue
+
+        # 检查文本是否包含特定字符
+        if not any(char in text for char in target_chars):
+            continue
+
+        # 将poly转换为numpy数组
+        poly_np = np.array(poly, dtype=np.int32)
+
+        # 绘制框
+        cv2.polylines(img, [poly_np], True, (0, 255, 0), 2)
+
+        # 绘制文本
+        cv2.putText(
+            img,
+            text[:10],  # 只显示前10个字符
+            tuple(poly[0]),
+            cv2.FONT_HERSHEY_SIMPLEX,
+            0.5,
+            (255, 0, 0),
+            1
+        )
+
+    # 保存结果
+    cv2.imwrite(out_path, img)
+    logger.info(f"绘制特定字符串框后的结果已保存: {out_path}")
+
+
+# =========================
+# 图像切分
+# =========================
+def split_image(img_path, window=1000, overlap=300):
+    img = cv2.imread(img_path)
+    if img is None:
+        logger.error("无法读取图像")
+        return [], []
+
+    # 原始图片尺寸
+    h, w = img.shape[:2]
+
+    # 给图片整体外扩overlap像素的黑边
+    bordered_img = cv2.copyMakeBorder(
+        img,
+        overlap, overlap, overlap, overlap,  # 上下左右各外扩overlap像素
+        cv2.BORDER_CONSTANT,
+        value=(0, 0, 0)  # 黑边
+    )
+
+    # 外扩后图片尺寸
+    bordered_h, bordered_w = bordered_img.shape[:2]
+
+    os.makedirs("splits", exist_ok=True)
+
+    infos = []
+    valid_paths = []
+    step = window - overlap
+    idx = 0
+
+    # 调整切分逻辑，从overlap开始，到bordered_h-overlap结束
+    for y in range(overlap, bordered_h, step):
+        for x in range(overlap, bordered_w, step):
+            x2 = min(x + window, bordered_w)
+            y2 = min(y + window, bordered_h)
+
+            # 计算相对于原始图片的坐标
+            orig_x = x - overlap
+            orig_y = y - overlap
+
+            # 切分图片
+            patch = bordered_img[y:y2, x:x2]
+            path = f"splits/split_{idx}_{orig_x}_{orig_y}.jpg"
+            cv2.imwrite(path, patch)
+
+            # 判断是否为白图（所有像素值接近255）
+            is_white = np.all(patch >= 250)
+
+            infos.append({
+                "path": path,
+                "offset": (orig_x, orig_y)
+            })
+
+            # 非白图才添加到valid_paths
+            if not is_white:
+                valid_paths.append(path)
+
+            idx += 1
+
+    logger.info(f"图像切分完成，共 {len(infos)} 张，其中非白图 {len(valid_paths)} 张")
+    return infos, valid_paths
+
+
+# =========================
+# 合并 OCR 结果
+# =========================
+def merge_results(split_infos, results_list):
+    merged = []
+
+    for info, results in zip(split_infos, results_list):
+        ox, oy = info["offset"]
+
+        for box, (text, conf) in results:
+            new_box = [[p[0] + ox, p[1] + oy] for p in box]
+            merged.append([new_box, (text, conf)])
+
+    logger.info(f"结果合并完成，共 {len(merged)} 条")
+    return merged
+
+
+# =========================
+# 可视化
+# =========================
+def visualize(img_path, results, out_path="ocr_result.jpg"):
+    img = cv2.imread(img_path)
+    if img is None:
+        return
+
+    for box, (text, _) in results:
+        box = np.array(box, dtype=np.int32)
+        cv2.polylines(img, [box], True, (0, 255, 0), 2)
+        cv2.putText(
+            img,
+            text[:10],
+            tuple(box[0]),
+            cv2.FONT_HERSHEY_SIMPLEX,
+            0.5,
+            (255, 0, 0),
+            1
+        )
+
+    cv2.imwrite(out_path, img)
+    logger.info(f"可视化结果已保存: {out_path}")
+
+
+# =========================
+# 主流程
+# =========================
+if __name__ == "__main__":
+    # 125.04s
+    ocr = init_ocr()
+    image_path = "t1.jpg"
+
+    logger.info("====== OCR 流程开始 ======")
+    t1 = time.time()
+    splits, img_paths = split_image(image_path,window=2000,)
+    t2 = time.time()
+    if not splits:
+        raise SystemExit("切图失败")
+    print(f"split time:{t2 - t1}")
+
+    all_results = []
+
+    # 记录OCR处理开始时间
+    ocr_start_time = time.time()
+    ocr_from_file(img_paths, ocr)
+    # for i, info in enumerate(splits):
+    #     logger.info(f"OCR {i+1}/{len(splits)}")
+    #     print(f"OCR {i + 1}/{len(splits)}")
+    #     all_results.append(ocr_from_file(info["path"],ocr))
+    #     print(all_results)
+
+    # 记录OCR处理结束时间并计算总时间
+    ocr_end_time = time.time()
+    ocr_total_time = ocr_end_time - ocr_start_time
+    logger.info(f"OCR 处理总耗时: {ocr_total_time:.2f}s")
+    print(f"OCR 处理总耗时: {ocr_total_time:.2f}s")
+
+    t1 = time.time()
+    # 整合所有JSON文件
+    output_dir = "output"
+    if os.path.exists(output_dir):
+        merge_all_json(output_dir)
+    t2 = time.time()
+    print(f"merge json time:{t2 - t1}")
+
+    t1 = time.time()
+    # 绘制红线：从 output 文件夹读取 JSON 文件，获取 rec_polys 并绘制
+    if os.path.exists(output_dir):
+        rec_polys = load_rec_polys_from_json(output_dir)
+        if rec_polys:
+            draw_red_lines(image_path, rec_polys)
+    t2 = time.time()
+    print(f"draw time:{t2 - t1}")
+    # 删除output文件夹里所有带有processed的图片
+    if os.path.exists(output_dir):
+        for filename in os.listdir(output_dir):
+            if "processed" in filename.lower():
+                file_path = os.path.join(output_dir, filename)
+                if os.path.isfile(file_path):
+                    os.remove(file_path)
+                    logger.info(f"已删除文件: {file_path}")
+
+    # 可选项：删除rec_texts为空的json和对应的图片
+    delete_empty_rec_texts = True  # 设置为False可禁用此功能
+    if delete_empty_rec_texts and os.path.exists(output_dir):
+        import json
+
+        for filename in os.listdir(output_dir):
+            if filename.endswith(".json"):
+                json_path = os.path.join(output_dir, filename)
+                try:
+                    with open(json_path, "r", encoding="utf-8") as f:
+                        data = json.load(f)
+                    # 检查rec_texts是否为空数组
+                    if isinstance(data.get("rec_texts"), list) and len(data["rec_texts"]) == 0:
+                        # 删除对应的图片文件
+                        base_name = filename.replace("_res.json", "")
+                        img_path = os.path.join(output_dir, f"{base_name}_ocr_res_img.jpg")
+                        if os.path.isfile(img_path):
+                            os.remove(img_path)
+                            logger.info(f"已删除空rec_texts对应的图片: {img_path}")
+                        # 删除json文件
+                        os.remove(json_path)
+                        logger.info(f"已删除空rec_texts的json文件: {json_path}")
+                except (json.JSONDecodeError, KeyError, Exception) as e:
+                    logger.error(f"处理文件{json_path}时出错: {e}")
+
+    logger.info("OCR 完成，文字结果已保存")
