@@ -9,6 +9,7 @@ from ocr.data_handler import DataHandler
 from ocr.visualizer import Visualizer
 from ocr.micro_ocr import process_micro_images, save_results_to_excel
 from compare_xlsx_matched_keys import *
+from ocr.utils import change_img_red
 # Setup logging
 logger = setup_logging()
 
@@ -20,6 +21,7 @@ def main(image_paths):
     # Initialize OCR Engine
     ocr_engine = OCREngine()
     for image_path in image_paths:
+        image_path = change_img_red(image_path)
         output_dir = get_output_dir_for_image(image_path, output_root="output")
         os.makedirs(output_dir, exist_ok=True)
         image_base_name = os.path.splitext(os.path.basename(image_path))[0]
@@ -88,7 +90,7 @@ def main(image_paths):
 
 if __name__ == "__main__":
     img_path= ["img/t9.jpg","img/t8.jpg","img/t5.jpg","img/t2.jpg","img/t3.jpg","img/t6.jpg","img/t4.jpg","img/t1.jpg"]
-    #img_path = ["img/t1.jpg"]# "img/t9.jpg","img/t8.jpg"," "img/t9.jpg","img/t8.jpg","img/t5.jpg"
+    # img_path = ["img/t1.jpg"]# "img/t9.jpg","img/t8.jpg"," "img/t9.jpg","img/t8.jpg","img/t5.jpg"
     # img_path = ["img/元龙站.jpg","img/凤阁岭站.jpg","img/武功站.jpg","img/杨陵站场.jpg","img/新建河站.jpg"]#
 
     main(img_path)

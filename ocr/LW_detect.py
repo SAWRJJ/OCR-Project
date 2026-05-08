@@ -763,12 +763,12 @@ def find_cluster_centers(points, distance_threshold=30):
 def calculate_distance(point1, point2):
     return math.sqrt((point1[0] - point2[0])**2 + (point1[1] - point2[1])**2)
 
-def detect_colors(image_path, target_char, debug=True, threshold=100):
+def detect_colors(image_path, target_char, debug=True, threshold=100, img0=None):
     """
     检测图像中的颜色像素并分析位置关系
 
     参数:
-        image_path: 图像路径
+        image_path: 图像路径或numpy数组
         target_char: 目标字符，用于确定使用哪种检测方式
         debug: 是否进行可视化，默认为True
         threshold: 黑色像素数量阈值，用于判断是否匹配成功，默认为100
@@ -780,8 +780,11 @@ def detect_colors(image_path, target_char, debug=True, threshold=100):
             - template_match_res: 模板匹配结果
             - color_centers_separate: 各颜色独立区域中心坐标字典 {'red': [...], 'yellow': [...], 'green': [...]}
     """
-    img = cv2.imread(image_path)
-    ori_img= img.copy()
+    if img0 is not None:
+        img = img0.copy()
+    else:
+        img = cv2.imread(image_path)
+    ori_img = img.copy()
     if img is None:
         print(f"无法读取图像: {image_path}")
         return False, 0.0, None, {}

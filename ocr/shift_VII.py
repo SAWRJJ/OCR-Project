@@ -46,6 +46,9 @@ def shift_step(
     print(f"首次出现黑色的检测线个数: {len(first_black_lines)}")
     print(f"首次出现黑色的检测线索引: {first_black_lines}")
 
+    remaining_poly = None
+    remaining_crop_img = None
+
     if target_poly is not None:
         print(f"\n目标新poly (第1个找黑检测线): {target_poly.tolist()}")
         if target_crop_img is not None and target_crop_img.size > 0:
@@ -53,7 +56,38 @@ def shift_step(
             cv2.imwrite(crop_output_path, target_crop_img)
             print(f"目标截图已保存到: {crop_output_path}")
             print(f"目标截图尺寸: {target_crop_img.shape}")
-    return target_poly, target_crop_img
+
+        p0 = poly[0]
+        p1 = poly[1]
+        p2 = poly[2]
+        p3 = poly[3]
+        # target poly 左边界
+        tx_min = np.min(target_poly[:, 0])
+
+        # 原poly四个点
+        p0, p1, p2, p3 = poly
+
+        # 计算 remaining poly
+        remaining_poly = np.array([
+            p0,
+            [tx_min, p0[1]],
+            [tx_min, p3[1]],
+            p3
+        ], dtype=np.int32)
+        print(f"\n剩余poly (原始poly的左侧边): {remaining_poly.tolist()}")
+
+        rx_min = max(0, int(np.min(remaining_poly[:, 0])) - 5)
+        rx_max = min(img.shape[1], int(np.max(remaining_poly[:, 0])) + 5)
+        ry_min = max(0, int(np.min(remaining_poly[:, 1])) - 5)
+        ry_max = min(img.shape[0], int(np.max(remaining_poly[:, 1])) + 5)
+        remaining_crop_img = img[ry_min:ry_max, rx_min:rx_max]
+
+        remaining_output_path = output_path.replace('_poly_output', '_crop_remaining.png')
+        cv2.imwrite(remaining_output_path, remaining_crop_img)
+        print(f"剩余截图已保存到: {remaining_output_path}")
+        print(f"剩余截图尺寸: {remaining_crop_img.shape}")
+
+    return target_poly, target_crop_img, remaining_poly, remaining_crop_img
 if __name__ == '__main__':
     filename = "micro_0049_2300_1XVII"  # micro_0049_2300_1XVII micro_0110_2300_1X5
     image_path = f'/Users/saw/WorkSpace/work/OCR-Project/test/test10/{filename}.jpg'
@@ -63,4 +97,4 @@ if __name__ == '__main__':
     img = cv2.imread(image_path)
     output_path = f'/Users/saw/WorkSpace/work/OCR-Project/test/test10/{filename}_poly_output.png'
     textbox_angle, _ = calculate_textbox_angle(np.array(data['micro_poly'], dtype=np.int32))
-    a,b = shift_step(img,data,textbox_angle=textbox_angle,output_path=output_path)
+    a,b,c,d = shift_step(img,data,textbox_angle=textbox_angle,output_path=output_path)

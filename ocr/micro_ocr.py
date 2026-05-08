@@ -5,16 +5,16 @@ import math
 
 from sqlalchemy import true
 
-from .ocr_engine import OCREngine
-from .LW_detect import detect_colors, calculate_textbox_angle,find_cluster_centers
-from .config import Config
-from .X_detect import expand_poly_vertical, count_dark_pixels_in_expanded_region, \
+from ocr.ocr_engine import OCREngine
+from ocr.LW_detect import detect_colors, calculate_textbox_angle,find_cluster_centers
+from ocr.config import Config
+from ocr.X_detect import expand_poly_vertical, count_dark_pixels_in_expanded_region, \
     find_first_non_white_column_along_tilt, calculate_horizontal_tilt_angle, expand_poly,shift_poly_along_angle,\
     count_vertical_strokes
-from .find_boundary_dark import find_drak_remove
-from .utils import calculate_shift_params
-from .scan_dark_pixels import process_image_high_circularity_to_white
-from .shift_VII import shift_step
+from ocr.find_boundary_dark import find_drak_remove
+from ocr.utils import calculate_shift_params
+from ocr.scan_dark_pixels import process_image_high_circularity_to_white
+from ocr.shift_VII import shift_step
 import cv2
 import numpy as np
 
@@ -78,6 +78,7 @@ def check_text(potential_text,target_defs0=None):
         if found_match_in_filename:
             break
     return filename_matched_key, found_match_in_filename
+
 def rotate_image_and_poly(img, poly, angle, center_point):
     angle_deg = np.degrees(angle)
     h, w = img.shape[:2]
@@ -91,7 +92,6 @@ def rotate_image_and_poly(img, poly, angle, center_point):
     rotated_poly = rotated_poly.T.astype(np.int32)
 
     return rotated_img, rotated_poly
-
 
 def rotate_polys_back(poly, angle, center_point, original_shape):
     angle_deg = np.degrees(angle)
@@ -139,7 +139,7 @@ def process_micro_images(micro_img_dir):
             continue
 
         # micro_0005_S
-        if filename == "micro_0087_YSC.jpg" or "YSC" in filename: # micro_0110_2300_1X5 # micro_0085__5c0f_D # micro_0064_DOQOOSN micro_0048_XI micro_0093_XL_I_HO_00.json_input.png
+        if filename == "micro_0030_1700X400.jpg" or "YSC" in filename: # micro_0110_2300_1X5 # micro_0085__5c0f_D # micro_0064_DOQOOSN micro_0048_XI micro_0093_XL_I_HO_00.json_input.png
             print(-1)
         img_path = os.path.join(micro_img_dir, filename)
         json_path = os.path.join(micro_img_dir, os.path.splitext(filename)[0] + ".json")
@@ -297,6 +297,7 @@ def process_micro_images(micro_img_dir):
                         min_y, max_y = min(y_coords), max(y_coords)
 
                         rect_width = max_x - min_x
+                        use_polygon = True
                         if rect_width > 130:
                             ex_px =70
                             # 'XⅣ'
@@ -329,8 +330,19 @@ def process_micro_images(micro_img_dir):
                             if os.path.exists(json_path):
                                 with open(json_path, 'r', encoding='utf-8') as f:
                                     data = json.load(f)
-                                target_poly, cropped = shift_step(img,data,textbox_angle=textbox_angle,output_path=output_path)
+                                target_poly, cropped, remaining_poly, _ = shift_step(img, data, textbox_angle=textbox_angle, output_path=output_path)
                                 shifted_poly = target_poly
+                                x_min = max(0, int(min(p[0] for p in shifted_poly)))
+                                x_max = min(img.shape[1], int(max(p[0] for p in shifted_poly)))
+                                y_min = max(0, int(min(p[1] for p in shifted_poly)))
+                                y_max = min(img.shape[0], int(max(p[1] for p in shifted_poly)))
+                                if remaining_poly is not None and len(remaining_poly) >= 2:
+                                    pts = np.array(remaining_poly, dtype=np.int32)
+                                    cv2.fillPoly(img, [pts], (255, 255, 255))
+                                    modified_img_path = output_path.replace('.jpg', '_modified.jpg')
+                                    cv2.imwrite(modified_img_path, img)
+                                    print(f"修改后的图片已保存到: {modified_img_path}")
+                                use_polygon = False
                         if os.path.exists(json_path):
                             with open(json_path, 'r', encoding='utf-8') as f:
                                 json_data = json.load(f)
@@ -396,7 +408,8 @@ def process_micro_images(micro_img_dir):
                                 img_path,
                                 filename_matched_key,
                                 debug=True,
-                                threshold=THRESHOLD
+                                threshold=THRESHOLD,
+                                img0 = img
                             )
                             print(template_match_res)
                             detail_item["template_match_res"] = template_match_res
@@ -783,7 +796,6 @@ def process_micro_images(micro_img_dir):
     logger.info(f"小窗口二次OCR识别完成，共处理 {count} 张图片")
     return all_matched_keys
 
-
 def save_results_to_excel(all_results, output_file="ocr_results.xlsx", micro_img_dir=None):
     """
     将 OCR 结果保存为 Excel 文件
@@ -934,7 +946,6 @@ def save_results_to_excel(all_results, output_file="ocr_results.xlsx", micro_img
     except Exception as e:
         logger.error(f"保存 Excel 失败: {e}")
 
-
 def adjust_textbox_edge(img, poly, direction, json_path, crop_size=40):
     import cv2
     import numpy as np
@@ -961,6 +972,8 @@ def adjust_textbox_edge(img, poly, direction, json_path, crop_size=40):
     y_coords = [point[1] for point in poly]
     min_y = min(y_coords)
     max_y = max(y_coords)
+    height, width = img.shape[:2]
+    x1, y1, x2, y2 = 0, 0, width, height
 
     if direction == 'right':
         rightmost_x = max(x_coords)
@@ -987,7 +1000,6 @@ def adjust_textbox_edge(img, poly, direction, json_path, crop_size=40):
         x2 = int(yellow_box_right)
         y2 = int(max_y)
 
-    height, width = img.shape[:2]
     x1 = max(0, x1)
     y1 = max(0, y1)
     x2 = min(width, x2)
@@ -1025,3 +1037,10 @@ def adjust_textbox_edge(img, poly, direction, json_path, crop_size=40):
             print(f"已设置调整后的边缘: {adjusted_edge}")
 
     return use_adjusted_edge, adjusted_edge, crop_ocr_result
+
+if __name__ == '__main__':
+    micro_dir = "test/test16/micro"
+    res = process_micro_images(micro_dir)
+    print(len(res))
+    for r in res:
+        print(r)
