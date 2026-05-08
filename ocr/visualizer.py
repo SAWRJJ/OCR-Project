@@ -104,6 +104,52 @@ class Visualizer:
     @staticmethod
     def draw_red_lines(img_path, rec_polys_with_text, out_path="ocr_result_with_red_lines.jpg",
                        target_chars=None, exclude_substrings=None, save_boxes_dir=None):
+        def calculate_centers_separate(mask, min_area=10, min_circularity=0.6, min_radius=7):
+            """
+            计算mask中每个独立连通域的中心坐标，并返回非圆形区域的mask
+
+            参数:
+                mask: 二值图像mask
+                min_area: 最小连通域面积阈值，小于此值的区域将被忽略
+                min_circularity: 最小圆度阈值，圆度大于此值的区域被认为是圆形，将被排除
+                min_radius: 最小半径阈值，当圆度满足条件时，半径也需要大于此值才被认为是圆形
+
+            返回:
+                tuple: (centers, non_circular_mask)
+                centers: 每个连通域的中心坐标列表 [(cx1, cy1), (cx2, cy2), ...]
+                non_circular_mask: 非圆形区域的mask（圆度<=min_circularity的区域）
+            """
+            if cv2.countNonZero(mask) == 0:
+                return [], np.zeros_like(mask)
+
+            num_labels, labels, stats, centroids = cv2.connectedComponentsWithStats(mask, connectivity=8)
+
+            centers = []
+            non_circular_mask = np.zeros_like(mask)
+
+            for i in range(1, num_labels):
+                area = stats[i, cv2.CC_STAT_AREA]
+                if area < min_area:
+                    continue
+
+                component_mask = (labels == i).astype(np.uint8) * 255
+
+                contours, _ = cv2.findContours(component_mask, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
+                if len(contours) == 0:
+                    continue
+                perimeter = cv2.arcLength(contours[0], True)
+
+                circularity = 4 * np.pi * area / (perimeter * perimeter)
+
+                radius = np.sqrt(area / np.pi)
+
+                if circularity <= min_circularity or radius <= min_radius:
+                    cx = int(centroids[i][0])
+                    cy = int(centroids[i][1])
+                    centers.append((cx, cy))
+                    non_circular_mask = cv2.bitwise_or(non_circular_mask, component_mask)
+
+            return centers, non_circular_mask
         if cv2 is None:
             raise ModuleNotFoundError("未安装 cv2（opencv-python）")
 
@@ -139,52 +185,6 @@ class Visualizer:
             # micro_0102_1700XL1_80_00.jpg
             if "1700xL1" in text: #'1700xL1-80-00O0'
                 print(0)
-            def calculate_centers_separate(mask, min_area=10, min_circularity=0.6, min_radius=7):
-                """
-                计算mask中每个独立连通域的中心坐标，并返回非圆形区域的mask
-
-                参数:
-                    mask: 二值图像mask
-                    min_area: 最小连通域面积阈值，小于此值的区域将被忽略
-                    min_circularity: 最小圆度阈值，圆度大于此值的区域被认为是圆形，将被排除
-                    min_radius: 最小半径阈值，当圆度满足条件时，半径也需要大于此值才被认为是圆形
-
-                返回:
-                    tuple: (centers, non_circular_mask)
-                    centers: 每个连通域的中心坐标列表 [(cx1, cy1), (cx2, cy2), ...]
-                    non_circular_mask: 非圆形区域的mask（圆度<=min_circularity的区域）
-                """
-                if cv2.countNonZero(mask) == 0:
-                    return [], np.zeros_like(mask)
-
-                num_labels, labels, stats, centroids = cv2.connectedComponentsWithStats(mask, connectivity=8)
-
-                centers = []
-                non_circular_mask = np.zeros_like(mask)
-
-                for i in range(1, num_labels):
-                    area = stats[i, cv2.CC_STAT_AREA]
-                    if area < min_area:
-                        continue
-
-                    component_mask = (labels == i).astype(np.uint8) * 255
-
-                    contours, _ = cv2.findContours(component_mask, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
-                    if len(contours) == 0:
-                        continue
-                    perimeter = cv2.arcLength(contours[0], True)
-
-                    circularity = 4 * np.pi * area / (perimeter * perimeter)
-
-                    radius = np.sqrt(area / np.pi)
-
-                    if circularity <= min_circularity or radius <= min_radius:
-                        cx = int(centroids[i][0])
-                        cy = int(centroids[i][1])
-                        centers.append((cx, cy))
-                        non_circular_mask = cv2.bitwise_or(non_circular_mask, component_mask)
-
-                return centers, non_circular_mask
 
             if "." in text or (len(text) >= 4 and text[-1].isdigit()):
 
