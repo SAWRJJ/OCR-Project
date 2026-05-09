@@ -298,7 +298,7 @@ def process_micro_images(micro_img_dir):
                                         conf = result['rec_scores'][i]
                                         rec_poly = result['rec_polys'][i]
                                         restored_poly = [[int(point[0] + left), int(point[1])] for point in rec_poly]
-                                        filename_matched_key1, found_match_in_filename1 = check_text(text)
+                                        filename_matched_key1, found_match_in_filename1 = check_all_text(text)
                                         if found_match_in_filename1 and filename_matched_key1 not in matched_keys:
                                             matched_keys.append(filename_matched_key1)
                                         if found_match_in_filename1:
@@ -683,7 +683,7 @@ def process_micro_images(micro_img_dir):
                                     clean_text = text.strip()
                                     current_key = None
                                     found_match = False
-                                    current_key, found_match = check_text(clean_text)
+                                    current_key, found_match = check_all_text(clean_text)
                                     if found_match and current_key not in matched_keys:
                                         matched_keys.append(current_key)
                                     detail_item = {
@@ -757,7 +757,7 @@ def process_micro_images(micro_img_dir):
                                 # 遍历 target_defs 查找匹配
                                 current_key = None
                                 found_match = False
-                                current_key, found_match = check_text(clean_text)
+                                current_key, found_match = check_all_text(clean_text)
                                 if found_match and current_key not in matched_keys:
                                     matched_keys.append(current_key)
 
