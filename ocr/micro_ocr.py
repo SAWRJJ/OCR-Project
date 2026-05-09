@@ -982,17 +982,17 @@ def save_results_to_excel(all_results, output_file="ocr_results.xlsx", micro_img
             # 加载 target definitions (为了避免重复加载，这里假设 process_micro_images 已经做过匹配)
             # 我们可以直接检查 item["matched_keys"]，但这无法将 key 和 confidence 一一对应
             # 所以我们需要再次匹配
-            target_defs = load_target_definitions()
-            for key, variants in target_defs.items():
-                found_match = False
-                for variant in variants:
-                    if variant in clean_text:
-                        current_matched_key = key
-                        found_match = True
-                        break
-                if found_match:
-                    break
-
+            # target_defs = load_target_definitions()
+            # for key, variants in target_defs.items():
+            #     found_match = False
+            #     for variant in variants:
+            #         if variant in clean_text:
+            #             current_matched_key = key
+            #             found_match = True
+            #             break
+            #     if found_match:
+            #         break
+            current_matched_key,find_match = check_text(clean_text)
             # 如果只想输出匹配到的结果：
             if current_matched_key:
                 color_centers = detail.get("color_centers_separate", {})
