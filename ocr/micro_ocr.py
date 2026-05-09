@@ -45,10 +45,10 @@ def load_template_paths(resource_dir):
     return templates
 
 
-def load_target_definitions():
-    if os.path.exists(TARGET_PATH):
+def load_target_definitions(target_path = TARGET_PATH):
+    if os.path.exists(target_path):
         try:
-            with open(TARGET_PATH, 'r', encoding='utf-8') as f:
+            with open(target_path, 'r', encoding='utf-8') as f:
                 data = json.load(f)
                 # 将字典逆序，以便优先匹配列表后部的项（假设列表后部优先级更高或用户有此需求）
                 if isinstance(data, dict):
@@ -58,7 +58,7 @@ def load_target_definitions():
             logger.error(f"加载 target.json 失败: {e}")
             return {}
     else:
-        logger.warning(f"target.json 不存在: {TARGET_PATH}")
+        logger.warning(f"target.json 不存在: {target_path}")
         return {}
 
 
@@ -78,6 +78,52 @@ def check_text(potential_text,target_defs0=None):
         if found_match_in_filename:
             break
     return filename_matched_key, found_match_in_filename
+
+def check_all_text(potential_text, target_defs0=None):
+    if target_defs0:
+        target_defs = target_defs0
+    else:
+        target_defs = load_target_definitions()
+    filename_matched_key = None
+    found_match_in_filename = False
+    results = []
+    remaining_text = potential_text
+
+    first_round = True
+    while True:
+        found_this_round = False
+        if first_round:
+            target_defs1 = target_defs
+        else:
+            target_defs1 = load_target_definitions(os.path.join(PROJECT_ROOT, "resource", "target1.json"))
+
+        if not target_defs1:
+            break
+
+        for key, variants in target_defs1.items():
+            for variant in variants:
+                if variant in remaining_text:
+                    remaining_text = remaining_text.replace(variant, '', 1).strip()
+                    results.append(key)
+                    found_this_round = True
+                    found_match_in_filename = True
+                    break
+            if found_this_round:
+                break
+
+        if first_round and not found_this_round:
+            return None, False
+
+        first_round = False
+
+        if not found_this_round:
+            break
+
+    if results:
+        filename_matched_key = ''.join(results)
+
+    return filename_matched_key, found_match_in_filename
+
 def rotate_image_and_poly(img, poly, angle, center_point):
     angle_deg = np.degrees(angle)
     h, w = img.shape[:2]
@@ -139,7 +185,7 @@ def process_micro_images(micro_img_dir):
             continue
 
         # micro_0005_S
-        if filename == "micro_0018_D.jpg" or "YSC" in filename: # micro_0110_2300_1X5 # micro_0085__5c0f_D # micro_0064_DOQOOSN micro_0048_XI micro_0093_XL_I_HO_00.json_input.png
+        if filename == "micro_0014_FXII_K.jpg" or "YSC" in filename: # micro_0110_2300_1X5 # micro_0085__5c0f_D # micro_0064_DOQOOSN micro_0048_XI micro_0093_XL_I_HO_00.json_input.png
             print(-1)
         img_path = os.path.join(micro_img_dir, filename)
         json_path = os.path.join(micro_img_dir, os.path.splitext(filename)[0] + ".json")
@@ -295,7 +341,38 @@ def process_micro_images(micro_img_dir):
                         y_coords = [p[1] for p in first_poly]
                         min_x, max_x = min(x_coords), max(x_coords)
                         min_y, max_y = min(y_coords), max(y_coords)
-
+                        cropped_1 = img[min_y:max_y, min_x:max_x]
+                        if "X" in potential_text and potential_text[0].isdigit():
+                            results = ocr_engine.ocr.predict(cropped_1)
+                            found_match_in_filename1 = None
+                            for result in results:
+                                for i in range(len(result['rec_texts'])):
+                                    text = result['rec_texts'][i]
+                                    if len(text)>0 and text != potential_text and text[0] == "X":
+                                        potential_text = text
+                                        first_confidence = result['rec_scores'][i]
+                                        rec_poly = result['rec_polys'][i]
+                                        restored_poly = [[int(point[0] + min_x), int(point[1] + min_y)] for point in rec_poly]
+                                        x_coords = [p[0] for p in restored_poly]
+                                        y_coords = [p[1] for p in restored_poly]
+                                        poly_min_x, poly_max_x = min(x_coords), max(x_coords)
+                                        poly_min_y, poly_max_y = min(y_coords), max(y_coords)
+                                        expand_pixels = 2
+                                        restored_poly = [
+                                            [poly_min_x - expand_pixels, poly_min_y - expand_pixels],
+                                            [poly_max_x + expand_pixels, poly_min_y - expand_pixels],
+                                            [poly_max_x + expand_pixels, poly_max_y + expand_pixels],
+                                            [poly_min_x - expand_pixels, poly_max_y + expand_pixels]
+                                        ]
+                                        if os.path.exists(json_path):
+                                            with open(json_path, 'r', encoding='utf-8') as f:
+                                                json_data = json.load(f)
+                                            json_data['text'] = potential_text
+                                            json_data['micro_poly'] = restored_poly
+                                            first_poly = restored_poly
+                                            with open(json_path, 'w', encoding='utf-8') as f:
+                                                json.dump(json_data, f, ensure_ascii=False, indent=2)
+                                        break
                         rect_width = max_x - min_x
                         if rect_width > 130:
                             ex_px =70
@@ -346,6 +423,16 @@ def process_micro_images(micro_img_dir):
                         # cv2.polylines(vis_img, [expanded_array], isClosed=True, color=(0, 255, 0), thickness=2)
                         # cv2.rectangle(vis_img, (x_min, y_min), (x_max, y_max), (255, 0, 0), 2)
                         cropped0 = find_drak_remove(cropped, dark_threshold=190)
+                        cropped_path1 = os.path.join(micro_img_dir, 'debug',
+                                                     filename.replace('.jpg', '_cropped1.jpg'))
+                        if "FX" in filename_matched_key:
+                            _, binary_img, _ = process_image_high_circularity_to_white(
+                                cropped0,
+                                dark_threshold=200,
+                                min_circularity=0.75,
+                                binary_output_path=cropped_path1
+                            )
+                            cropped0 = cv2.cvtColor(binary_img, cv2.COLOR_GRAY2BGR)
                         cv2.imwrite(cropped_path, cropped0)
                         results = ocr_engine.ocr.predict(cropped0)
                         first_confidence = 1.0
@@ -365,8 +452,8 @@ def process_micro_images(micro_img_dir):
                                             potential_text = "XVIII"
                                     first_confidence = result['rec_scores'][i]
                                     rec_poly = result['rec_polys'][i]
-                                    restored_poly = [[int(point[i] + x_min), int(point[1] + y_min)] for point in rec_poly]
-                                    filename_matched_key, found_match_in_filename1 = check_text(potential_text)
+                                    restored_poly = [[int(point[0] + x_min), int(point[1] + y_min)] for point in rec_poly]
+                                    filename_matched_key, found_match_in_filename1 = check_all_text(potential_text)
                                     if found_match_in_filename1 and filename_matched_key not in matched_keys:
                                         matched_keys.append(filename_matched_key)
                                     if found_match_in_filename1:
@@ -467,7 +554,7 @@ def process_micro_images(micro_img_dir):
                                                                                center_point,
                                                                                img.shape)
                                 restored_poly = [[int(point[i] + x_min), int(point[1] + y_min)] for point in rec_poly]
-                                filename_matched_key1, found_match_in_filename1 = check_text(text)
+                                filename_matched_key1, found_match_in_filename1 = check_all_text(text)
                                 if found_match_in_filename1 and filename_matched_key1 not in matched_keys:
                                     matched_keys.append(filename_matched_key1)
                                 if found_match_in_filename1:
