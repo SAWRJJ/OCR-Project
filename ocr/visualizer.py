@@ -107,23 +107,11 @@ class Visualizer:
         def calculate_centers_separate(mask, min_area=10, min_circularity=0.6, min_radius=7):
             """
             计算mask中每个独立连通域的中心坐标，并返回非圆形区域的mask
-
-            参数:
-                mask: 二值图像mask
-                min_area: 最小连通域面积阈值，小于此值的区域将被忽略
-                min_circularity: 最小圆度阈值，圆度大于此值的区域被认为是圆形，将被排除
-                min_radius: 最小半径阈值，当圆度满足条件时，半径也需要大于此值才被认为是圆形
-
-            返回:
-                tuple: (centers, non_circular_mask)
-                centers: 每个连通域的中心坐标列表 [(cx1, cy1), (cx2, cy2), ...]
-                non_circular_mask: 非圆形区域的mask（圆度<=min_circularity的区域）
             """
             if cv2.countNonZero(mask) == 0:
                 return [], np.zeros_like(mask)
 
             num_labels, labels, stats, centroids = cv2.connectedComponentsWithStats(mask, connectivity=8)
-
             centers = []
             non_circular_mask = np.zeros_like(mask)
 
@@ -133,14 +121,13 @@ class Visualizer:
                     continue
 
                 component_mask = (labels == i).astype(np.uint8) * 255
-
                 contours, _ = cv2.findContours(component_mask, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
                 if len(contours) == 0:
                     continue
                 perimeter = cv2.arcLength(contours[0], True)
+                if perimeter == 0: continue
 
                 circularity = 4 * np.pi * area / (perimeter * perimeter)
-
                 radius = np.sqrt(area / np.pi)
 
                 if circularity <= min_circularity or radius <= min_radius:
@@ -213,7 +200,31 @@ class Visualizer:
                 mask_red1 = cv2.inRange(hsv, lower_red1, upper_red1)
                 mask_red2 = cv2.inRange(hsv, lower_red2, upper_red2)
 
-                mask_red = cv2.bitwise_or(mask_red1, mask_red2)
+                mask_red_hsv = cv2.bitwise_or(mask_red1, mask_red2)
+
+                # BGR
+                b = roi[:, :, 0].astype(np.int16)
+                g = roi[:, :, 1].astype(np.int16)
+                r = roi[:, :, 2].astype(np.int16)
+
+                # HSV中的V通道（亮度）
+                v = hsv[:, :, 2]
+
+                # 放宽后的红色优势
+                red_dom_mask = (
+                        (r > g + 15) &
+                        (r > b + 15) &
+                        (r > 60) &
+                        (v > 70)
+                )
+
+                red_dom_mask = red_dom_mask.astype(np.uint8) * 255
+
+                # 最终mask
+                mask_red = cv2.bitwise_and(
+                    mask_red_hsv,
+                    red_dom_mask
+                )
 
                 # 只保留poly内部
                 mask_red = cv2.bitwise_and(mask_red, roi_mask)
@@ -228,9 +239,17 @@ class Visualizer:
                         expanded_mask = cv2.dilate(
                             non_circular_mask,
                             kernel,
-                            iterations=1
+                            iterations=2
                         )
-                        roi[expanded_mask > 0] = 255
+                        # 关键修改：
+                        # 即使红色与黑色连通
+                        # 也只处理真正红色区域
+                        final_mask = cv2.bitwise_and(
+                            expanded_mask,
+                            mask_red
+                        )
+
+                        roi[final_mask > 0] = 255
         #
         #         # cv2.polylines(img, [np.array(poly, dtype=np.int32)], True, (0, 0, 255), 2)
         #         #

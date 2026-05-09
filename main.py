@@ -33,7 +33,7 @@ def main(image_paths):
         t2 = time.time()
         if not splits:
             raise SystemExit("切图失败")
-        print(f"{image_base_name} split time:{t2 - t1}")
+        logger.info(f"{image_base_name} split time:{t2 - t1}")
 
         # Run OCR
         ocr_start_time = time.time()
@@ -43,7 +43,7 @@ def main(image_paths):
         ocr_end_time = time.time()
         ocr_total_time = ocr_end_time - ocr_start_time
         logger.info(f"OCR 处理总耗时: {ocr_total_time:.2f}s")
-        print(f"{image_base_name} OCR 处理总耗时: {ocr_total_time:.2f}s")
+        logger.info(f"{image_base_name} OCR 处理总耗时: {ocr_total_time:.2f}s")
 
         t1 = time.time()
         # Merge Results
@@ -53,13 +53,14 @@ def main(image_paths):
                 output_file=os.path.join(output_dir, f"{image_base_name}_merged.json")
             )
         t2 = time.time()
-        print(f"{image_base_name} merge json time:{t2 - t1}")
+        logger.info(f"{image_base_name} merge json time:{t2 - t1}")
 
         t1 = time.time()
         # Draw Red Lines
         if os.path.exists(output_dir):
             rec_polys = DataHandler.load_rec_polys_from_json(output_dir)
-            print("rec_polys 加载完成")
+            t2 = time.time()
+            logger.info(f"{image_base_name} rec_polys 加载完成，耗时：:{t2 - t1}")
             if rec_polys:
                 Visualizer.draw_red_lines(
                     image_path,
@@ -68,7 +69,7 @@ def main(image_paths):
                     save_boxes_dir=os.path.join(output_dir, "micro_img"),
                 )
         t2 = time.time()
-        print(f"{image_base_name} draw time:{t2 - t1}")
+        logger.info(f"{image_base_name} draw time:{t2 - t1}")
 
         t1 = time.time()
         # Micro Image OCR
@@ -79,7 +80,7 @@ def main(image_paths):
             excel_path = os.path.join(output_dir, f"{image_base_name}_ocr_report.xlsx")
             save_results_to_excel(all_results, excel_path, micro_img_dir)
         t2 = time.time()
-        print(f"{image_base_name} micro ocr time:{t2 - t1}")
+        logger.info(f"{image_base_name} micro ocr time:{t2 - t1}")
 
         # Cleanup
         DataHandler.cleanup_output_dir(output_dir, delete_empty=True)
@@ -90,7 +91,7 @@ if __name__ == "__main__":
     img_path = ["img/t3.jpg", "img/t6.jpg", "img/t4.jpg", "img/t1.jpg"]
     img_path = ["img/t9.jpg", "img/t8.jpg", "img/t5.jpg", "img/t2.jpg"]
     img_path= ["img/t9.jpg","img/t8.jpg","img/t5.jpg","img/t2.jpg","img/t3.jpg","img/t6.jpg","img/t4.jpg","img/t1.jpg"]
-    # img_path = ["img/t1.jpg"]# "img/t9.jpg","img/t8.jpg"," "img/t9.jpg","img/t8.jpg","img/t5.jpg"
+    # img_path = ["img/t4.jpg"]# "img/t9.jpg","img/t8.jpg"," "img/t9.jpg","img/t8.jpg","img/t5.jpg"
     # img_path = ["img/元龙站.jpg","img/凤阁岭站.jpg","img/武功站.jpg","img/杨陵站场.jpg","img/新建河站.jpg"]#
 
     main(img_path)
