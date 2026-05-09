@@ -207,7 +207,7 @@ def process_micro_images(micro_img_dir):
             continue
 
         # micro_0005_S
-        if filename == "micro_0018_D.jpg" or "SL49" in filename: # micro_0110_2300_1X5 # micro_0085__5c0f_D # micro_0064_DOQOOSN micro_0048_XI micro_0093_XL_I_HO_00.json_input.png
+        if filename == "micro_0012_0S3.jpg" or "0S3" in filename: # micro_0110_2300_1X5 # micro_0085__5c0f_D # micro_0064_DOQOOSN micro_0048_XI micro_0093_XL_I_HO_00.json_input.png
             print(-1)
         img_path = os.path.join(micro_img_dir, filename)
         json_path = os.path.join(micro_img_dir, os.path.splitext(filename)[0] + ".json")
@@ -408,7 +408,7 @@ def process_micro_images(micro_img_dir):
 
                             debug_vis_path = os.path.join(micro_img_dir, 'debug',
                                                           filename.replace('.jpg', '_shift_poly.jpg'))
-                            shifted_poly, shift_line_start, shift_line_end = shift_poly_along_angle(
+                            shifted_poly, shift_line_start, shift_line_end, shifted_left_poly = shift_poly_along_angle(
                                 first_poly,
                                 textbox_angle,
                                 shift_distance=ex_px,
@@ -537,7 +537,22 @@ def process_micro_images(micro_img_dir):
                         second_poly, expanded_poly = calculate_shift_params(first_poly, extend_length=expand_length)
                     else:
                         expanded_poly = expand_poly(first_poly, expand_x=40, expand_y=6, angle=tilt_angle)
-                    expanded_array = np.array(expanded_poly, dtype=np.int32)
+                    if textbox_length>350:
+                        debug_vis_path = os.path.join(micro_img_dir, 'debug',
+                                                      filename.replace('.jpg', '_shift_poly.jpg'))
+                        ex_px = textbox_length//2
+                        shifted_poly, shift_line_start, shift_line_end, shifted_left_poly = shift_poly_along_angle(
+                            first_poly,
+                            textbox_angle,
+                            shift_distance=ex_px,
+                            debug_img=img,
+                            output_path=debug_vis_path
+                        )
+                        expanded_poly = shifted_left_poly
+                    # x_min = max(0, int(min(p[0] for p in expanded_poly)) - 2)
+                    # x_max = min(img.shape[1], int(max(p[0] for p in expanded_poly)) + 2)
+                    # y_min = max(0, int(min(p[1] for p in expanded_poly)) - 2)
+                    # y_max = min(img.shape[0], int(max(p[1] for p in expanded_poly)) + 2)
                     x_min = max(0, int(min(p[0] for p in expanded_poly)))
                     x_max = min(img.shape[1], int(max(p[0] for p in expanded_poly)))
                     y_min = max(0, int(min(p[1] for p in expanded_poly)))
@@ -551,7 +566,7 @@ def process_micro_images(micro_img_dir):
                     # cv2.polylines(vis_img, [expanded_array], isClosed=True, color=(0, 255, 0), thickness=2)
                     # cv2.rectangle(vis_img, (x_min, y_min), (x_max, y_max), (255, 0, 0), 2)
                     cv2.imwrite(cropped_path0, cropped)
-                    cropped0 = find_drak_remove(cropped,dark_threshold=190,find_adjacent_color_regions=True)
+                    cropped0 = find_drak_remove(cropped,dark_threshold=190,find_adjacent_color_regions=True,save_circle=False,remove_light_white=True)
                     cv2.imwrite(cropped_path, cropped0)
                     expanded_textbox_angle, _ = calculate_textbox_angle(expanded_poly)
                     # if abs(np.degrees(expanded_textbox_angle)) > 40:
@@ -615,6 +630,7 @@ def process_micro_images(micro_img_dir):
                 else:
                     # 如果文件名已经包含了 key，则跳过 OCR，直接构造结果
                     logger.info(f"文件名匹配成功，跳过 OCR: {filename} -> {filename_matched_key}")
+                    potential_text = filename_matched_key
                     matched_keys.append(filename_matched_key)
                     all_detected_texts.append(potential_text)
                     first_confidence = 1.0
@@ -992,7 +1008,7 @@ def save_results_to_excel(all_results, output_file="ocr_results.xlsx", micro_img
             #             break
             #     if found_match:
             #         break
-            current_matched_key,find_match = check_text(clean_text)
+            current_matched_key,find_match = check_all_text(clean_text)
             # 如果只想输出匹配到的结果：
             if current_matched_key:
                 color_centers = detail.get("color_centers_separate", {})

@@ -285,10 +285,10 @@ def shift_poly_along_angle(poly, angle, shift_distance=100, debug_img=None, outp
     shifted_left_poly[3, 1] += shift_dy
 
     new_poly = np.array([
-        shifted_left_poly[0],
-        shifted_left_poly[3],
-        poly[3],
-        poly[0]
+        shifted_left_poly[0],  # 新左上
+        poly[0],  # 原始左上 (变更为新右上)
+        poly[3],  # 原始左下 (变更为新右下)
+        shifted_left_poly[3]  # 新左下
     ], dtype=np.float64)
 
     vis_img = None
@@ -319,7 +319,7 @@ def shift_poly_along_angle(poly, angle, shift_distance=100, debug_img=None, outp
     print(f"新多边形: {new_poly.tolist()}")
     print(f"平移向量: dx={shift_dx:.2f}, dy={shift_dy:.2f}")
 
-    return new_poly, shift_line_start, shift_line_end
+    return new_poly, shift_line_start, shift_line_end,shifted_left_poly
 
 
 def shift_poly_along_angle_step(poly, angle, step_size=5, debug_img=None, output_path=None, target_first_black_index=None, shift_after_black=5):

@@ -2,8 +2,8 @@ import cv2
 import numpy as np
 import json
 
-img_path = "/Users/saw/WorkSpace/work/OCR-Project/test/test10/micro_0018_D.jpg"
-json_path = "/Users/saw/WorkSpace/work/OCR-Project/test/test10/micro_0018_D.json"
+img_path = "/Users/saw/WorkSpace/work/OCR-Project/test/test10/micro_0012_0S3_cropped0.jpg"
+json_path = "/Users/saw/WorkSpace/work/OCR-Project/test/test10/micro_0012_0S3.json"
 
 img = cv2.imread(img_path)
 if img is None:
@@ -17,7 +17,7 @@ micro_poly = np.array(data['micro_poly'], dtype=np.int32)
 text = data['text']
 print(text)
 print(len(text))
-micro_poly = np.array([[221, 164], [334, 62], [394, 124], [280, 226]], dtype=np.int32)
+micro_poly = np.array([[301, 40], [670, 47], [668, 109], [300, 103]], dtype=np.int32)
 h, w = img.shape[:2]
 print(f"图片尺寸: {w}x{h}")
 
@@ -37,7 +37,7 @@ output_path = "/Users/saw/WorkSpace/work/OCR-Project/test/test10/micro_0110_2300
 
 cv2.polylines(img, [micro_poly], isClosed=True, color=(0, 255, 0), thickness=2)
 
-extra_point = (100, 72)
+extra_point = (46, 88)
 cv2.circle(img, extra_point, 5, (255, 0, 0), -1)
 cv2.putText(img, f"P({extra_point[0]},{extra_point[1]})", (extra_point[0] + 10, extra_point[1] - 10),
             cv2.FONT_HERSHEY_SIMPLEX, 0.6, (255, 0, 0), 2)

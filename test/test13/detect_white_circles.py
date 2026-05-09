@@ -164,7 +164,7 @@ def find_white_circles(img, white_threshold=200,textbox_center=None,poly=None,ou
     print("\nDetecting circular regions...")
     closed_regions = find_closed_dark_regions(img)
     print(f"Found {len(closed_regions)} closed dark circular regions")
-    results = detect_circular_white_regions(regions, img.shape, closed_circles=closed_regions, min_circularity=min_circularity)
+    results, too_closed_res = detect_circular_white_regions(regions, img.shape, closed_circles=closed_regions, min_circularity=min_circularity)
 
     if not textbox_center:
         x_coords = [point[0] for point in poly]
@@ -211,7 +211,7 @@ def main():
     print("\nDetecting circular regions...")
     closed_regions = find_closed_dark_regions(img)
     print(f"Found {len(closed_regions)} closed dark circular regions")
-    results = detect_circular_white_regions(regions, img.shape, closed_circles=closed_regions, min_circularity=0.8)
+    results, too_closed_res = detect_circular_white_regions(regions, img.shape, closed_circles=closed_regions, min_circularity=0.8)
 
     x_coords = [point[0] for point in poly]
     y_coords = [point[1] for point in poly]

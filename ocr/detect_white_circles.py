@@ -106,7 +106,8 @@ def detect_circular_white_regions(regions, img_shape, closed_circles=None, min_c
         closed_circles = []
 
     results = []
-
+    too_closed_res = []
+    j = 0
     for i, region in enumerate(regions):
         center, radius, circularity = fit_circle_contour_method(region, img_shape)
         if center is not None and circularity >= min_circularity and not is_ring_region(region, img_shape):
@@ -115,6 +116,15 @@ def detect_circular_white_regions(regions, img_shape, closed_circles=None, min_c
                 dist = np.sqrt((center[0] - cc['center'][0])**2 + (center[1] - cc['center'][1])**2)
                 if dist < 2:
                     too_close = True
+                    too_closed_res.append({
+                        'region_id': j + 1,
+                        'pixel_count': len(cc['pixels']),
+                        'center': cc["center"],
+                        'radius': cc['radius'],
+                        'pixels': cc['pixels'],
+                        'bbox': (cc['min_row'], cc['min_col'], cc['max_row'], cc['max_col'])
+                    })
+                    j+=1
                     break
             if not too_close:
                 results.append({
@@ -127,7 +137,8 @@ def detect_circular_white_regions(regions, img_shape, closed_circles=None, min_c
                     'bbox': (region['min_row'], region['min_col'], region['max_row'], region['max_col'])
                 })
 
-    return results
+
+    return results,too_closed_res
 
 
 def visualize_white_circular_regions(img, results, output_path):
@@ -168,7 +179,7 @@ def find_white_circles(img0, white_threshold=200,textbox_center=None,poly=None,o
         print("\nDetecting circular regions...")
         closed_regions = find_closed_dark_regions(img)
         print(f"Found {len(closed_regions)} closed dark circular regions")
-        results = detect_circular_white_regions(regions, img.shape, closed_circles=closed_regions, min_circularity=min_circularity)
+        results, too_closed_res = detect_circular_white_regions(regions, img.shape, closed_circles=closed_regions, min_circularity=min_circularity)
 
         if not textbox_center:
             x_coords = [point[0] for point in poly]
@@ -234,7 +245,7 @@ def find_white_circles(img0, white_threshold=200,textbox_center=None,poly=None,o
         print(f"Found {len(closed_regions)} closed dark circular regions")
         if is_linear:
             min_circularity=0.84
-        results = detect_circular_white_regions(regions, img.shape, closed_circles=closed_regions, min_circularity=min_circularity)
+        results, too_closed_res = detect_circular_white_regions(regions, img.shape, closed_circles=closed_regions, min_circularity=min_circularity)
         filtered_results = []
         boundary_dis = 30
 
@@ -282,7 +293,7 @@ def main():
     print("\nDetecting circular regions...")
     closed_regions = find_closed_dark_regions(img)
     print(f"Found {len(closed_regions)} closed dark circular regions")
-    results = detect_circular_white_regions(regions, img.shape, closed_circles=closed_regions, min_circularity=0.8)
+    results, too_closed_res = detect_circular_white_regions(regions, img.shape, closed_circles=closed_regions, min_circularity=0.8)
 
     x_coords = [point[0] for point in poly]
     y_coords = [point[1] for point in poly]

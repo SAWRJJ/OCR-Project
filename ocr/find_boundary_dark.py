@@ -3,7 +3,6 @@ import numpy as np
 from collections import deque
 import os
 
-
 def find_closed_dark_regions(img_path, dark_threshold=125, min_circularity=0.7):
     """
     找出完全封闭的深色区域（闭合圆环）
@@ -449,19 +448,24 @@ def visualize_with_original(img, regions, output_path):
 
     return vis_img
 
-def find_drak_remove(image_path, dark_threshold=200, output_path=None, save_circle=True, remove_color_adjacent=False, find_adjacent_color_regions=False):
+def find_drak_remove(image_path, dark_threshold=200, output_path=None, save_circle=True, remove_light_white=False, remove_color_adjacent=False, find_adjacent_color_regions=False):
     """
     找出并移除深色像素（边界连通 + 闭合圆环）
     image_path: 可以是图片路径(str)或图片数组(numpy.ndarray)
     remove_color_adjacent: 如果为True，则排除与彩色像素相邻的深色区域
     find_adjacent_color_regions: 如果为True，额外找到与黑色像素相连的彩色像素区域
     """
+    from ocr.detect_white_circles import find_all_white_regions, detect_circular_white_regions
     img, boundary_regions = find_boundary_connected_dark_pixels(
         image_path, dark_threshold=dark_threshold, remove_color_adjacent=remove_color_adjacent,
         find_adjacent_color_regions=find_adjacent_color_regions)
     closed_regions = []
     if not save_circle:
         closed_regions = find_closed_dark_regions(image_path, dark_threshold=dark_threshold)
+        if remove_light_white:
+            regions, white_mask = find_all_white_regions(img, white_threshold=200)
+            _, closed_regions = detect_circular_white_regions(regions, img.shape, closed_circles=closed_regions,
+                                                    min_circularity=0.8)
     result = remove_dark_regions(img, boundary_regions, closed_regions, output_path)
     return result
 

@@ -55,7 +55,7 @@ print(f"勾股定理距离: {euclidean_distance:.2f} 像素")
 
 output_path = f'/Users/saw/WorkSpace/work/OCR-Project/test/test10/{filename}_poly_output.png'
 
-new_poly, shift_line_start, shift_line_end = shift_poly_along_angle(
+new_poly, shift_line_start, shift_line_end, shifted_left_poly = shift_poly_along_angle(
     poly=poly,
     angle=textbox_angle,
     shift_distance=32*6,
@@ -67,3 +67,4 @@ print(f"\n原始 poly: {poly.tolist()}")
 print(f"新 poly: {new_poly.tolist()}")
 print(f"平移线起点: {shift_line_start}")
 print(f"平移线终点: {shift_line_end}")
+print(f"平移后的左侧poly: {shifted_left_poly.tolist()}")
