@@ -152,3 +152,18 @@ def calculate_iou(box1, box2):
     union_area = box1_area + box2_area - inter_area
     iou = inter_area / union_area if union_area > 0 else 0
     return iou
+
+def calculate_angle_to_horizontal(point_a, point_b):
+    """
+    计算从点a到点b相对于水平线的偏移角度
+
+    Args:
+        point_a: 起点坐标 (x, y)
+        point_b: 终点坐标 (x, y)
+
+    Returns:
+        float: 角度（弧度），正值表示向上偏，负值表示向下偏
+    """
+    dx = point_b[0] - point_a[0]
+    dy = point_b[1] - point_a[1]
+    return np.arctan2(dy, dx)

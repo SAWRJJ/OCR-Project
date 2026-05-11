@@ -150,7 +150,7 @@ class Visualizer:
         if target_chars is None:
             target_chars = ["S", "X", "D"]
         if exclude_substrings is None:
-            exclude_substrings = ["/", "DG", "G","SB","SK"]
+            exclude_substrings = ["/", "DG", "G","SK"]
 
         if save_boxes_dir:
             os.makedirs(save_boxes_dir, exist_ok=True)
@@ -169,8 +169,9 @@ class Visualizer:
             if len(poly) != 4:
                 continue
             text = text.replace("π", "II")
+            text = text.replace("X", "X")
             # micro_0102_1700XL1_80_00.jpg
-            if "1700xL1" in text: #'1700xL1-80-00O0'
+            if "2300" in text and "404" in text: #'1700xL1-80-00O0'
                 print(0)
 
             if "." in text or (len(text) >= 4 and text[-1].isdigit()):
@@ -273,8 +274,11 @@ class Visualizer:
             if len(poly) != 4:
                 continue
             text = text.replace("π", "II")
-            if "HSBII" in text:
+            text = text.replace("X", "X")
+            text = text.replace("×","X")
+            if "2300" in text and "404" in text: #'1700xL1-80-00O0'
                 print(0)
+
             # if "K" in text or "." in text:
             #     mask = np.zeros(img.shape[:2], dtype=np.uint8)
             #     cv2.fillPoly(mask, [np.array(poly, dtype=np.int32)], 255)
