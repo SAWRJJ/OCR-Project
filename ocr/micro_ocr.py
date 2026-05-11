@@ -207,7 +207,7 @@ def process_micro_images(micro_img_dir):
             continue
 
         # micro_0005_S
-        if filename == "micro_0069_X8.jpg" or "X8" in filename: # micro_0110_2300_1X5 # micro_0085__5c0f_D # micro_0064_DOQOOSN micro_0048_XI micro_0093_XL_I_HO_00.json_input.png
+        if filename == "micro_0014_FXII_K.jpg" or "X8" in filename: # micro_0110_2300_1X5 # micro_0085__5c0f_D # micro_0064_DOQOOSN micro_0048_XI micro_0093_XL_I_HO_00.json_input.png
             print(-1)
         img_path = os.path.join(micro_img_dir, filename)
         json_path = os.path.join(micro_img_dir, os.path.splitext(filename)[0] + ".json")
@@ -570,7 +570,7 @@ def process_micro_images(micro_img_dir):
                     # cv2.rectangle(vis_img, (x_min, y_min), (x_max, y_max), (255, 0, 0), 2)
                     cv2.imwrite(cropped_path0, cropped)
                     cropped0 = find_drak_remove(cropped,dark_threshold=190,find_adjacent_color_regions=True,save_circle=False,remove_light_white=True)
-                    if "S" in filename_matched_key:
+                    if "SL" in filename_matched_key:
                         cropped_path1 = os.path.join(micro_img_dir, 'debug',
                                                      filename.replace('.jpg', '_cropped1.jpg'))
                         gray = cv2.cvtColor(cropped0, cv2.COLOR_BGR2GRAY)
@@ -587,6 +587,9 @@ def process_micro_images(micro_img_dir):
                     for result in results:
                         if len(result) >= 2 and len(result['rec_texts']) > 0:
                             for i in range(len(result['rec_texts'])):
+                                conf = result['rec_scores'][i]
+                                # if conf<0.82:
+                                #     continue
                                 text = ''.join(results[i]['rec_texts']).replace(' ', '')
                                 text = fullwidth_to_halfwidth(text)
                                 if "VII" in text or "VI" in text:
@@ -595,7 +598,7 @@ def process_micro_images(micro_img_dir):
                                         text = "SVII"
                                     elif VII_count ==3:
                                         text = "SVIII"
-                                conf = result['rec_scores'][i]
+
                                 rec_poly = result['rec_polys'][i]
                                 if abs(np.degrees(textbox_angle)) > angle_threshold:
                                     rec_poly = rotate_polys_back(rec_poly, textbox_angle,
