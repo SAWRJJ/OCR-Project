@@ -15,7 +15,7 @@ from ocr.X_detect import expand_poly_vertical, count_dark_pixels_in_expanded_reg
     find_first_non_white_column_along_tilt, calculate_horizontal_tilt_angle, expand_poly,shift_poly_along_angle,\
     count_vertical_strokes
 from ocr.find_boundary_dark import find_drak_remove
-from ocr.utils import calculate_shift_params
+from ocr.utils import calculate_shift_params,fullwidth_to_halfwidth
 from ocr.scan_dark_pixels import process_image_high_circularity_to_white
 from ocr.shift_VII import shift_step
 import cv2
@@ -207,7 +207,7 @@ def process_micro_images(micro_img_dir):
             continue
 
         # micro_0005_S
-        if filename == "micro_0074_X203.jpg" or "micro_0113_SL4071" in filename: # micro_0110_2300_1X5 # micro_0085__5c0f_D # micro_0064_DOQOOSN micro_0048_XI micro_0093_XL_I_HO_00.json_input.png
+        if filename == "micro_0069_X8.jpg" or "X8" in filename: # micro_0110_2300_1X5 # micro_0085__5c0f_D # micro_0064_DOQOOSN micro_0048_XI micro_0093_XL_I_HO_00.json_input.png
             print(-1)
         img_path = os.path.join(micro_img_dir, filename)
         json_path = os.path.join(micro_img_dir, os.path.splitext(filename)[0] + ".json")
@@ -444,19 +444,20 @@ def process_micro_images(micro_img_dir):
                         # vis_img = img.copy()
                         # cv2.polylines(vis_img, [expanded_array], isClosed=True, color=(0, 255, 0), thickness=2)
                         # cv2.rectangle(vis_img, (x_min, y_min), (x_max, y_max), (255, 0, 0), 2)
-                        cropped0 = find_drak_remove(cropped, dark_threshold=190)
-                        cropped_path1 = os.path.join(micro_img_dir, 'debug',
-                                                     filename.replace('.jpg', '_cropped1.jpg'))
-                        if "FX" in filename_matched_key:
-                            cropped_path1 = os.path.join(micro_img_dir, 'debug',
-                                                         filename.replace('.jpg', '_cropped1.jpg'))
-                            _, binary_img, _ = process_image_high_circularity_to_white(
-                                cropped0,
-                                dark_threshold=200,
-                                min_circularity=0.75,
-                                binary_output_path=cropped_path1
-                            )
-                            cropped0 = cv2.cvtColor(binary_img, cv2.COLOR_GRAY2BGR)
+                        cropped0 = find_drak_remove(cropped, dark_threshold=190, find_adjacent_color_regions=True,
+                                                    save_circle=False, remove_light_white=True)
+                        # if "FX" in filename_matched_key:
+                        #     cropped_path1 = os.path.join(micro_img_dir, 'debug',
+                        #                                  filename.replace('.jpg', '_cropped1.jpg'))
+                        #     cropped_path1 = os.path.join(micro_img_dir, 'debug',
+                        #                                  filename.replace('.jpg', '_cropped1.jpg'))
+                        #     _, binary_img, _ = process_image_high_circularity_to_white(
+                        #         cropped0,
+                        #         dark_threshold=200,
+                        #         min_circularity=0.75,
+                        #         binary_output_path=cropped_path1
+                        #     )
+                        #     cropped0 = cv2.cvtColor(binary_img, cv2.COLOR_GRAY2BGR)
                         cv2.imwrite(cropped_path, cropped0)
                         results = ocr_engine.ocr.predict(cropped0)
                         first_confidence = 1.0
@@ -569,13 +570,13 @@ def process_micro_images(micro_img_dir):
                     # cv2.rectangle(vis_img, (x_min, y_min), (x_max, y_max), (255, 0, 0), 2)
                     cv2.imwrite(cropped_path0, cropped)
                     cropped0 = find_drak_remove(cropped,dark_threshold=190,find_adjacent_color_regions=True,save_circle=False,remove_light_white=True)
-                    # if "S" in filename_matched_key:
-                    #     cropped_path1 = os.path.join(micro_img_dir, 'debug',
-                    #                                  filename.replace('.jpg', '_cropped1.jpg'))
-                    #     gray = cv2.cvtColor(cropped0, cv2.COLOR_BGR2GRAY)
-                    #     _, binary_img = cv2.threshold(gray, 0, 255, cv2.THRESH_BINARY + cv2.THRESH_OTSU)
-                    #     cv2.imwrite(cropped_path1, binary_img)
-                    #     cropped0 = cv2.cvtColor(binary_img, cv2.COLOR_GRAY2BGR)
+                    if "S" in filename_matched_key:
+                        cropped_path1 = os.path.join(micro_img_dir, 'debug',
+                                                     filename.replace('.jpg', '_cropped1.jpg'))
+                        gray = cv2.cvtColor(cropped0, cv2.COLOR_BGR2GRAY)
+                        _, binary_img = cv2.threshold(gray, 200, 255, cv2.THRESH_BINARY)
+                        cv2.imwrite(cropped_path1, binary_img)
+                        cropped0 = cv2.cvtColor(binary_img, cv2.COLOR_GRAY2BGR)
                     cv2.imwrite(cropped_path, cropped0)
                     expanded_textbox_angle, _ = calculate_textbox_angle(expanded_poly)
                     # if abs(np.degrees(expanded_textbox_angle)) > 40:
@@ -587,6 +588,7 @@ def process_micro_images(micro_img_dir):
                         if len(result) >= 2 and len(result['rec_texts']) > 0:
                             for i in range(len(result['rec_texts'])):
                                 text = ''.join(results[i]['rec_texts']).replace(' ', '')
+                                text = fullwidth_to_halfwidth(text)
                                 if "VII" in text or "VI" in text:
                                     VII_count = count_vertical_strokes(cropped0)
                                     if VII_count <=2:

@@ -25,7 +25,7 @@ def main(image_paths):
         image_base_name = os.path.splitext(os.path.basename(image_path))[0]
 
         logger.info("====== OCR 流程开始 ======")
-        t1 = time.time()
+        t0 = time.time()
 
         # Split Image
         splits, img_paths = ImageProcessor.split_image(image_path, window=1000)
@@ -33,7 +33,7 @@ def main(image_paths):
         t2 = time.time()
         if not splits:
             raise SystemExit("切图失败")
-        logger.info(f"{image_base_name} split time:{t2 - t1}")
+        logger.info(f"{image_base_name} split time:{t2 - t0}")
 
         # Run OCR
         ocr_start_time = time.time()
@@ -84,15 +84,19 @@ def main(image_paths):
 
         # Cleanup
         DataHandler.cleanup_output_dir(output_dir, delete_empty=True)
-
-        logger.info(f"OCR {image_base_name} 完成，文字结果已保存")
+        tn = time.time()
+        logger.info(f"OCR {image_base_name} 完成，文字结果已保存 time:{tn-t0}")
 
 if __name__ == "__main__":
+    # img_path1 =[]
+    img_path1 = ["img/t1.jpg"]  # ,"img/t7.jpg"
     img_path = ["img/t3.jpg", "img/t6.jpg", "img/t4.jpg", "img/t1.jpg"]
-    img_path = ["img/t9.jpg", "img/t8.jpg", "img/t5.jpg", "img/t2.jpg"]
-    img_path= ["img/t9.jpg","img/t8.jpg","img/t5.jpg","img/t2.jpg","img/t3.jpg","img/t6.jpg","img/t4.jpg","img/t1.jpg"]
+    # img_path = ["img/t9.jpg", "img/t8.jpg", "img/t5.jpg", "img/t2.jpg"]
+    img_path= ["img/t9.jpg","img/t8.jpg","img/t5.jpg","img/t2.jpg","img/t3.jpg","img/t6.jpg","img/t4.jpg"]+img_path1
     # img_path = ["img/t7.jpg"]# "img/t9.jpg","img/t8.jpg"," "img/t9.jpg","img/t8.jpg","img/t5.jpg"
     # img_path = ["img/元龙站.jpg","img/凤阁岭站.jpg","img/武功站.jpg","img/杨陵站场.jpg","img/新建河站.jpg"]#
-
+    t1 = time.time()
     main(img_path)
+    t2 = time.time()
+    logger.info(f"Total time:{t2 - t1}")
     mainc()

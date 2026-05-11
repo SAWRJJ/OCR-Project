@@ -97,7 +97,15 @@ def detect_color_presence_bgr(
             logger.info(f"  {name}: x=[{pos['x_min']}, {pos['x_max']}], y=[{pos['y_min']}, {pos['y_max']}]")
 
     return {"presence": presence, "stats": stats, "valid_pixels": valid_count, "positions": positions}
-
+class NpEncoder(json.JSONEncoder):
+    def default(self, obj):
+        if isinstance(obj, np.integer):
+            return int(obj)
+        if isinstance(obj, np.floating):
+            return float(obj)
+        if isinstance(obj, np.ndarray):
+            return obj.tolist()
+        return super(NpEncoder, self).default(obj)
 
 class Visualizer:
 
@@ -156,6 +164,25 @@ class Visualizer:
             os.makedirs(save_boxes_dir, exist_ok=True)
 
         saved_count = 0
+
+        split_info_path = os.path.join(os.path.dirname(img_path), "split_info.json")
+        split_infos = []
+        if os.path.exists(split_info_path):
+            import json
+            with open(split_info_path, 'r') as f:
+                split_infos = json.load(f)
+            for info in split_infos:
+                offset_x, offset_y = info["offset"]
+                window = info.get("window", 1000)
+                overlap = info.get("overlap", 300)
+                x1 = offset_x
+                y1 = offset_y
+                x2 = offset_x + window
+                y2 = offset_y + window
+                cv2.rectangle(img, (x1, y1), (x2, y2), (0, 255, 255), 2)
+                cv2.putText(img, os.path.basename(info["path"]), (x1 + 5, y1 + 20),
+                            cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 255, 255), 1)
+
         for item in rec_polys_with_text:
             if len(item) == 5:
                 poly, text, source_split, split_poly, score = item
@@ -439,7 +466,7 @@ class Visualizer:
                     json_filename = os.path.splitext(filename)[0] + ".json"
                     json_path = os.path.join(save_boxes_dir, json_filename)
                     with open(json_path, "w", encoding="utf-8") as f:
-                        json.dump(info_data, f, ensure_ascii=False, indent=2)
+                        json.dump(info_data, f, ensure_ascii=False, indent=2, cls=NpEncoder)
 
                     saved_count += 1
 

@@ -448,7 +448,7 @@ def visualize_with_original(img, regions, output_path):
 
     return vis_img
 
-def find_drak_remove(image_path, dark_threshold=200, output_path=None, save_circle=True, remove_light_white=False, remove_color_adjacent=False, find_adjacent_color_regions=False):
+def find_drak_remove(image_path, dark_threshold=200, output_path=None, save_circle=True, remove_light_white=False, remove_color_adjacent=False, find_adjacent_color_regions=False, not_save_boundary=False):
     """
     找出并移除深色像素（边界连通 + 闭合圆环）
     image_path: 可以是图片路径(str)或图片数组(numpy.ndarray)
@@ -466,6 +466,8 @@ def find_drak_remove(image_path, dark_threshold=200, output_path=None, save_circ
             regions, white_mask = find_all_white_regions(img, white_threshold=200)
             _, closed_regions = detect_circular_white_regions(regions, img.shape, closed_circles=closed_regions,
                                                     min_circularity=0.8)
+    if not_save_boundary == True:
+        boundary_regions =[]
     result = remove_dark_regions(img, boundary_regions, closed_regions, output_path)
     return result
 

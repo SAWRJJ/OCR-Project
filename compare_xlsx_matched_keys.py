@@ -23,25 +23,38 @@ def compare_xlsx_files(template_path, output_path, filename):
     template_df = pd.read_excel(template_path, header=0)
     output_df = pd.read_excel(output_path, header=0)
 
+    # 将 matched_key 转换为字符串集合
     template_keys = set(template_df['matched_key'].dropna().astype(str))
     output_keys = set(output_df['matched_key'].dropna().astype(str))
 
     common_keys = template_keys & output_keys
     missing_in_output = template_keys - output_keys
+    missing_in_template = output_keys - template_keys  # 新增：仅出现在 output 中的 key
 
+    # 1. 处理：Template 有，Output 缺失
     if missing_in_output:
         print(f"[DIFF] {filename} - Missing matched_keys in output ({len(missing_in_output)}):")
         for key in sorted(missing_in_output):
             t_row = template_df[template_df['matched_key'].astype(str) == key].iloc[0]
             t_fn = str(t_row['filename']).strip() if 'filename' in t_row and not pd.isna(t_row['filename']) else ''
-            print(f"  - {key} ({t_fn})")
+            print(f"  - {key} (in template: {t_fn})")
+        print()
+
+    # 2. 处理：Output 多出，Template 缺失 (根据你的要求新增)
+    if missing_in_template:
+        print(f"[DIFF] {filename} - Extra matched_keys ONLY in output ({len(missing_in_template)}):")
+        for key in sorted(missing_in_template):
+            o_row = output_df[output_df['matched_key'].astype(str) == key].iloc[0]
+            o_fn = str(o_row['filename']).strip() if 'filename' in o_row and not pd.isna(o_row['filename']) else ''
+            print(f"  + {key} (in output: {o_fn})")
         print()
 
     fields_to_compare = [
-        'template_match_res','color_white',
-        'red_centers', 'yellow_centers', 'green_centers',"blue_centers"
+        'template_match_res', 'color_white',
+        'red_centers', 'yellow_centers', 'green_centers', "blue_centers"
     ]
 
+    # 3. 处理：共有部分的字段比对
     all_match = True
     for key in sorted(common_keys):
         t_row = template_df[template_df['matched_key'].astype(str) == key].iloc[0]
@@ -49,18 +62,15 @@ def compare_xlsx_files(template_path, output_path, filename):
 
         diffs = []
         for field in fields_to_compare:
-            t_val = t_row[field]
-            o_val = o_row[field]
+            # 确保字段存在
+            t_val = t_row[field] if field in t_row else None
+            o_val = o_row[field] if field in o_row else None
 
-            # if field in ['red_centers', 'yellow_centers', 'green_centers']:
-            #     t_count = parse_centers(t_val)
-            #     o_count = parse_centers(o_val)
-            #     if t_count != o_count:
-            #         diffs.append(f"  [{field}] template={t_count}, output={o_count}")
-            # else:
             t_str = str(t_val).strip() if not pd.isna(t_val) else ''
             o_str = str(o_val).strip() if not pd.isna(o_val) else ''
+
             if t_str != o_str:
+                # 尝试数值兼容比较
                 try:
                     t_num = float(t_str) if t_str.replace('.', '').replace('-', '').isdigit() else None
                     o_num = float(o_str) if o_str.replace('.', '').replace('-', '').isdigit() else None
@@ -78,11 +88,12 @@ def compare_xlsx_files(template_path, output_path, filename):
             for d in diffs:
                 print(d)
 
-    if all_match:
-        print("[OK] All fields are consistent.")
+    # 综合状态判断
+    if all_match and not missing_in_output and not missing_in_template:
+        print(f"[OK] {filename} is perfectly consistent.")
     else:
-        print(f"\n[INFO] Found differences in above fields.")
-
+        if all_match:  # 说明共有 key 没问题，但存在多出或缺失的情况
+            print(f"\n[INFO] {filename} shared keys match, but sets are different.")
 def mainc():
     template_dir = r"./template"
     output_dir = r"./output"

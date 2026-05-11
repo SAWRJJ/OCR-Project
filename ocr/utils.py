@@ -3,6 +3,8 @@ import os
 
 import cv2
 import numpy as np
+import unicodedata
+
 def calculate_shift_params(micro_poly, input_angle=None,extend_length = 55):
     """计算平移参数
 
@@ -167,3 +169,6 @@ def calculate_angle_to_horizontal(point_a, point_b):
     dx = point_b[0] - point_a[0]
     dy = point_b[1] - point_a[1]
     return np.arctan2(dy, dx)
+
+def fullwidth_to_halfwidth(text):
+    return unicodedata.normalize('NFKC', text)
