@@ -207,7 +207,7 @@ def process_micro_images(micro_img_dir):
             continue
 
         # micro_0005_S
-        if filename == "micro_0014_FXII_K.jpg" or "X8" in filename: # micro_0110_2300_1X5 # micro_0085__5c0f_D # micro_0064_DOQOOSN micro_0048_XI micro_0093_XL_I_HO_00.json_input.png
+        if filename == "micro_0168_2300X201.jpg" or "X8" in filename: # micro_0110_2300_1X5 # micro_0085__5c0f_D # micro_0064_DOQOOSN micro_0048_XI micro_0093_XL_I_HO_00.json_input.png
             print(-1)
         img_path = os.path.join(micro_img_dir, filename)
         json_path = os.path.join(micro_img_dir, os.path.splitext(filename)[0] + ".json")
@@ -268,7 +268,7 @@ def process_micro_images(micro_img_dir):
                         first_poly,
                         expand_poly_vertical(first_poly, 5),
                         dark_threshold=118)
-                    if dark_ratio > 0.11:
+                    if dark_ratio > 0.2:
                         print("execute test5 detect")
 
                         img0 = find_drak_remove(img, dark_threshold=230)

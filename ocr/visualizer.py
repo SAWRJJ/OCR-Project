@@ -5,8 +5,9 @@ import os
 import json
 import logging
 import numpy as np
-from .utils import should_keep_text, safe_filename_component
-from .image_processor import ImageProcessor
+from ocr.utils import should_keep_text, safe_filename_component
+from ocr.image_processor import ImageProcessor
+from ocr.LW_detect import calculate_textbox_angle
 import re
 logger = logging.getLogger("ocr_system")
 import  copy
@@ -164,7 +165,7 @@ class Visualizer:
             os.makedirs(save_boxes_dir, exist_ok=True)
 
         saved_count = 0
-
+        text_count = 0
         split_info_path = os.path.join(os.path.dirname(img_path), "split_info.json")
         split_infos = []
         if os.path.exists(split_info_path):
@@ -195,6 +196,11 @@ class Visualizer:
 
             if len(poly) != 4:
                 continue
+            textbox_angle, _ = calculate_textbox_angle(poly)
+            textbox_angle=abs(np.degrees(textbox_angle))
+            if textbox_angle>34:
+                print(text)
+                text_count+=1
             text = text.replace("π", "II")
             text = text.replace("X", "X")
             # micro_0102_1700XL1_80_00.jpg
@@ -278,15 +284,8 @@ class Visualizer:
                         )
 
                         roi[final_mask > 0] = 255
-        #
-        #         # cv2.polylines(img, [np.array(poly, dtype=np.int32)], True, (0, 0, 255), 2)
-        #         #
-        #         # output_path = img_path.rsplit('.', 1)[0] + '_processed0.jpg'
-        #         # output_path1 = img_path.rsplit('.', 1)[0] + '_processed1.jpg'
-        #         # cv2.imwrite(output_path, raw_img)
-        #         # cv2.imwrite(output_path1, img)
-        #         # print(f"处理后的图片已保存: {output_path}")
 
+        print(text_count)
         for item in rec_polys_with_text:
             # Handle both 2-element (legacy) and 4-element (new) tuples
             if len(item) == 5:
