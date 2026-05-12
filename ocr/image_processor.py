@@ -5,60 +5,98 @@ import logging
 
 logger = logging.getLogger("ocr_system")
 
+
 class ImageProcessor:
     @staticmethod
     def split_image(img_path, window=1000, overlap=300):
-        if cv2 is None:
-            raise ModuleNotFoundError("未安装 cv2（opencv-python）")
-            
         img = cv2.imread(img_path)
         if img is None:
             logger.error("无法读取图像")
             return [], []
 
         h, w = img.shape[:2]
-        
-        # Add border
         bordered_img = cv2.copyMakeBorder(
-            img,
-            overlap, overlap, overlap, overlap,
-            cv2.BORDER_CONSTANT,
-            value=(0, 0, 0)
+            img, overlap, overlap, overlap, overlap,
+            cv2.BORDER_CONSTANT, value=(0, 0, 0)
         )
-        
+
         bordered_h, bordered_w = bordered_img.shape[:2]
         os.makedirs("splits", exist_ok=True)
-        
+
         infos = []
         valid_paths = []
         step = window - overlap
         idx = 0
-        
+
         for y in range(overlap, bordered_h, step):
             for x in range(overlap, bordered_w, step):
                 x2 = min(x + window, bordered_w)
                 y2 = min(y + window, bordered_h)
-                
-                orig_x = x - overlap
-                orig_y = y - overlap
-                
+                orig_x, orig_y = x - overlap, y - overlap
+
                 patch = bordered_img[y:y2, x:x2]
-                path = f"splits/split_{idx}_{orig_x}_{orig_y}.jpg"
+                h_patch, w_patch = patch.shape[:2]
+
+                # --- 正常图保存 ---
+                path = f"splits/split_{idx}_{orig_x}_{orig_y}_normal.jpg"
                 cv2.imwrite(path, patch)
-                
+
+                # --- 旋转图保存 ---
+                center_patch = (w_patch // 2, h_patch // 2)
+                angle_patch = 30
+                M = cv2.getRotationMatrix2D(center_patch, angle_patch, 1)
+                cos = np.abs(M[0, 0])
+                sin = np.abs(M[0, 1])
+                new_w = int(h_patch * sin + w_patch * cos)
+                new_h = int(h_patch * cos + w_patch * sin)
+                M[0, 2] += (new_w - w_patch) / 2
+                M[1, 2] += (new_h - h_patch) / 2
+
+                rotated_patch = cv2.warpAffine(patch, M, (new_w, new_h))
+                rotated_path = f"splits/split_{idx}_{orig_x}_{orig_y}_rotated.jpg"
+                cv2.imwrite(rotated_path, rotated_patch)
+
                 is_white = np.all(patch >= 250)
-                
+                if not is_white:
+                    # 将图片转为 HSV
+                    hsv_patch = cv2.cvtColor(patch, cv2.COLOR_BGR2HSV)
+                    h, s, v = cv2.split(hsv_patch)
+
+                    # --- 判断 1: 是否无彩色 ---
+                    # S (饱和度) 低于一定阈值（比如 30）通常认为是灰度色
+                    # np.max(s) < 30 表示整张图没有任何一个像素有明显的颜色
+                    is_grayscale = np.max(s) < 30
+
+                    # --- 判断 2: 黑色像素占比 ---
+                    # V (亮度) 低于一定阈值（比如 50）认为是黑色
+                    black_mask = v < 50
+                    black_pixel_count = np.sum(black_mask)
+                    total_pixels = patch.shape[0] * patch.shape[1]
+                    black_ratio = black_pixel_count / total_pixels
+
+                    # --- 综合判断 ---
+                    # 如果无彩色 且 黑色占比超过一半 (0.5)
+                    if is_grayscale and black_ratio > 0.5:
+                        is_white = True  # 这里借用变量名，意为“跳过该图”或“标记为无效图”
+
                 infos.append({
                     "path": path,
-                    "offset": (orig_x, orig_y)
+                    "rotated_path": rotated_path,
+                    "offset": (orig_x, orig_y),
+                    "orig_size": (w_patch, h_patch),
+                    "rotated_size": (new_w, new_h)
                 })
-                
+
                 if not is_white:
-                    valid_paths.append(path)
-                
+                    valid_paths.extend([path, rotated_path])
                 idx += 1
-                
-        logger.info(f"图像切分完成，共 {len(infos)} 张，其中非白图 {len(valid_paths)} 张")
+
+        split_info_path = os.path.join(os.path.dirname(img_path), "split_info.json")
+        import json
+        with open(split_info_path, 'w') as f:
+            json.dump(infos, f)
+
+        logger.info(f"图像切分完成，共 {len(infos)*2} 张，其中非白图 {len(valid_paths)} 张")
         return infos, valid_paths
 
     @staticmethod

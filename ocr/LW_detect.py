@@ -12,6 +12,7 @@ from .find_boundary_dark import find_closed_dark_regions, visualize_all_dark_reg
 from .detect_white_circles import find_white_circles
 from .X_detect import expand_poly_vertical, count_dark_pixels_in_expanded_region, \
     find_first_non_white_column_along_tilt, calculate_horizontal_tilt_angle, expand_poly, shift_poly_along_angle1
+from ocr.utils import calculate_angle_to_horizontal
 
 def count_dark_pixels_in_radius(point, img, radius=3, threshold=100):
     """

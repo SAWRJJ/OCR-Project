@@ -207,7 +207,7 @@ def process_micro_images(micro_img_dir):
             continue
 
         # micro_0005_S
-        if filename == "micro_0168_2300X201.jpg" or "X8" in filename: # micro_0110_2300_1X5 # micro_0085__5c0f_D # micro_0064_DOQOOSN micro_0048_XI micro_0093_XL_I_HO_00.json_input.png
+        if filename == "micro_0290_SBI.jpg" or "micro_0186_OO_0_SL20VI" in filename: # micro_0110_2300_1X5 # micro_0085__5c0f_D # micro_0064_DOQOOSN micro_0048_XI micro_0093_XL_I_HO_00.json_input.png
             print(-1)
         img_path = os.path.join(micro_img_dir, filename)
         json_path = os.path.join(micro_img_dir, os.path.splitext(filename)[0] + ".json")
@@ -533,7 +533,7 @@ def process_micro_images(micro_img_dir):
                         print(f"角度大于40度，进行旋转校正...")
                         img, first_poly= rotate_image_and_poly(img, first_poly, textbox_angle, center_point)
                     print(textbox_length)
-                    if textbox_length > 120 and potential_text[0] == "S":
+                    if textbox_length > 120 and potential_text[0] == "S" and len(potential_text) > 4:
                         expand_length = 55
                         if "F" in filename_matched_key or len(filename_matched_key) >2 :
                             expand_length = 120
@@ -586,61 +586,88 @@ def process_micro_images(micro_img_dir):
                     results = ocr_engine.ocr.predict(cropped0)
                     for result in results:
                         if len(result) >= 2 and len(result['rec_texts']) > 0:
+                            main_text = ""
+                            main_poly = None
+                            main_angle_deg = None
                             for i in range(len(result['rec_texts'])):
-                                conf = result['rec_scores'][i]
-                                # if conf<0.82:
-                                #     continue
-                                text = ''.join(results[i]['rec_texts']).replace(' ', '')
-                                text = fullwidth_to_halfwidth(text)
-                                if "VII" in text or "VI" in text:
-                                    VII_count = count_vertical_strokes(cropped0)
-                                    if VII_count <=2:
-                                        text = "SVII"
-                                    elif VII_count ==3:
-                                        text = "SVIII"
-
-                                rec_poly = result['rec_polys'][i]
-                                if abs(np.degrees(textbox_angle)) > angle_threshold:
-                                    rec_poly = rotate_polys_back(rec_poly, textbox_angle,
-                                                                               center_point,
-                                                                               img.shape)
-                                restored_poly = [[int(point[i] + x_min), int(point[1] + y_min)] for point in rec_poly]
-                                filename_matched_key1, found_match_in_filename1 = check_all_text(text)
-                                if found_match_in_filename1 and filename_matched_key1 not in matched_keys:
-                                    matched_keys.append(filename_matched_key1)
-                                if found_match_in_filename1:
+                                text = result['rec_texts'][i]
+                                if "S" in text:
+                                    main_text = text
+                                    main_poly = result['rec_polys'][i]
+                                    # 计算主框弧度并直接转换为角度
+                                    rad, _ = calculate_textbox_angle(main_poly)
+                                    main_angle_deg = np.degrees(rad)
                                     break
-                            if found_match_in_filename1:
-                                if os.path.exists(json_path):
-                                    with open(json_path, 'r', encoding='utf-8') as f:
-                                        json_data = json.load(f)
-                                    json_data['micro_poly'] = restored_poly
-                                    json_data["text"] = text
-                                    with open(json_path, 'w', encoding='utf-8') as f:
-                                        json.dump(make_json_serializable(json_data), f, ensure_ascii=False, indent=2)
-                                detail_item = {
-                                    "text": text,
-                                    "confidence": conf,
-                                    "color_info": None,
-                                    "matched_key": filename_matched_key1
-                                }
-                                if filename_matched_key1 and ((
-                                        "S" in filename_matched_key1 or "X" in filename_matched_key1)):
-                                    is_match, black_pixel_count, template_match_res, color_centers_separate, black_radio = detect_colors(
-                                        img_path,
-                                        filename_matched_key1,
-                                        debug=True,
-                                        threshold=THRESHOLD
-                                    )
-                                    print(template_match_res)
-                                    detail_item["template_match_res"] = template_match_res
-                                    detail_item["template_match_score"] = is_match
-                                    detail_item["black_pixel_count"] = black_pixel_count
-                                    detail_item["black_radio"] = black_radio
-                                    detail_item["template_name"] = "color_detection"
-                                    detail_item["color_centers_separate"] = color_centers_separate
-                                detailed_results.append(detail_item)
-                            print(f"文本: {text}, 置信度: {conf:.2f}")
+                            filtered_texts = []
+                            for i in range(len(result['rec_texts'])):
+                                text = result['rec_texts'][i]
+                                conf = result['rec_scores'][i]
+                                rec_poly = result['rec_polys'][i]
+                                # 如果找到了主文本，则进行角度比对
+                                if main_angle_deg is not None:
+                                    current_rad, _ = calculate_textbox_angle(rec_poly)
+                                    current_angle_deg = np.degrees(current_rad)
+                                    # 计算角度差的绝对值
+                                    angle_diff = abs(current_angle_deg - main_angle_deg)
+                                    # 处理角度周期性（防止 179° 和 -179° 被判定为差 358°）
+                                    if angle_diff > 180:
+                                        angle_diff = 360 - angle_diff
+                                    # 如果与主框角度差距小于 20°，则跳过该文本
+                                    if 0 < angle_diff < 20:
+                                        continue
+                                # 清洗并添加符合条件的文本
+                                clean_text = text.replace(' ', '')
+                                filtered_texts.append(clean_text)
+
+                            rec_poly = main_poly
+                            text = fullwidth_to_halfwidth(''.join(filtered_texts))
+                            if "VII" in text or "VI" in text:
+                                VII_count = count_vertical_strokes(cropped0)
+                                if VII_count <=2:
+                                    text = "SVII"
+                                elif VII_count ==3:
+                                    text = "SVIII"
+                            if abs(np.degrees(textbox_angle)) > angle_threshold:
+                                rec_poly = rotate_polys_back(rec_poly, textbox_angle,
+                                                                           center_point,
+                                                                           img.shape)
+                            restored_poly = [[int(point[i] + x_min), int(point[1] + y_min)] for point in rec_poly]
+                            filename_matched_key1, found_match_in_filename1 = check_all_text(text)
+                            if found_match_in_filename1 and filename_matched_key1 not in matched_keys:
+                                matched_keys.append(filename_matched_key1)
+                            # if found_match_in_filename1:
+                            #     break
+                        if found_match_in_filename1:
+                            if os.path.exists(json_path):
+                                with open(json_path, 'r', encoding='utf-8') as f:
+                                    json_data = json.load(f)
+                                json_data['micro_poly'] = restored_poly
+                                json_data["text"] = text
+                                with open(json_path, 'w', encoding='utf-8') as f:
+                                    json.dump(make_json_serializable(json_data), f, ensure_ascii=False, indent=2)
+                            detail_item = {
+                                "text": text,
+                                "confidence": conf,
+                                "color_info": None,
+                                "matched_key": filename_matched_key1
+                            }
+                            if filename_matched_key1 and ((
+                                    "S" in filename_matched_key1 or "X" in filename_matched_key1)):
+                                is_match, black_pixel_count, template_match_res, color_centers_separate, black_radio = detect_colors(
+                                    img_path,
+                                    filename_matched_key1,
+                                    debug=True,
+                                    threshold=THRESHOLD
+                                )
+                                print(template_match_res)
+                                detail_item["template_match_res"] = template_match_res
+                                detail_item["template_match_score"] = is_match
+                                detail_item["black_pixel_count"] = black_pixel_count
+                                detail_item["black_radio"] = black_radio
+                                detail_item["template_name"] = "color_detection"
+                                detail_item["color_centers_separate"] = color_centers_separate
+                            detailed_results.append(detail_item)
+                        print(f"文本: {text}, 置信度: {conf:.2f}")
                 else:
                     # 如果文件名已经包含了 key，则跳过 OCR，直接构造结果
                     logger.info(f"文件名匹配成功，跳过 OCR: {filename} -> {filename_matched_key}")

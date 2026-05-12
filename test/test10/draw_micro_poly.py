@@ -1,9 +1,10 @@
 import cv2
 import numpy as np
 import json
-
-img_path = "/Users/saw/WorkSpace/work/OCR-Project/test/test10/t7.jpg"
-json_path = "/Users/saw/WorkSpace/work/OCR-Project/test/test10/micro_0012_0S3.json"
+from ocr.LW_detect import detect_colors, calculate_textbox_angle
+from ocr.utils import calculate_angle_to_horizontal
+img_path = "/Users/saw/WorkSpace/work/OCR-Project/test/test10/micro_0290_SBI.jpg"
+json_path = "/Users/saw/WorkSpace/work/OCR-Project/test/test10/micro_0295_SL4082600.json"
 
 img = cv2.imread(img_path)
 if img is None:
@@ -17,7 +18,27 @@ micro_poly = np.array(data['micro_poly'], dtype=np.int32)
 text = data['text']
 print(text)
 print(len(text))
-micro_poly = np.array([[2382.7346, 2868.3147], [2472.0332, 2925.6448], [2457.1672, 2949.3936], [2367.8687, 2892.0635]], dtype=np.int32)
+# [[[17  5], [79 39], [61 60], [ 0 26]], [[ 9 40], [58 66], [41 87], [ 0 61]]]
+# ploy = [[17,5], [79,39], [61,60], [ 0,26]]
+# poly1 = [[ 9,40], [58,66], [41,87], [ 0,61]]
+#
+# ploy_np = np.array(ploy)
+# poly1_np = np.array(poly1)
+# center_ploy = (ploy_np[:, 0].mean(), ploy_np[:, 1].mean())
+# center_poly1 = (poly1_np[:, 0].mean(), poly1_np[:, 1].mean())
+# print(f"ploy 中心点: {center_ploy}")
+# print(f"poly1 中心点: {center_poly1}")
+# angle = calculate_angle_to_horizontal(center_ploy,center_poly1)
+# textbox_angle, _ = calculate_textbox_angle(ploy)
+# textbox_angle1, _ = calculate_textbox_angle(poly1)
+# print("===============")
+# print(np.degrees(textbox_angle))
+# print(np.degrees(textbox_angle1))
+# print(np.degrees(angle))
+# print("===============")
+micro_poly = np.array([[300, 40], [456, 44], [456, 71], [300, 67]], dtype=np.int32)
+# micro_poly1 = np.array([[300, 40], [300, 67], [419, 70], [419, 43]], dtype=np.int32)
+# cv2.polylines(img, [micro_poly1], isClosed=True, color=(0, 255, 255), thickness=2)
 h, w = img.shape[:2]
 print(f"图片尺寸: {w}x{h}")
 
@@ -37,10 +58,19 @@ output_path = "/Users/saw/WorkSpace/work/OCR-Project/test/test10/micro_0110_2300
 
 cv2.polylines(img, [micro_poly], isClosed=True, color=(0, 255, 0), thickness=2)
 
-extra_point = (46, 88)
-cv2.circle(img, extra_point, 5, (255, 0, 0), -1)
-cv2.putText(img, f"P({extra_point[0]},{extra_point[1]})", (extra_point[0] + 10, extra_point[1] - 10),
-            cv2.FONT_HERSHEY_SIMPLEX, 0.6, (255, 0, 0), 2)
+
+# cv2.circle(img, (int(center_ploy[0]), int(center_ploy[1])), 5, (0, 0, 255), -1)
+# cv2.putText(img, f"C1({int(center_ploy[0])},{int(center_ploy[1])})", (int(center_ploy[0]) + 10, int(center_ploy[1]) - 10),
+#             cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 0, 255), 2)
+#
+# cv2.circle(img, (int(center_poly1[0]), int(center_poly1[1])), 5, (255, 0, 0), -1)
+# cv2.putText(img, f"C2({int(center_poly1[0])},{int(center_poly1[1])})", (int(center_poly1[0]) + 10, int(center_poly1[1]) - 10),
+#             cv2.FONT_HERSHEY_SIMPLEX, 0.5, (255, 0, 0), 2)
+
+# extra_point = (46, 88)
+# cv2.circle(img, extra_point, 5, (255, 0, 0), -1)
+# cv2.putText(img, f"P({extra_point[0]},{extra_point[1]})", (extra_point[0] + 10, extra_point[1] - 10),
+#             cv2.FONT_HERSHEY_SIMPLEX, 0.6, (255, 0, 0), 2)
 
 center_x = (min_x + max_x) // 2
 center_y = (min_y + max_y) // 2

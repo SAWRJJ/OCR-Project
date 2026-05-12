@@ -169,7 +169,7 @@ def calculate_angle_to_horizontal(point_a, point_b):
     """
     dx = point_b[0] - point_a[0]
     dy = point_b[1] - point_a[1]
-    return np.arctan2(dy, dx)
+    return np.arctan2(dx, dy)
 
 def fullwidth_to_halfwidth(text):
     return unicodedata.normalize('NFKC', text)
