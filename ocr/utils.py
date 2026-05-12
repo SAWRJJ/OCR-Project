@@ -4,6 +4,7 @@ import os
 import cv2
 import numpy as np
 import unicodedata
+import re
 
 def calculate_shift_params(micro_poly, input_angle=None,extend_length = 55):
     """计算平移参数
@@ -172,3 +173,9 @@ def calculate_angle_to_horizontal(point_a, point_b):
 
 def fullwidth_to_halfwidth(text):
     return unicodedata.normalize('NFKC', text)
+
+def has_text_or_number(s):
+    # \u4e00-\u9fa5 是汉字的范围
+    # a-zA-Z0-9 是字母和数字
+    pattern = re.compile(r'[a-zA-Z0-9\u4e00-\u9fa5]')
+    return bool(pattern.search(s))
