@@ -5,12 +5,17 @@ import os
 import json
 import logging
 import numpy as np
-from ocr.utils import should_keep_text, safe_filename_component
+from ocr.utils import should_keep_text, safe_filename_component, has_text_or_number
 from ocr.image_processor import ImageProcessor
 from ocr.LW_detect import calculate_textbox_angle
 import re
+
 logger = logging.getLogger("ocr_system")
-import  copy
+import copy
+from ocr.ocr_engine import OCREngine
+
+ocr_engine = OCREngine()
+
 
 def detect_color_presence_bgr(
         img_bgr,
@@ -27,7 +32,6 @@ def detect_color_presence_bgr(
             "stats": {},
             "valid_pixels": 0,
         }
-
 
     hsv = cv2.cvtColor(img_bgr, cv2.COLOR_BGR2HSV)
     h = hsv[:, :, 0]
@@ -98,6 +102,8 @@ def detect_color_presence_bgr(
             logger.info(f"  {name}: x=[{pos['x_min']}, {pos['x_max']}], y=[{pos['y_min']}, {pos['y_max']}]")
 
     return {"presence": presence, "stats": stats, "valid_pixels": valid_count, "positions": positions}
+
+
 class NpEncoder(json.JSONEncoder):
     def default(self, obj):
         if isinstance(obj, np.integer):
@@ -107,6 +113,7 @@ class NpEncoder(json.JSONEncoder):
         if isinstance(obj, np.ndarray):
             return obj.tolist()
         return super(NpEncoder, self).default(obj)
+
 
 class Visualizer:
 
@@ -146,6 +153,7 @@ class Visualizer:
                     non_circular_mask = cv2.bitwise_or(non_circular_mask, component_mask)
 
             return centers, non_circular_mask
+
         if cv2 is None:
             raise ModuleNotFoundError("未安装 cv2（opencv-python）")
 
@@ -159,15 +167,16 @@ class Visualizer:
         if target_chars is None:
             target_chars = ["S", "X", "D"]
         if exclude_substrings is None:
-            exclude_substrings = ["/", "DG", "G","SK"]
+            exclude_substrings = ["/", "DG", "G", "SK"]
 
         if save_boxes_dir:
             os.makedirs(save_boxes_dir, exist_ok=True)
 
         saved_count = 0
-        text_count = 0
+        text_list = []
         split_info_path = os.path.join(os.path.dirname(img_path), "split_info.json")
         split_infos = []
+        tt = ""
         if os.path.exists(split_info_path):
             import json
             with open(split_info_path, 'r') as f:
@@ -197,16 +206,18 @@ class Visualizer:
             if len(poly) != 4:
                 continue
             textbox_angle, _ = calculate_textbox_angle(poly)
-            textbox_angle=abs(np.degrees(textbox_angle))
-            if textbox_angle>34:
-                print(text)
-                text_count+=1
+            textbox_angle = abs(np.degrees(textbox_angle))
+            # if "K1242.304" == text:
+            #     print(-1)
+            if textbox_angle > 34 and len(text.replace(" ", "")) > 5 and has_text_or_number(text) and "DG" not in text:
+                tt = text
+                # print(text)
+                text_list.append(source_split)
             text = text.replace("π", "II")
             text = text.replace("X", "X")
             # micro_0102_1700XL1_80_00.jpg
-            if "2300" in text and "404" in text: #'1700xL1-80-00O0'
-                print(0)
-
+            # if "2300" in text and "404" in text: #'1700xL1-80-00O0'
+            #     print(-1)
             if "." in text or (len(text) >= 4 and text[-1].isdigit()):
 
                 poly_np = np.array(poly, dtype=np.int32)
@@ -282,10 +293,172 @@ class Visualizer:
                             expanded_mask,
                             mask_red
                         )
-
                         roi[final_mask > 0] = 255
+        restored_results = []
+        if text_list:
+            rotate_angle = 30  # 顺时针30度
+            for split_img_path in set(text_list):
+                split_img = cv2.imread(split_img_path)
+                if split_img is None:
+                    continue
+                basename = os.path.basename(split_img_path)
+                parts = basename.split("_")
+                ox = int(parts[-2])
+                oy = int(parts[-1].split(".")[0])
+                h, w = split_img.shape[:2]
+                # =========================
+                # 1. 构建旋转矩阵（顺时针）
+                # =========================
+                center = (w / 2, h / 2)
+                # OpenCV中正数是逆时针，所以这里用负数
+                M = cv2.getRotationMatrix2D(center, -rotate_angle, 1.0)
+                cos = abs(M[0, 0])
+                sin = abs(M[0, 1])
+                # 计算旋转后完整包围尺寸
+                new_w = int((h * sin) + (w * cos))
+                new_h = int((h * cos) + (w * sin))
+                # 平移补偿，保证图像完整
+                M[0, 2] += (new_w / 2) - center[0]
+                M[1, 2] += (new_h / 2) - center[1]
+                # =========================
+                # 2. 旋转图片
+                # =========================
+                rotated_img = cv2.warpAffine(
+                    split_img,
+                    M,
+                    (new_w, new_h),
+                    flags=cv2.INTER_LINEAR,
+                    borderValue=(255, 255, 255)
+                )
+                # =========================
+                # 3. OCR识别
+                # =========================
+                # 根据你当前工程替换成你的OCR接口
+                ocr_results = ocr_engine.ocr.predict(rotated_img)
+                # =========================
+                # 4. 逆变换矩阵
+                # =========================
+                M_inv = cv2.invertAffineTransform(M)
 
-        print(text_count)
+                for result in ocr_results:
+                    # 根据你的OCR返回结构调整
+                    # 假设:
+                    # result = (poly, text, score)
+                    texts, polys, scores = result['rec_texts'], result['rec_polys'], result['rec_scores']
+                    for i in range(len(texts)):
+                        text = texts[i]
+                        if len(text)>1 and has_text_or_number(text):
+                            score = scores[i]
+                            poly = polys[i]  # 这是一个 (4, 2) 的数组
+                            # 将 poly 转换为齐次坐标形式 (N, 3)，即 [x, y, 1]
+                            # poly.shape 是 (4, 2)
+                            ones = np.ones((poly.shape[0], 1))
+                            homogeneous_coords = np.hstack([poly, ones])  # 变成 (4, 3)
+                            # 使用 M_inv 进行矩阵变换: (4, 3) dot (3, 3).T -> (4, 2)
+                            # 计算公式: transformed_coords = homogeneous_coords @ M_inv.T
+                            # 只取前两列 (x, y)
+                            restored_poly_pts = (homogeneous_coords @ M_inv.T)[:, :2]
+                            # 转换为列表格式并保存
+                            offset_poly = [
+                                [int(p[0] + ox), int(p[1] + oy)]
+                                for p in restored_poly_pts
+                            ]
+                            restored_poly_pts = [
+                                [int(p[0]), int(p[1])]
+                                for p in restored_poly_pts
+                            ]
+                            restored_results.append((
+                                offset_poly,
+                                text,
+                                split_img_path,
+                                restored_poly_pts,
+                                score
+                            ))
+                            poly = offset_poly
+                            if "." in text or (len(text) >= 4 and text[-1].isdigit()):
+
+                                poly_np = np.array(poly, dtype=np.int32)
+
+                                x, y, w, h = cv2.boundingRect(poly_np)
+
+                                roi = raw_img[y:y + h, x:x + w]
+
+                                # ROI mask
+                                roi_poly = poly_np - [x, y]
+
+                                roi_mask = np.zeros((h, w), dtype=np.uint8)
+
+                                cv2.fillPoly(roi_mask, [roi_poly], 255)
+
+                                # HSV only on ROI
+                                hsv = cv2.cvtColor(roi, cv2.COLOR_BGR2HSV)
+
+                                lower_red1 = np.array([0, 50, 50])
+                                upper_red1 = np.array([20, 255, 255])
+
+                                lower_red2 = np.array([150, 50, 50])
+                                upper_red2 = np.array([180, 255, 255])
+
+                                mask_red1 = cv2.inRange(hsv, lower_red1, upper_red1)
+                                mask_red2 = cv2.inRange(hsv, lower_red2, upper_red2)
+
+                                mask_red_hsv = cv2.bitwise_or(mask_red1, mask_red2)
+
+                                # BGR
+                                b = roi[:, :, 0].astype(np.int16)
+                                g = roi[:, :, 1].astype(np.int16)
+                                r = roi[:, :, 2].astype(np.int16)
+
+                                # HSV中的V通道（亮度）
+                                v = hsv[:, :, 2]
+
+                                # 放宽后的红色优势
+                                red_dom_mask = (
+                                        (r > g + 15) &
+                                        (r > b + 15) &
+                                        (r > 60) &
+                                        (v > 70)
+                                )
+
+                                red_dom_mask = red_dom_mask.astype(np.uint8) * 255
+
+                                # 最终mask
+                                mask_red = cv2.bitwise_and(
+                                    mask_red_hsv,
+                                    red_dom_mask
+                                )
+
+                                # 只保留poly内部
+                                mask_red = cv2.bitwise_and(mask_red, roi_mask)
+
+                                if cv2.countNonZero(mask_red) > 0:
+
+                                    red_centers, non_circular_mask = calculate_centers_separate(mask_red)
+
+                                    if cv2.countNonZero(non_circular_mask) > 0:
+                                        # 外扩1像素
+                                        kernel = np.ones((3, 3), np.uint8)
+                                        expanded_mask = cv2.dilate(
+                                            non_circular_mask,
+                                            kernel,
+                                            iterations=2
+                                        )
+                                        # 关键修改：
+                                        # 即使红色与黑色连通
+                                        # 也只处理真正红色区域
+                                        final_mask = cv2.bitwise_and(
+                                            expanded_mask,
+                                            mask_red
+                                        )
+                                        roi[final_mask > 0] = 255
+                # restored_results
+                # 即已经映射回原图坐标系的OCR结果
+                logger.info(
+                    f"旋转OCR完成: {split_img_path}, "
+                    f"识别数量: {len(restored_results)}"
+                )
+        # print(len(text_list))
+        rec_polys_with_text = rec_polys_with_text+restored_results
         for item in rec_polys_with_text:
             # Handle both 2-element (legacy) and 4-element (new) tuples
             if len(item) == 5:
@@ -301,8 +474,8 @@ class Visualizer:
                 continue
             text = text.replace("π", "II")
             text = text.replace("X", "X")
-            text = text.replace("×","X")
-            if "2300" in text and "404" in text: #'1700xL1-80-00O0'
+            text = text.replace("×", "X")
+            if "2300" in text and "404" in text:  # '1700xL1-80-00O0'
                 print(0)
 
             # if "K" in text or "." in text:
@@ -348,7 +521,7 @@ class Visualizer:
                     ys.extend([bottom_ext[0][1], bottom_ext[1][1]])
                 for p in poly:
                     ys.append(p[1])
-                if xs and angle_deg<25:
+                if xs and angle_deg < 25:
                     min_x = min(xs)
                     max_x = max(xs)
 
