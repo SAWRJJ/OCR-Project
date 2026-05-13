@@ -3,8 +3,8 @@ import numpy as np
 import json
 from ocr.LW_detect import detect_colors, calculate_textbox_angle
 from ocr.utils import calculate_angle_to_horizontal
-img_path = "/Users/saw/WorkSpace/work/OCR-Project/test/test10/micro_0290_SBI.jpg"
-json_path = "/Users/saw/WorkSpace/work/OCR-Project/test/test10/micro_0295_SL4082600.json"
+img_path = "/Users/saw/WorkSpace/work/OCR-Project/test/test10/micro_0014_FXII_K.jpg"
+json_path = "/Users/saw/WorkSpace/work/OCR-Project/test/test10/micro_0014_FXII_K.json"
 
 img = cv2.imread(img_path)
 if img is None:
@@ -36,7 +36,7 @@ print(len(text))
 # print(np.degrees(textbox_angle1))
 # print(np.degrees(angle))
 # print("===============")
-micro_poly = np.array([[300, 40], [456, 44], [456, 71], [300, 67]], dtype=np.int32)
+micro_poly = np.array([[120.0, 40.0], [0.0, 40.0], [0.0, 111.0], [120.0, 111.0]], dtype=np.int32)
 # micro_poly1 = np.array([[300, 40], [300, 67], [419, 70], [419, 43]], dtype=np.int32)
 # cv2.polylines(img, [micro_poly1], isClosed=True, color=(0, 255, 255), thickness=2)
 h, w = img.shape[:2]

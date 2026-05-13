@@ -982,11 +982,24 @@ def detect_colors(image_path, target_char, debug=True, threshold=100):
                                                                                                   angle=textbox_angle,
                                                                                                   debug=debug,
                                                                                                   is_linear=is_linear)
+    closed_regions = find_closed_dark_regions(img)
+    b_white_centers = []
+    for r in closed_regions:
+        if 'center' in r:
+            cx, cy = r['center']
+            pixel_color = img[cy, cx]
+            if np.all(pixel_color >= 200):
+                b_white_centers.append((cx, cy))
+    if debug and len(closed_regions)>0:
+        filename = os.path.basename(json_path).replace('_res.json', '')
+        vis_path = os.path.join('output', f'{filename}_closed_circles.png')
+        visualize_all_dark_regions(img, [], closed_regions, vis_path)
     color_centers_separate = {
         'red': red_centers,
         'yellow': yellow_centers,
         'green': green_centers,
-        'blue': blue_centers
+        'blue': blue_centers,
+        "white":b_white_centers
     }
     x_coords = [point[0] for point in poly]
     y_coords = [point[1] for point in poly]

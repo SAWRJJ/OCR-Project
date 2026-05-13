@@ -562,7 +562,7 @@ def convert_high_circularity_region_to_white(img, regions, min_circularity=0.75)
     return result
 
 
-def process_image_high_circularity_to_white(img, dark_threshold=125, min_circularity=0.75, binary_output_path=None):
+def process_image_high_circularity_to_white(img, dark_threshold=125, min_circularity=0.75, binary_output_path=None,remove_circle=True):
     """
     完整处理流程：
     1. 找到所有深色像素连通区域
@@ -591,17 +591,18 @@ def process_image_high_circularity_to_white(img, dark_threshold=125, min_circula
     result_img = img.copy()
     result_list = []
 
-    for region in regions:
-        center, radius, circularity = fit_circle_contour_method(region, img.shape)
-        if center is not None and circularity >= min_circularity:
-            for pixel in region['pixels']:
-                result_img[pixel[0], pixel[1]] = [255, 255, 255]
-            result_list.append({
-                'pixel_count': len(region['pixels']),
-                'center': center,
-                'radius': radius,
-                'circularity': circularity
-            })
+    if remove_circle:
+        for region in regions:
+            center, radius, circularity = fit_circle_contour_method(region, img.shape)
+            if center is not None and circularity >= min_circularity:
+                for pixel in region['pixels']:
+                    result_img[pixel[0], pixel[1]] = [255, 255, 255]
+                result_list.append({
+                    'pixel_count': len(region['pixels']),
+                    'center': center,
+                    'radius': radius,
+                    'circularity': circularity
+                })
 
     gray = cv2.cvtColor(result_img, cv2.COLOR_BGR2GRAY)
     _, binary = cv2.threshold(gray, dark_threshold, 255, cv2.THRESH_BINARY)

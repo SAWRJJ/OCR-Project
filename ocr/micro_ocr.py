@@ -207,7 +207,7 @@ def process_micro_images(micro_img_dir):
             continue
 
         # micro_0005_S
-        if filename == "micro_0291_D401.jpg" or "micro_0186_OO_0_SL20VI" in filename: # micro_0110_2300_1X5 # micro_0085__5c0f_D # micro_0064_DOQOOSN micro_0048_XI micro_0093_XL_I_HO_00.json_input.png
+        if filename == "micro_0014_FXII_K.jpg" or "micro_0186_OO_0_SL20VI" in filename: # micro_0110_2300_1X5 # micro_0085__5c0f_D # micro_0064_DOQOOSN micro_0048_XI micro_0093_XL_I_HO_00.json_input.png
             print(-1)
         img_path = os.path.join(micro_img_dir, filename)
         json_path = os.path.join(micro_img_dir, os.path.splitext(filename)[0] + ".json")
@@ -446,18 +446,17 @@ def process_micro_images(micro_img_dir):
                         # cv2.rectangle(vis_img, (x_min, y_min), (x_max, y_max), (255, 0, 0), 2)
                         cropped0 = find_drak_remove(cropped, dark_threshold=190, find_adjacent_color_regions=True,
                                                     save_circle=False, remove_light_white=True)
-                        # if "FX" in filename_matched_key:
-                        #     cropped_path1 = os.path.join(micro_img_dir, 'debug',
-                        #                                  filename.replace('.jpg', '_cropped1.jpg'))
-                        #     cropped_path1 = os.path.join(micro_img_dir, 'debug',
-                        #                                  filename.replace('.jpg', '_cropped1.jpg'))
-                        #     _, binary_img, _ = process_image_high_circularity_to_white(
-                        #         cropped0,
-                        #         dark_threshold=200,
-                        #         min_circularity=0.75,
-                        #         binary_output_path=cropped_path1
-                        #     )
-                        #     cropped0 = cv2.cvtColor(binary_img, cv2.COLOR_GRAY2BGR)
+                        if "FX" in filename_matched_key:
+                            cropped_path1 = os.path.join(micro_img_dir, 'debug',
+                                                         filename.replace('.jpg', '_cropped1.jpg'))
+                            _, binary_img, _ = process_image_high_circularity_to_white(
+                                cropped0,
+                                dark_threshold=200,
+                                min_circularity=0.75,
+                                binary_output_path=cropped_path1,
+                                remove_circle=False
+                            )
+                            cropped0 = cv2.cvtColor(binary_img, cv2.COLOR_GRAY2BGR)
                         cv2.imwrite(cropped_path, cropped0)
                         results = ocr_engine.ocr.predict(cropped0)
                         first_confidence = 1.0
@@ -741,176 +740,6 @@ def process_micro_images(micro_img_dir):
 
                     detailed_results.append(detail_item)
 
-            # else:
-            #
-            #     img_data = cv2.imdecode(np.fromfile(img_path, dtype=np.uint8), cv2.IMREAD_COLOR)
-            #     if img_data is None:
-            #         logger.error(f"无法读取图片: {img_path}")
-            #         continue
-            #
-            #     initial_polys = None
-            #     if os.path.exists(json_path):
-            #         with open(json_path, 'r', encoding='utf-8') as f:
-            #             initial_json_data = json.load(f)
-            #         initial_polys = initial_json_data.get('micro_poly', [])
-            #
-            #     direction = None
-            #     if 'S' in potential_text or 's' in potential_text:
-            #         direction = 'right'
-            #     elif 'X' in potential_text:
-            #         direction = 'left'
-            #
-            #     use_crop_ocr = False
-            #     first_poly = None
-            #     if direction and len(initial_polys[0]) != 2:
-            #         first_poly = initial_polys[0]
-            #     else:
-            #         first_poly = initial_polys
-            #     if first_poly is not None:
-            #         x_coords = [point[0] for point in first_poly]
-            #         textbox_length = max(x_coords) - min(x_coords)
-            #
-            #         if textbox_length > 80:
-            #             logger.info(f"文本框长度 {textbox_length:.2f} > 300，进行裁切检测: {filename}")
-            #             img_data = find_drak_remove(img_data)
-            #             debug_path = os.path.join(micro_img_dir, 'debug', filename.replace('.jpg', '_debug.jpg'))
-            #             os.makedirs(os.path.dirname(debug_path), exist_ok=True)
-            #             cropped_path = os.path.join(micro_img_dir, 'debug', filename.replace('.jpg', '_cropped.jpg'))
-            #             cv2.imwrite(cropped_path, img_data)
-            #             # vis_img = img.copy()
-            #             # cv2.polylines(vis_img, [expanded_array], isClosed=True, color=(0, 255, 0), thickness=2)
-            #             # cv2.rectangle(vis_img, (x_min, y_min), (x_max, y_max), (255, 0, 0), 2)
-            #             # cv2.imwrite(debug_path, vis_img)
-            #
-            #             use_adjusted, adjusted_edge, crop_ocr_result = adjust_textbox_edge(
-            #                 img_data, first_poly, direction, json_path, crop_size=40
-            #             )
-            #             if use_adjusted and adjusted_edge and crop_ocr_result:
-            #                 use_crop_ocr = True
-            #                 logger.info(f"裁切检测成功，将使用裁切OCR结果")
-            #                 crop_texts = crop_ocr_result.get('rec_texts', [])
-            #                 crop_scores = crop_ocr_result.get('rec_scores', [])
-            #                 if crop_texts:
-            #                     if crop_scores and len(crop_scores) > 0:
-            #                         first_confidence = float(crop_scores[0])
-            #
-            #                     for i, text in enumerate(crop_texts):
-            #                         score = float(crop_scores[i]) if i < len(crop_scores) else 0.0
-            #                         all_detected_texts.append(text)
-            #
-            #                         clean_text = text.strip()
-            #                         current_key = None
-            #                         found_match = False
-            #                         current_key, found_match = check_all_text(clean_text)
-            #                         if found_match and current_key not in matched_keys:
-            #                             matched_keys.append(current_key)
-            #                         detail_item = {
-            #                             "text": text,
-            #                             "confidence": score,
-            #                             "color_info": None,
-            #                             "matched_key": current_key
-            #                         }
-            #                         if current_key and (
-            #                                 ("S" in current_key or "X" in current_key)):
-            #                             is_match, black_pixel_count, template_match_res, color_centers_separate, black_radio = detect_colors(
-            #                                 img_path,
-            #                                 current_key,
-            #                                 debug=False,
-            #                                 threshold=THRESHOLD
-            #                             )
-            #                             detail_item["template_match_res"] = template_match_res
-            #                             detail_item["template_match_score"] = is_match
-            #                             detail_item["black_pixel_count"] = black_pixel_count
-            #                             detail_item["black_radio"] = black_radio
-            #                             detail_item["template_name"] = "color_detection"
-            #                             detail_item["color_centers_separate"] = color_centers_separate
-            #                         detailed_results.append(detail_item)
-            #     if not use_crop_ocr:
-            #         try:
-            #             result = ocr_engine.ocr.ocr(img_data, cls=True)
-            #         except TypeError:
-            #             result = ocr_engine.ocr.ocr(img_data)
-            #         except AttributeError:
-            #             try:
-            #                 result = ocr_engine.ocr.predict(img_data)
-            #             except Exception as e:
-            #                 logger.error(f"PaddleOCR 调用失败 {filename}: {e}")
-            #                 continue
-            #         except Exception as e:
-            #             logger.error(f"PaddleOCR 调用失败 {filename}: {e}")
-            #             continue
-            #
-            #         # 解析结果
-            #         # result[0] 是第一张图片的结果（我们每次只传一张）
-            #
-            #         # PaddleX 或新版 PaddleOCR 返回的是一个字典对象（或包含字典的列表）
-            #         # 根据用户提供的结构，result[0] 是一个字典，包含 'rec_texts', 'rec_scores' 等字段
-            #
-            #         res_data = None
-            #         if isinstance(result, list) and len(result) > 0:
-            #             res_data = result[0]
-            #         elif isinstance(result, dict):  # 可能是单个字典
-            #             res_data = result
-            #
-            #         if res_data and isinstance(res_data, dict):
-            #             # 获取文本和置信度列表
-            #             rec_texts = res_data.get('rec_texts', [])
-            #             rec_scores = res_data.get('rec_scores', [])
-            #             # 假设 rec_polys 存在且与 rec_texts 对应
-            #             rec_polys = res_data.get('rec_polys', [])
-            #
-            #             if rec_texts:
-            #                 # 记录第一个置信度作为参考
-            #                 if rec_scores and len(rec_scores) > 0:
-            #                     first_confidence = float(rec_scores[0])
-            #
-            #                 for i, text in enumerate(rec_texts):
-            #                     score = float(rec_scores[i]) if i < len(rec_scores) else 0.0
-            #                     poly = rec_polys[i]
-            #                     if score < 0.7:
-            #                         continue
-            #                     all_detected_texts.append(text)
-            #
-            #                     clean_text = text.strip()
-            #                     # 遍历 target_defs 查找匹配
-            #                     current_key = None
-            #                     found_match = False
-            #                     current_key, found_match = check_all_text(clean_text)
-            #                     if found_match and current_key not in matched_keys:
-            #                         matched_keys.append(current_key)
-            #
-            #                     # 记录详细结果
-            #                     detail_item = {
-            #                         "text": text,
-            #                         "confidence": score,
-            #                         "color_info": None,
-            #                         "matched_key": current_key
-            #                     }
-            #
-            #                     if current_key:
-            #                         if os.path.exists(json_path):
-            #                             with open(json_path, 'r', encoding='utf-8') as f:
-            #                                 json_data = json.load(f)
-            #                             json_data['micro_poly'] = poly
-            #                             json_data["text"] = current_key
-            #                             with open(json_path, 'w', encoding='utf-8') as f:
-            #                                 json.dump(make_json_serializable(json_data), f, ensure_ascii=False, indent=2)
-            #                         is_match, black_pixel_count, template_match_res, color_centers_separate, black_radio = detect_colors(
-            #                             img_path,
-            #                             current_key,
-            #                             debug=False,
-            #                             threshold=THRESHOLD
-            #                         )
-            #                         detail_item["template_match_res"] = template_match_res
-            #                         detail_item["template_match_score"] = is_match
-            #                         detail_item["black_pixel_count"] = black_pixel_count
-            #                         detail_item["black_radio"] = black_radio
-            #                         detail_item["template_name"] = "color_detection"
-            #                         detail_item["color_centers_separate"] = color_centers_separate
-            #
-            #                     detailed_results.append(detail_item)
-
-            # 尝试加载 JSON 数据以获取颜色信息
             existing_color_presencse = None
             existing_color_stats = None
             json_data = None
@@ -928,6 +757,9 @@ def process_micro_images(micro_img_dir):
             for res in detailed_results:
                 res["color_presence"] = existing_color_presence
                 res["color_stats"] = existing_color_stats
+                color_centers_separate = res.get("color_centers_separate")
+                if color_centers_separate and all(len(v) == 0 for v in color_centers_separate.values()):
+                    continue
                 # 检查并更新全局最佳结果
                 m_key = res.get("matched_key")
                 if m_key == "X":
@@ -1058,38 +890,11 @@ def save_results_to_excel(all_results, output_file="ocr_results.xlsx", micro_img
         for detail in details:
             text = detail.get("text", "")
             confidence = detail.get("confidence", 0.0)
-
             # 颜色信息
             # color_presence 结构: {'blue': False, 'green': True, ...}
             color_presence = detail.get("color_presence", {}) or {}
-
-            # 查找该文本对应的 matched_key (可能没有)
-            # 这里的 text 是原始 OCR 文本，我们需要再次匹配或者从 item["matched_keys"] 推断
-            # 但 item["matched_keys"] 是整张图的。为了准确对应，我们这里只输出整图匹配到的 keys
-            # 或者，我们可以简单地将该行记录为一个检测结果
-
-            # 根据需求：输出 matched_keys 及其对应的 confidence
-            # 如果 details 里的 text 匹配到了 key，我们才输出？
-            # 或者输出所有 details？
-            # 用户需求："包含matched_keys及其对应的conference"
-
-            # 我们重新进行一次简单的匹配检查，确定当前 text 对应哪个 key
             clean_text = text.strip()
             current_matched_key = ""
-
-            # 加载 target definitions (为了避免重复加载，这里假设 process_micro_images 已经做过匹配)
-            # 我们可以直接检查 item["matched_keys"]，但这无法将 key 和 confidence 一一对应
-            # 所以我们需要再次匹配
-            # target_defs = load_target_definitions()
-            # for key, variants in target_defs.items():
-            #     found_match = False
-            #     for variant in variants:
-            #         if variant in clean_text:
-            #             current_matched_key = key
-            #             found_match = True
-            #             break
-            #     if found_match:
-            #         break
             current_matched_key,find_match = check_all_text(clean_text)
             # 如果只想输出匹配到的结果：
             if current_matched_key:
@@ -1127,6 +932,7 @@ def save_results_to_excel(all_results, output_file="ocr_results.xlsx", micro_img
                     "yellow_centers": yl,
                     "green_centers": gl,
                     "blue_centers": len(color_centers.get("blue", [])),
+                    "white_centers": len(color_centers.get("white", [])),
                     }
                 data_list.append(row)
 
@@ -1139,7 +945,7 @@ def save_results_to_excel(all_results, output_file="ocr_results.xlsx", micro_img
     columns = ["filename", "matched_key", "confidence", "template_name", "template_match_res", "template_match_score",
                "black_pixel_count", "black_radio",
                "color_white",
-               "red_centers", "yellow_centers", "green_centers","blue_centers"] # "color_blue", "color_green", "color_yellow", "color_red",
+               "red_centers", "yellow_centers", "green_centers","blue_centers", "white_centers"] # "color_blue", "color_green", "color_yellow", "color_red",
     final_columns = [c for c in columns if c in df.columns]
     df = df[final_columns]
 

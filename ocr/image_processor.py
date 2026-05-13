@@ -237,6 +237,8 @@ class ImageProcessor:
         ext2_count = ImageProcessor.count_non_bw_pixels_along_line(
             img, (0, 0), (0, 0), line_thickness, white_thresh, black_thresh, mask=ext2_mask
         )
+        if text and "X" in text.upper() and 'S' in text.upper():
+            return p1_ext, p2_ext
         if text and 'X' in text.upper():
             return p1, p2_ext
         elif text and 'S' in text.upper():
