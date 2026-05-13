@@ -207,7 +207,7 @@ def process_micro_images(micro_img_dir):
             continue
 
         # micro_0005_S
-        if filename == "micro_0290_SBI.jpg" or "micro_0186_OO_0_SL20VI" in filename: # micro_0110_2300_1X5 # micro_0085__5c0f_D # micro_0064_DOQOOSN micro_0048_XI micro_0093_XL_I_HO_00.json_input.png
+        if filename == "micro_0291_D401.jpg" or "micro_0186_OO_0_SL20VI" in filename: # micro_0110_2300_1X5 # micro_0085__5c0f_D # micro_0064_DOQOOSN micro_0048_XI micro_0093_XL_I_HO_00.json_input.png
             print(-1)
         img_path = os.path.join(micro_img_dir, filename)
         json_path = os.path.join(micro_img_dir, os.path.splitext(filename)[0] + ".json")
@@ -671,14 +671,55 @@ def process_micro_images(micro_img_dir):
                 else:
                     # 如果文件名已经包含了 key，则跳过 OCR，直接构造结果
                     logger.info(f"文件名匹配成功，跳过 OCR: {filename} -> {filename_matched_key}")
-                    potential_text = filename_matched_key
-                    matched_keys.append(filename_matched_key)
-                    all_detected_texts.append(potential_text)
+                    filename_matched_key1, found_match_in_filename1 = check_all_text(potential_text)
+                    # if found_match_in_filename1 and filename_matched_key1 not in matched_keys:
+                    #     matched_keys.append(filename_matched_key1)
+                    # potential_text = filename_matched_key
+                    expanded_poly = first_poly
                     first_confidence = 1.0
+                    x_min = max(0, int(min(p[0] for p in expanded_poly)))
+                    x_max = min(img.shape[1], int(max(p[0] for p in expanded_poly)))
+                    y_min = max(0, int(min(p[1] for p in expanded_poly)))
+                    y_max = min(img.shape[0], int(max(p[1] for p in expanded_poly)))
+                    cropped = img[y_min:y_max, x_min:x_max]
+                    debug_path = os.path.join(micro_img_dir, 'debug', filename.replace('.jpg', '_debug.jpg'))
+                    os.makedirs(os.path.dirname(debug_path), exist_ok=True)
+                    cropped_path = os.path.join(micro_img_dir, 'debug', filename.replace('.jpg', '_cropped.jpg'))
+                    cropped_path0 = os.path.join(micro_img_dir, 'debug', filename.replace('.jpg', '_cropped0.jpg'))
+                    # vis_img = img.copy()
+                    # cv2.polylines(vis_img, [expanded_array], isClosed=True, color=(0, 255, 0), thickness=2)
+                    # cv2.rectangle(vis_img, (x_min, y_min), (x_max, y_max), (255, 0, 0), 2)
+                    cv2.imwrite(cropped_path0, cropped)
+                    cropped0 = find_drak_remove(cropped, dark_threshold=190, find_adjacent_color_regions=True,
+                                                save_circle=False, remove_light_white=True,not_save_boundary=True,min_circularity=0.81)
+                    cv2.imwrite(cropped_path, cropped0)
+                    results = ocr_engine.ocr.predict(cropped0)
+                    for result in results:
+                        for i in range(len(result['rec_texts'])):
+                            potential_text = result['rec_texts'][i]
+                            first_confidence = result['rec_scores'][i]
+                            rec_poly = result['rec_polys'][i]
+                            restored_poly = [[int(point[0] + x_min), int(point[1] + y_min)] for point in rec_poly]
+                            filename_matched_key, found_match_in_filename1 = check_all_text(potential_text)
+                            if found_match_in_filename1 and filename_matched_key not in matched_keys:
+                                matched_keys.append(filename_matched_key)
+                            if found_match_in_filename1:
+                                if os.path.exists(json_path):
+                                    with open(json_path, 'r', encoding='utf-8') as f:
+                                        json_data = json.load(f)
+                                    json_data['text'] = potential_text
+                                    json_data['micro_poly'] = restored_poly
+                                    with open(json_path, 'w', encoding='utf-8') as f:
+                                        json.dump(make_json_serializable(json_data), f, ensure_ascii=False, indent=2)
+                                break
+                    # filename_matched_key =potential_text
+                    # matched_keys.append(filename_matched_key)
+                    # all_detected_texts.append(potential_text)
+
 
                     detail_item = {
                         "text": potential_text,
-                        "confidence": 1.0,
+                        "confidence": first_confidence,
                         "color_info": None,
                         "matched_key": filename_matched_key
                     }
