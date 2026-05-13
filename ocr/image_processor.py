@@ -38,23 +38,23 @@ class ImageProcessor:
                 h_patch, w_patch = patch.shape[:2]
 
                 # --- 正常图保存 ---
-                path = f"splits/split_{idx}_{orig_x}_{orig_y}_normal.jpg"
+                path = f"splits/split_{idx}_{orig_x}_{orig_y}.jpg"
                 cv2.imwrite(path, patch)
 
-                # --- 旋转图保存 ---
-                center_patch = (w_patch // 2, h_patch // 2)
-                angle_patch = 30
-                M = cv2.getRotationMatrix2D(center_patch, angle_patch, 1)
-                cos = np.abs(M[0, 0])
-                sin = np.abs(M[0, 1])
-                new_w = int(h_patch * sin + w_patch * cos)
-                new_h = int(h_patch * cos + w_patch * sin)
-                M[0, 2] += (new_w - w_patch) / 2
-                M[1, 2] += (new_h - h_patch) / 2
-
-                rotated_patch = cv2.warpAffine(patch, M, (new_w, new_h))
-                rotated_path = f"splits/split_{idx}_{orig_x}_{orig_y}_rotated.jpg"
-                cv2.imwrite(rotated_path, rotated_patch)
+                # # --- 旋转图保存 ---
+                # center_patch = (w_patch // 2, h_patch // 2)
+                # angle_patch = 30
+                # M = cv2.getRotationMatrix2D(center_patch, angle_patch, 1)
+                # cos = np.abs(M[0, 0])
+                # sin = np.abs(M[0, 1])
+                # new_w = int(h_patch * sin + w_patch * cos)
+                # new_h = int(h_patch * cos + w_patch * sin)
+                # M[0, 2] += (new_w - w_patch) / 2
+                # M[1, 2] += (new_h - h_patch) / 2
+                #
+                # rotated_patch = cv2.warpAffine(patch, M, (new_w, new_h))
+                # rotated_path = f"splits/split_{idx}_{orig_x}_{orig_y}_rotated.jpg"
+                # cv2.imwrite(rotated_path, rotated_patch)
 
                 is_white = np.all(patch >= 250)
                 if not is_white:
@@ -81,14 +81,11 @@ class ImageProcessor:
 
                 infos.append({
                     "path": path,
-                    "rotated_path": rotated_path,
-                    "offset": (orig_x, orig_y),
-                    "orig_size": (w_patch, h_patch),
-                    "rotated_size": (new_w, new_h)
+                    "offset": (orig_x, orig_y)
                 })
 
                 if not is_white:
-                    valid_paths.extend([path, rotated_path])
+                    valid_paths.append(path)
                 idx += 1
 
         split_info_path = os.path.join(os.path.dirname(img_path), "split_info.json")
