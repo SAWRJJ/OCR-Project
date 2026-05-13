@@ -1001,6 +1001,26 @@ def detect_colors(image_path, target_char, debug=True, threshold=100):
         'blue': blue_centers,
         "white":b_white_centers
     }
+    # 假设你已经获取了以下变量：
+    # rec_poly: 文本框四个点
+    # color_centers_separate: 颜色点字典 {'red': [(x,y)], ...}
+
+    # 计算文本框角度和中心
+    main_angle_rad, _ = calculate_textbox_angle(poly)
+    poly_arr = np.array(poly)
+    box_center = (np.mean(poly_arr[:, 0]), np.mean(poly_arr[:, 1]))
+
+    # 过滤颜色点
+    filtered_color_centers = {}
+    for color, points in color_centers_separate.items():
+        valid_points = []
+        for pt in points:
+            # 调用新定义的函数
+            if is_vertically_related_by_angle(box_center, pt, main_angle_rad):
+                print(f"去除{color}点 {pt}: 与文本框角度差过小")
+                continue
+            valid_points.append(pt)
+        filtered_color_centers[color] = valid_points
     x_coords = [point[0] for point in poly]
     y_coords = [point[1] for point in poly]
     min_x = min(x_coords)
@@ -2439,7 +2459,36 @@ def save_visualization(img, image_path, debug=True):
     cv2.imwrite(vis_output_path, img)
     print(f"颜色中心可视化结果已保存到: {vis_output_path}")
 
+def is_vertically_related_by_angle(box_center, color_point, textbox_angle_rad, threshold_deg=20):
+    """
+    通过比较文本框角度和连线角度，判断点是否处于“垂直”路径上
 
+    参数:
+        box_center: 文本框中心点 (x, y)
+        color_point: 颜色点中心 (x, y)
+        textbox_angle_rad: calculate_textbox_angle 返回的弧度值
+        threshold_deg: 角度差阈值（默认20度）
+    """
+    # 1. 计算文本框中心到颜色点的向量
+    dx = color_point[0] - box_center[0]
+    dy = color_point[1] - box_center[1]
+
+    # 2. 计算连线角度 (使用 arctan2(dx, dy) 保持与 calculate_textbox_angle 逻辑一致)
+    # 该角度表示相对于竖直方向的偏角
+    point_angle_rad = np.arctan2(dx, dy)
+
+    # 3. 转换为角度并计算差值
+    main_angle_deg = np.degrees(textbox_angle_rad)
+    point_angle_deg = np.degrees(point_angle_rad)
+
+    angle_diff = abs(point_angle_deg - main_angle_deg)
+
+    # 4. 处理角度周期性 (360度循环)
+    if angle_diff > 180:
+        angle_diff = 360 - angle_diff
+
+    # 如果差距小于阈值，说明在“垂直”方向线上
+    return angle_diff < threshold_deg
 if __name__ == "__main__":
     # 输入图像路径
     input_image = r"micro_0010_X4.jpg"  # micro_0079_S8.jpg micro_0004_S1 micro_0016_XI.jpg

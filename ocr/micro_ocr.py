@@ -207,7 +207,7 @@ def process_micro_images(micro_img_dir):
             continue
 
         # micro_0005_S
-        if filename == "micro_0014_FXII_K.jpg" or "micro_0186_OO_0_SL20VI" in filename: # micro_0110_2300_1X5 # micro_0085__5c0f_D # micro_0064_DOQOOSN micro_0048_XI micro_0093_XL_I_HO_00.json_input.png
+        if filename == "micro_0109_SL40III.jpg" or "micro_0186_OO_0_SL20VI" in filename: # micro_0110_2300_1X5 # micro_0085__5c0f_D # micro_0064_DOQOOSN micro_0048_XI micro_0093_XL_I_HO_00.json_input.png
             print(-1)
         img_path = os.path.join(micro_img_dir, filename)
         json_path = os.path.join(micro_img_dir, os.path.splitext(filename)[0] + ".json")
@@ -897,6 +897,8 @@ def save_results_to_excel(all_results, output_file="ocr_results.xlsx", micro_img
             current_matched_key = ""
             current_matched_key,find_match = check_all_text(clean_text)
             # 如果只想输出匹配到的结果：
+            if current_matched_key == "SL40Ⅲ":
+                print(-1)
             if current_matched_key:
                 color_centers = detail.get("color_centers_separate", {})
 
@@ -906,7 +908,7 @@ def save_results_to_excel(all_results, output_file="ocr_results.xlsx", micro_img
                     return ";".join([f"({c[0]},{c[1]})" for c in centers])
 
                 yellow_length = len(color_centers.get("yellow", []))
-                yr = find_cluster_centers(color_centers.get("yellow", []))
+                yr = find_cluster_centers(color_centers.get("yellow", []),distance_threshold=25)
                 yl = len(yr)
                 gl = 0
                 rl = 0
