@@ -124,11 +124,18 @@ def check_all_text(potential_text, target_defs0=None):
             break
         for key, variants in target_defs1.items():
             for variant in variants:
-                if variant in remaining_text:
-                    remaining_text = remaining_text.replace(variant, '', 1).strip()
-                    results.append(key)
-                    found_this_round = True
-                    found_match_in_filename = True
+                while variant in remaining_text:
+                    variant_pos = remaining_text.find(variant)
+                    if variant_pos != -1:
+                        last_char_pos = variant_pos + len(variant) - 1
+                        remaining_text = remaining_text[last_char_pos + 1:].strip()
+                    else:
+                        break
+                    if not found_this_round:
+                        results.append(key)
+                        found_this_round = True
+                        found_match_in_filename = True
+                if found_this_round:
                     break
             if found_this_round:
                 break
@@ -207,7 +214,7 @@ def process_micro_images(micro_img_dir):
             continue
 
         # micro_0005_S
-        if filename == "micro_0109_SL40III.jpg" or "micro_0186_OO_0_SL20VI" in filename: # micro_0110_2300_1X5 # micro_0085__5c0f_D # micro_0064_DOQOOSN micro_0048_XI micro_0093_XL_I_HO_00.json_input.png
+        if filename == "micro_0133_YD409_D403.jpg" or "0185_" in filename: # micro_0110_2300_1X5 # micro_0085__5c0f_D # micro_0064_DOQOOSN micro_0048_XI micro_0093_XL_I_HO_00.json_input.png
             print(-1)
         img_path = os.path.join(micro_img_dir, filename)
         json_path = os.path.join(micro_img_dir, os.path.splitext(filename)[0] + ".json")
@@ -468,6 +475,8 @@ def process_micro_images(micro_img_dir):
                             for result in results:
                                 for i in range(len(result['rec_texts'])):
                                     potential_text = result['rec_texts'][i]
+                                    if "X" in potential_text[-1]:
+                                        continue
                                     if "VII" in potential_text or "VI" in potential_text or "VⅢ" in potential_text:
                                         VII_count = count_vertical_strokes(cropped0)
                                         if VII_count <= 2:
@@ -538,7 +547,7 @@ def process_micro_images(micro_img_dir):
                             expand_length = 120
                         second_poly, expanded_poly = calculate_shift_params(first_poly, extend_length=expand_length)
                     else:
-                        expanded_poly = expand_poly(first_poly, expand_x=40, expand_y=6, angle=tilt_angle)
+                        expanded_poly = expand_poly(first_poly, expand_x=45, expand_y=6, angle=tilt_angle)
                     if textbox_length>350:
                         debug_vis_path = os.path.join(micro_img_dir, 'debug',
                                                       filename.replace('.jpg', '_shift_poly.jpg'))
@@ -694,10 +703,15 @@ def process_micro_images(micro_img_dir):
                     cv2.imwrite(cropped_path, cropped0)
                     results = ocr_engine.ocr.predict(cropped0)
                     for result in results:
-                        for i in range(len(result['rec_texts'])):
-                            potential_text = result['rec_texts'][i]
-                            first_confidence = result['rec_scores'][i]
-                            rec_poly = result['rec_polys'][i]
+                        rec_texts = result.get('rec_texts', [])
+                        rec_scores = result.get('rec_scores', [])
+                        rec_polys = result.get('rec_polys', [])
+                        for i in range(len(rec_texts)):
+                            if i >= len(rec_scores) or i >= len(rec_polys):
+                                continue
+                            potential_text = rec_texts[i]
+                            first_confidence = rec_scores[i]
+                            rec_poly = rec_polys[i]
                             restored_poly = [[int(point[0] + x_min), int(point[1] + y_min)] for point in rec_poly]
                             filename_matched_key, found_match_in_filename1 = check_all_text(potential_text)
                             if found_match_in_filename1 and filename_matched_key not in matched_keys:

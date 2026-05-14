@@ -1004,23 +1004,6 @@ def detect_colors(image_path, target_char, debug=True, threshold=100):
     # 假设你已经获取了以下变量：
     # rec_poly: 文本框四个点
     # color_centers_separate: 颜色点字典 {'red': [(x,y)], ...}
-
-    # 计算文本框角度和中心
-    main_angle_rad, _ = calculate_textbox_angle(poly)
-    poly_arr = np.array(poly)
-    box_center = (np.mean(poly_arr[:, 0]), np.mean(poly_arr[:, 1]))
-
-    # 过滤颜色点
-    filtered_color_centers = {}
-    for color, points in color_centers_separate.items():
-        valid_points = []
-        for pt in points:
-            # 调用新定义的函数
-            if is_vertically_related_by_angle(box_center, pt, main_angle_rad):
-                print(f"去除{color}点 {pt}: 与文本框角度差过小")
-                continue
-            valid_points.append(pt)
-        filtered_color_centers[color] = valid_points
     x_coords = [point[0] for point in poly]
     y_coords = [point[1] for point in poly]
     min_x = min(x_coords)
@@ -1029,6 +1012,20 @@ def detect_colors(image_path, target_char, debug=True, threshold=100):
     max_y = max(y_coords)
     textbox_center = ((min_x + max_x) // 2, (min_y + max_y) // 2)
     print(f"文本框中心坐标: {textbox_center}")
+    # 计算文本框角度和中心
+    main_angle_rad, _ = calculate_textbox_angle(poly)
+    # 过滤颜色点
+    filtered_color_centers = {}
+    for color, points in color_centers_separate.items():
+        valid_points = []
+        for pt in points:
+            # 调用新定义的函数
+            if is_vertically_related_by_angle(textbox_center, pt, main_angle_rad):
+                print(f"去除{color}点 {pt}: 与文本框角度差过小")
+                continue
+            valid_points.append(pt)
+        filtered_color_centers[color] = valid_points
+
     if poly and len(color_centers_separate["green"])>=1:
         green_cs = color_centers_separate["green"]
         diss = [calculate_distance(textbox_center, gc) for gc in green_cs]
