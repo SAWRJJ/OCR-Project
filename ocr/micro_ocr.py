@@ -434,6 +434,7 @@ def process_micro_images(micro_img_dir):
                         y_min = max(0, int(min(p[1] for p in shifted_poly)))
                         y_max = min(img.shape[0], int(max(p[1] for p in shifted_poly)))
                         cropped = img[y_min:y_max, x_min:x_max]
+
                         if "X" in potential_text and potential_text[0].isdigit():
                             debug_path = os.path.join(micro_img_dir, 'debug', filename.replace('.jpg', '_debug.jpg'))
                             os.makedirs(os.path.dirname(debug_path), exist_ok=True)
@@ -449,6 +450,7 @@ def process_micro_images(micro_img_dir):
                                 x_max = min(img.shape[1], int(max(p[0] for p in shifted_poly)))
                                 y_min = max(0, int(min(p[1] for p in shifted_poly)))
                                 y_max = min(img.shape[0], int(max(p[1] for p in shifted_poly)))
+
                         if os.path.exists(json_path):
                             with open(json_path, 'r', encoding='utf-8') as f:
                                 json_data = json.load(f)
@@ -486,6 +488,8 @@ def process_micro_images(micro_img_dir):
                                     potential_text = result['rec_texts'][i]
                                     if "X" in potential_text[-1]:
                                         continue
+                                    if "T" in potential_text[-1]:
+                                        potential_text = potential_text.replace("T", "J")
                                     if "VII" in potential_text or "VI" in potential_text or "VⅢ" in potential_text:
                                         VII_count = count_vertical_strokes(cropped0)
                                         if VII_count <= 2:
@@ -922,7 +926,7 @@ def save_results_to_excel(all_results, output_file="ocr_results.xlsx", micro_img
             current_matched_key = ""
             current_matched_key, find_match = check_all_text(clean_text)
             # 如果只想输出匹配到的结果：
-            if current_matched_key == "SL40Ⅲ":
+            if "XJ" in text:
                 print(-1)
             if current_matched_key:
                 color_centers = detail.get("color_centers_separate", {})
