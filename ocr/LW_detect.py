@@ -982,10 +982,12 @@ def detect_colors(image_path, target_char, debug=True, threshold=100):
                                                                                                   angle=textbox_angle,
                                                                                                   debug=debug,
                                                                                                   is_linear=is_linear)
-    closed_regions = find_closed_dark_regions(img, dark_threshold=190)
+    filename = os.path.basename(json_path).replace('_res.json', '')
+
+    closed_regions = find_closed_dark_regions(img, dark_threshold=175,min_circularity=0.7,filename=filename)
     regions, white_mask = find_all_white_regions(img, white_threshold=200)
     _, closed_regions = detect_circular_white_regions(regions, img.shape, closed_circles=closed_regions,
-                                                      min_circularity=0.8)
+                                                      min_circularity=0.74,img=img,filename=filename)
     b_white_centers = []
     for r in closed_regions:
         if 'center' in r:
@@ -1052,7 +1054,7 @@ def detect_colors(image_path, target_char, debug=True, threshold=100):
     save_visualization(vis_img, image_path.replace(".jpg","_debug.jpg"), debug=debug)
     if "D" in target_char:
         return False, 0, 0, color_centers_separate, 0
-    if not is_linear and angle_diff < 75:
+    if not is_linear and angle_diff < 72.5:
         return False, 0, 0, color_centers_separate, 0
     # red_rightmost = calculate_rightmost(mask_red)
     # yellow_rightmost = calculate_rightmost(mask_yellow)

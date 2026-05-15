@@ -3,6 +3,7 @@ import os
 import json
 import logging
 import math
+import traceback
 from functools import reduce
 
 import numpy as np
@@ -219,7 +220,7 @@ def process_micro_images(micro_img_dir):
             continue
 
         # micro_0005_S
-        if filename == "micro_0110_2300_1X5.jpg" or "XII0" in filename:  # micro_0110_2300_1X5 # micro_0085__5c0f_D # micro_0064_DOQOOSN micro_0048_XI micro_0093_XL_I_HO_00.json_input.png
+        if filename == "micro_0089_D3116.jpg" or "YD409_D403" in filename:  # micro_0110_2300_1X5 # micro_0085__5c0f_D # micro_0064_DOQOOSN micro_0048_XI micro_0093_XL_I_HO_00.json_input.png
             print(-1)
         img_path = os.path.join(micro_img_dir, filename)
         json_path = os.path.join(micro_img_dir, os.path.splitext(filename)[0] + ".json")
@@ -566,7 +567,7 @@ def process_micro_images(micro_img_dir):
                             expand_length = 120
                         second_poly, expanded_poly = calculate_shift_params(first_poly, extend_length=expand_length)
                     else:
-                        expanded_poly = expand_poly(first_poly, expand_x=45, expand_y=6, angle=tilt_angle)
+                        expanded_poly = expand_poly(first_poly, expand_x=50, expand_y=6, angle=tilt_angle)
                     if textbox_length > 350:
                         debug_vis_path = os.path.join(micro_img_dir, 'debug',
                                                       filename.replace('.jpg', '_shift_poly.jpg'))
@@ -733,6 +734,7 @@ def process_micro_images(micro_img_dir):
                             if i >= len(rec_scores) or i >= len(rec_polys):
                                 continue
                             potential_text = rec_texts[i]
+                            potential_text = potential_text.replace("YD"," ")
                             first_confidence = rec_scores[i]
                             rec_poly = rec_polys[i]
                             restored_poly = [[int(point[0] + x_min), int(point[1] + y_min)] for point in rec_poly]
@@ -804,7 +806,9 @@ def process_micro_images(micro_img_dir):
                 color_centers_separate = filter_color_points_by_distance(color_centers_separate, threshold=255, reference_point=nearest_point)
                 res["color_centers_separate"] = color_centers_separate
                 m_key = res.get("matched_key")
-                if color_centers_separate and all(len(v) == 0 for v in color_centers_separate.values()):
+                if "F" in m_key and color_centers_separate and all(len(v) == 0 for v in color_centers_separate.values()):
+                    continue
+                if "F" not in m_key and "Y" not in m_key and color_centers_separate and len(nearest_white_points)==0:
                     continue
                 # 检查并更新全局最佳结果
 
@@ -868,7 +872,7 @@ def process_micro_images(micro_img_dir):
                 pass
 
         except Exception as e:
-            logger.error(f"处理小窗口图片失败 {filename}: {e}")
+            logger.error(f"处理小窗口图片失败 {filename}: {e}\n{traceback.format_exc()}")
 
     # 将最佳结果转换为列表返回
     all_matched_keys = [val["item"] for val in best_results_map.values()]

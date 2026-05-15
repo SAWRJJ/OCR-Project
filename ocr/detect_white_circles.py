@@ -101,7 +101,7 @@ def fit_circle_contour_method(region, img_shape):
     return (int(x), int(y)), int(radius), float(circularity)
 
 
-def detect_circular_white_regions(regions, img_shape, closed_circles=None, min_circularity=0.8):
+def detect_circular_white_regions(regions, img_shape, closed_circles=None, min_circularity=0.8, img=None, filename=None):
     if closed_circles is None:
         closed_circles = []
 
@@ -137,6 +137,14 @@ def detect_circular_white_regions(regions, img_shape, closed_circles=None, min_c
                     'bbox': (region['min_row'], region['min_col'], region['max_row'], region['max_col'])
                 })
 
+    if img is not None and filename is not None:
+        import os
+        vis_img = img.copy()
+        for r in results:
+            cv2.circle(vis_img, (int(r['center'][0]), int(r['center'][1])), 3, (0, 255, 0), -1)
+        name, _ = os.path.splitext(filename)
+        output_path = os.path.join('./output', f"{name}_centers.jpg")
+        cv2.imwrite(output_path, vis_img)
 
     return results,too_closed_res
 
@@ -207,6 +215,9 @@ def find_white_circles(img0, white_threshold=200,textbox_center=None,poly=None,o
         if len(results)-t >1:
             boundary_dis = 30
         for r in results:
+            center_pixel = img[int(r['center'][1]), int(r['center'][0])]
+            if len(center_pixel) == 3 and (center_pixel[0] < 200 or center_pixel[1] < 200 or center_pixel[2] < 200):
+                continue
             dist = np.sqrt((r['center'][0] - textbox_center[0])**2 + (r['center'][1] - textbox_center[1])**2)
             border_dist = center_to_border_distance(r['center'], img.shape)
             diameter = 2 * r['radius']
@@ -251,6 +262,9 @@ def find_white_circles(img0, white_threshold=200,textbox_center=None,poly=None,o
 
 
         for r in results:
+            center_pixel = img[int(r['center'][1]), int(r['center'][0])]
+            if len(center_pixel) == 3 and (center_pixel[0] < 200 or center_pixel[1] < 200 or center_pixel[2] < 200):
+                continue
             border_dist = abs(center_to_border_distance(r['center'], img.shape))
             r['center'] = (r['center'][0] + ox, r['center'][1] + oy)
             dist = np.sqrt((r['center'][0] - textbox_center[0])**2 + (r['center'][1] - textbox_center[1])**2)

@@ -3,12 +3,13 @@ import numpy as np
 from collections import deque
 import os
 
-def find_closed_dark_regions(img_path, dark_threshold=125, min_circularity=0.7):
+def find_closed_dark_regions(img_path, dark_threshold=125, min_circularity=0.7, filename=None):
     """
     找出完全封闭的深色区域（闭合圆环）
     通过检查深色区域的边界是否完全被深色像素包围（即内部有空洞）
     只有圆度 >= min_circularity 的才被认为是闭合圆环
     img_path: 可以是图片路径(str)或图片数组(numpy.ndarray)
+    filename: 可选，用于保存灰度图的文件名
     """
     if isinstance(img_path, np.ndarray):
         img = img_path
@@ -22,6 +23,11 @@ def find_closed_dark_regions(img_path, dark_threshold=125, min_circularity=0.7):
     h, w = gray.shape
 
     dark_mask = (gray < dark_threshold).astype(np.uint8)
+
+    if filename is not None:
+        name, _ = os.path.splitext(filename)
+        output_path = os.path.join(os.path.dirname(img_path) if isinstance(img_path, str) else '.', f"./output/{name}_gray.jpg")
+        cv2.imwrite(output_path, gray)
 
     labeled = np.zeros_like(dark_mask, dtype=np.int32)
     label = 0
@@ -96,6 +102,17 @@ def find_closed_dark_regions(img_path, dark_threshold=125, min_circularity=0.7):
                     r['center'] = center
                     r['radius'] = radius
                     closed_regions.append(r)
+
+    if filename is not None:
+        vis_img = img.copy()
+        for r in closed_regions:
+            center = (int(r['center'][0]), int(r['center'][1]))
+            radius = int(r['radius'])
+            cv2.circle(vis_img, center, radius, (0, 255, 0), 2)
+            cv2.circle(vis_img, center, 3, (0, 0, 255), -1)
+        name, _ = os.path.splitext(filename)
+        output_path = os.path.join(os.path.dirname(img_path) if isinstance(img_path, str) else '.', f"./output/{name}_regions.jpg")
+        cv2.imwrite(output_path, vis_img)
 
     return closed_regions
 
