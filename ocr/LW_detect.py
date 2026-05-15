@@ -7,10 +7,10 @@ import os
 import math
 
 from paddleocr import PaddleOCR
-from .scan_dark_pixels import find_left_to_right_dark_region, remove_dark_region
-from .find_boundary_dark import find_closed_dark_regions, visualize_all_dark_regions, find_drak_remove
-from .detect_white_circles import find_white_circles
-from .X_detect import expand_poly_vertical, count_dark_pixels_in_expanded_region, \
+from ocr.scan_dark_pixels import find_left_to_right_dark_region, remove_dark_region
+from ocr.find_boundary_dark import find_closed_dark_regions, visualize_all_dark_regions, find_drak_remove
+from ocr.detect_white_circles import find_white_circles,find_all_white_regions, detect_circular_white_regions
+from ocr.X_detect import expand_poly_vertical, count_dark_pixels_in_expanded_region, \
     find_first_non_white_column_along_tilt, calculate_horizontal_tilt_angle, expand_poly, shift_poly_along_angle1
 from ocr.utils import calculate_angle_to_horizontal
 
@@ -982,7 +982,10 @@ def detect_colors(image_path, target_char, debug=True, threshold=100):
                                                                                                   angle=textbox_angle,
                                                                                                   debug=debug,
                                                                                                   is_linear=is_linear)
-    closed_regions = find_closed_dark_regions(img)
+    closed_regions = find_closed_dark_regions(img, dark_threshold=190)
+    regions, white_mask = find_all_white_regions(img, white_threshold=200)
+    _, closed_regions = detect_circular_white_regions(regions, img.shape, closed_circles=closed_regions,
+                                                      min_circularity=0.8)
     b_white_centers = []
     for r in closed_regions:
         if 'center' in r:

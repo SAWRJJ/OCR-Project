@@ -1,3 +1,4 @@
+import copy
 import os
 import json
 import logging
@@ -18,6 +19,7 @@ from ocr.find_boundary_dark import find_drak_remove
 from ocr.utils import calculate_shift_params, fullwidth_to_halfwidth
 from ocr.scan_dark_pixels import process_image_high_circularity_to_white
 from ocr.shift_VII import shift_step
+from ocr.find_nearest_point import find_nearest_point_to_poly, calculate_distances_to_all,filter_color_points_by_distance
 import cv2
 
 logger = logging.getLogger("ocr_system")
@@ -217,7 +219,7 @@ def process_micro_images(micro_img_dir):
             continue
 
         # micro_0005_S
-        if filename == "micro_0123_XJ.jpg" or "XII0" in filename:  # micro_0110_2300_1X5 # micro_0085__5c0f_D # micro_0064_DOQOOSN micro_0048_XI micro_0093_XL_I_HO_00.json_input.png
+        if filename == "micro_0110_2300_1X5.jpg" or "XII0" in filename:  # micro_0110_2300_1X5 # micro_0085__5c0f_D # micro_0064_DOQOOSN micro_0048_XI micro_0093_XL_I_HO_00.json_input.png
             print(-1)
         img_path = os.path.join(micro_img_dir, filename)
         json_path = os.path.join(micro_img_dir, os.path.splitext(filename)[0] + ".json")
@@ -271,7 +273,7 @@ def process_micro_images(micro_img_dir):
                 filename_matched_key1 = None
                 found_match_in_filename1 = False
                 textbox_angle, _ = calculate_textbox_angle(first_poly)
-
+                final_poly = copy.copy(first_poly)
                 if "X" in filename_matched_key:
                     dark_count, total_count, dark_ratio = count_dark_pixels_in_expanded_region(
                         cv2.imdecode(np.fromfile(img_path, dtype=np.uint8), cv2.IMREAD_COLOR),
@@ -280,95 +282,95 @@ def process_micro_images(micro_img_dir):
                         dark_threshold=118)
                     if dark_ratio > 0.2 and potential_text == "X":
                         continue
-                        print("execute test5 detect")
-
-                        img0 = find_drak_remove(img, dark_threshold=230)
-                        gray = cv2.cvtColor(img0, cv2.COLOR_BGR2GRAY)
-                        _, binary = cv2.threshold(gray, 200, 255, cv2.THRESH_BINARY)
-                        debug_vis_path = os.path.join(micro_img_dir, 'debug',
-                                                      filename.replace('.jpg', '_scan_debug.jpg'))
-                        ex_px = 70
-                        s = filename_matched_key[1:]
-                        if s.isdigit():
-                            s = int(s)
-                        if "L" in filename_matched_key or "Z" in filename_matched_key or len(filename_matched_key) > 2:
-                            ex_px = 95
-                        first_non_white_col, found_scan_line_start, found_scan_line_end, non_white_pixels, expand_x, expand_y, final_scan_line_start, final_scan_line_end = find_first_non_white_column_along_tilt(
-                            first_poly, binary, textbox_angle, debug_img=img0, output_path=debug_vis_path, ex_p=ex_px)
-                        if first_non_white_col is not None and expand_x is not None and expand_y is not None and final_scan_line_start is not None and final_scan_line_end is not None:
-                            left_line = sorted([found_scan_line_start, found_scan_line_end], key=lambda p: p[0])[0]
-                            right_line = sorted([final_scan_line_start, final_scan_line_end], key=lambda p: p[0])[1]
-                            left = left_line[0] - 3
-                            right = right_line[0]
-                            left = max(0, left)
-                            right = min(img.shape[1], right)
-                            if left >= right or right <= left or left < 0 or right > img.shape[1]:
-                                print(f"警告: 裁剪区域无效 left={left}, right={right}, img_width={img.shape[1]}")
-                            else:
-                                cropped = img[:, left:right + 1]
-                            debug_path = os.path.join(micro_img_dir, 'debug', filename.replace('.jpg', '_debug.jpg'))
-                            os.makedirs(os.path.dirname(debug_path), exist_ok=True)
-                            cropped_path = os.path.join(micro_img_dir, 'debug',
-                                                        filename.replace('.jpg', '_cropped.jpg'))
-                            cropped_path1 = os.path.join(micro_img_dir, 'debug',
-                                                         filename.replace('.jpg', '_cropped1.jpg'))
-
-                            cropped0 = find_drak_remove(cropped)
-                            if "L" in filename_matched_key or "Z" in filename_matched_key:
-                                _, binary_img, _ = process_image_high_circularity_to_white(
-                                    cropped0,
-                                    dark_threshold=200,
-                                    min_circularity=0.75,
-                                    binary_output_path=cropped_path1
-                                )
-                                cropped0 = cv2.cvtColor(binary_img, cv2.COLOR_GRAY2BGR)
-                            cv2.imwrite(cropped_path, cropped0)
-                            results = ocr_engine.ocr.predict(cropped0)
-                            for result in results:
-                                if len(result) >= 2 and len(result['rec_texts']) > 0:
-                                    for i in range(len(result['rec_texts'])):
-                                        text = result['rec_texts'][i]
-                                        conf = result['rec_scores'][i]
-                                        rec_poly = result['rec_polys'][i]
-                                        restored_poly = [[int(point[0] + left), int(point[1])] for point in rec_poly]
-                                        filename_matched_key1, found_match_in_filename1 = check_all_text(text)
-                                        if found_match_in_filename1 and filename_matched_key1 not in matched_keys:
-                                            matched_keys.append(filename_matched_key1)
-                                        if found_match_in_filename1:
-                                            break
-                                    if found_match_in_filename1:
-                                        if os.path.exists(json_path):
-                                            with open(json_path, 'r', encoding='utf-8') as f:
-                                                json_data = json.load(f)
-                                            json_data['micro_poly'] = restored_poly
-                                            with open(json_path, 'w', encoding='utf-8') as f:
-                                                json.dump(make_json_serializable(json_data), f, ensure_ascii=False,
-                                                          indent=2)
-                                        detail_item = {
-                                            "text": text,
-                                            "confidence": conf,
-                                            "color_info": None,
-                                            "matched_key": filename_matched_key1
-                                        }
-                                        if filename_matched_key1 and ((
-                                                "S" in filename_matched_key1 or "X" in filename_matched_key1)):
-                                            is_match, black_pixel_count, template_match_res, color_centers_separate, black_radio = detect_colors(
-                                                img_path,
-                                                filename_matched_key1,
-                                                debug=True,
-                                                threshold=THRESHOLD
-                                            )
-                                            print(template_match_res)
-                                            detail_item["template_match_res"] = template_match_res
-                                            detail_item["template_match_score"] = is_match
-                                            detail_item["black_pixel_count"] = black_pixel_count
-                                            detail_item["black_radio"] = black_radio
-                                            detail_item["template_name"] = "color_detection"
-                                            detail_item["color_centers_separate"] = color_centers_separate
-                                        detailed_results.append(detail_item)
-                                    print(f"文本: {text}, 置信度: {conf:.2f}")
-                        else:
-                            print("X识别错误")
+                        # print("execute test5 detect")
+                        #
+                        # img0 = find_drak_remove(img, dark_threshold=230)
+                        # gray = cv2.cvtColor(img0, cv2.COLOR_BGR2GRAY)
+                        # _, binary = cv2.threshold(gray, 200, 255, cv2.THRESH_BINARY)
+                        # debug_vis_path = os.path.join(micro_img_dir, 'debug',
+                        #                               filename.replace('.jpg', '_scan_debug.jpg'))
+                        # ex_px = 70
+                        # s = filename_matched_key[1:]
+                        # if s.isdigit():
+                        #     s = int(s)
+                        # if "L" in filename_matched_key or "Z" in filename_matched_key or len(filename_matched_key) > 2:
+                        #     ex_px = 95
+                        # first_non_white_col, found_scan_line_start, found_scan_line_end, non_white_pixels, expand_x, expand_y, final_scan_line_start, final_scan_line_end = find_first_non_white_column_along_tilt(
+                        #     first_poly, binary, textbox_angle, debug_img=img0, output_path=debug_vis_path, ex_p=ex_px)
+                        # if first_non_white_col is not None and expand_x is not None and expand_y is not None and final_scan_line_start is not None and final_scan_line_end is not None:
+                        #     left_line = sorted([found_scan_line_start, found_scan_line_end], key=lambda p: p[0])[0]
+                        #     right_line = sorted([final_scan_line_start, final_scan_line_end], key=lambda p: p[0])[1]
+                        #     left = left_line[0] - 3
+                        #     right = right_line[0]
+                        #     left = max(0, left)
+                        #     right = min(img.shape[1], right)
+                        #     if left >= right or right <= left or left < 0 or right > img.shape[1]:
+                        #         print(f"警告: 裁剪区域无效 left={left}, right={right}, img_width={img.shape[1]}")
+                        #     else:
+                        #         cropped = img[:, left:right + 1]
+                        #     debug_path = os.path.join(micro_img_dir, 'debug', filename.replace('.jpg', '_debug.jpg'))
+                        #     os.makedirs(os.path.dirname(debug_path), exist_ok=True)
+                        #     cropped_path = os.path.join(micro_img_dir, 'debug',
+                        #                                 filename.replace('.jpg', '_cropped.jpg'))
+                        #     cropped_path1 = os.path.join(micro_img_dir, 'debug',
+                        #                                  filename.replace('.jpg', '_cropped1.jpg'))
+                        #
+                        #     cropped0 = find_drak_remove(cropped)
+                        #     if "L" in filename_matched_key or "Z" in filename_matched_key:
+                        #         _, binary_img, _ = process_image_high_circularity_to_white(
+                        #             cropped0,
+                        #             dark_threshold=200,
+                        #             min_circularity=0.75,
+                        #             binary_output_path=cropped_path1
+                        #         )
+                        #         cropped0 = cv2.cvtColor(binary_img, cv2.COLOR_GRAY2BGR)
+                        #     cv2.imwrite(cropped_path, cropped0)
+                        #     results = ocr_engine.ocr.predict(cropped0)
+                        #     for result in results:
+                        #         if len(result) >= 2 and len(result['rec_texts']) > 0:
+                        #             for i in range(len(result['rec_texts'])):
+                        #                 text = result['rec_texts'][i]
+                        #                 conf = result['rec_scores'][i]
+                        #                 rec_poly = result['rec_polys'][i]
+                        #                 restored_poly = [[int(point[0] + left), int(point[1])] for point in rec_poly]
+                        #                 filename_matched_key1, found_match_in_filename1 = check_all_text(text)
+                        #                 if found_match_in_filename1 and filename_matched_key1 not in matched_keys:
+                        #                     matched_keys.append(filename_matched_key1)
+                        #                 if found_match_in_filename1:
+                        #                     break
+                        #             if found_match_in_filename1:
+                        #                 if os.path.exists(json_path):
+                        #                     with open(json_path, 'r', encoding='utf-8') as f:
+                        #                         json_data = json.load(f)
+                        #                     json_data['micro_poly'] = restored_poly
+                        #                     with open(json_path, 'w', encoding='utf-8') as f:
+                        #                         json.dump(make_json_serializable(json_data), f, ensure_ascii=False,
+                        #                                   indent=2)
+                        #                 detail_item = {
+                        #                     "text": text,
+                        #                     "confidence": conf,
+                        #                     "color_info": None,
+                        #                     "matched_key": filename_matched_key1
+                        #                 }
+                        #                 if filename_matched_key1 and ((
+                        #                         "S" in filename_matched_key1 or "X" in filename_matched_key1)):
+                        #                     is_match, black_pixel_count, template_match_res, color_centers_separate, black_radio = detect_colors(
+                        #                         img_path,
+                        #                         filename_matched_key1,
+                        #                         debug=True,
+                        #                         threshold=THRESHOLD
+                        #                     )
+                        #                     print(template_match_res)
+                        #                     detail_item["template_match_res"] = template_match_res
+                        #                     detail_item["template_match_score"] = is_match
+                        #                     detail_item["black_pixel_count"] = black_pixel_count
+                        #                     detail_item["black_radio"] = black_radio
+                        #                     detail_item["template_name"] = "color_detection"
+                        #                     detail_item["color_centers_separate"] = color_centers_separate
+                        #                 detailed_results.append(detail_item)
+                        #             print(f"文本: {text}, 置信度: {conf:.2f}")
+                        # else:
+                        #     print("X识别错误")
                     else:
                         shifted_poly = first_poly
                         x_coords = [p[0] for p in first_poly]
@@ -405,6 +407,7 @@ def process_micro_images(micro_img_dir):
                                             json_data['text'] = potential_text
                                             json_data['micro_poly'] = restored_poly
                                             first_poly = restored_poly
+                                            final_poly = restored_poly
                                             with open(json_path, 'w', encoding='utf-8') as f:
                                                 json.dump(make_json_serializable(json_data), f, ensure_ascii=False,
                                                           indent=2)
@@ -509,6 +512,7 @@ def process_micro_images(micro_img_dir):
                                                 json_data = json.load(f)
                                             json_data['text'] = potential_text
                                             json_data['micro_poly'] = restored_poly
+                                            final_poly = restored_poly
                                             with open(json_path, 'w', encoding='utf-8') as f:
                                                 json.dump(make_json_serializable(json_data), f, ensure_ascii=False,
                                                           indent=2)
@@ -522,7 +526,8 @@ def process_micro_images(micro_img_dir):
                             "text": potential_text,
                             "confidence": first_confidence,
                             "color_info": None,
-                            "matched_key": filename_matched_key
+                            "matched_key": filename_matched_key,
+                            "micro_poly": final_poly
                         }
 
                         if filename_matched_key and ((
@@ -666,13 +671,15 @@ def process_micro_images(micro_img_dir):
                                     json_data = json.load(f)
                                 json_data['micro_poly'] = restored_poly
                                 json_data["text"] = text
+                                final_poly = restored_poly
                                 with open(json_path, 'w', encoding='utf-8') as f:
                                     json.dump(make_json_serializable(json_data), f, ensure_ascii=False, indent=2)
                             detail_item = {
                                 "text": text,
                                 "confidence": conf,
                                 "color_info": None,
-                                "matched_key": filename_matched_key1
+                                "matched_key": filename_matched_key1,
+                                "micro_poly": final_poly
                             }
                             if filename_matched_key1 and ((
                                     "S" in filename_matched_key1 or "X" in filename_matched_key1)):
@@ -738,6 +745,7 @@ def process_micro_images(micro_img_dir):
                                         json_data = json.load(f)
                                     json_data['text'] = potential_text
                                     json_data['micro_poly'] = restored_poly
+                                    final_poly = restored_poly
                                     with open(json_path, 'w', encoding='utf-8') as f:
                                         json.dump(make_json_serializable(json_data), f, ensure_ascii=False, indent=2)
                                 break
@@ -749,7 +757,8 @@ def process_micro_images(micro_img_dir):
                         "text": potential_text,
                         "confidence": first_confidence,
                         "color_info": None,
-                        "matched_key": filename_matched_key
+                        "matched_key": filename_matched_key,
+                        "micro_poly": final_poly
                     }
 
                     if filename_matched_key:
@@ -787,10 +796,18 @@ def process_micro_images(micro_img_dir):
                 res["color_presence"] = existing_color_presence
                 res["color_stats"] = existing_color_stats
                 color_centers_separate = res.get("color_centers_separate")
+                micro_poly = res.get("micro_poly")
+                if filename == "micro_0110_2300_1X5.jpg" or "XII0" in filename:  # micro_0110_2300_1X5 # micro_0085__5c0f_D # micro_0064_DOQOOSN micro_0048_XI micro_0093_XL_I_HO_00.json_input.png
+                    print(-1)
+                color_centers_separate["yellow"] = find_cluster_centers(color_centers_separate.get("yellow", []), distance_threshold=25)
+                nearest_point, min_dist, poly_center, nearest_white_points = find_nearest_point_to_poly(micro_poly, color_centers_separate)
+                color_centers_separate = filter_color_points_by_distance(color_centers_separate, threshold=255, reference_point=nearest_point)
+                res["color_centers_separate"] = color_centers_separate
+                m_key = res.get("matched_key")
                 if color_centers_separate and all(len(v) == 0 for v in color_centers_separate.values()):
                     continue
                 # 检查并更新全局最佳结果
-                m_key = res.get("matched_key")
+
                 if m_key == "X":
                     print(0)
                 if m_key:
