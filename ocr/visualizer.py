@@ -16,7 +16,67 @@ from ocr.ocr_engine import OCREngine
 
 ocr_engine = OCREngine()
 
+def has_other_colors1(
+        img,
+        white_thresh=200,
+        black_thresh=50,
+        min_ratio=0.001,
+):
+    """
+    判断图片中是否存在非黑白颜色
 
+    参数:
+        img: BGR图像(np.ndarray)
+        white_thresh: 白色阈值
+        black_thresh: 黑色阈值
+        min_ratio: 其他颜色最小占比
+
+    返回:
+        bool
+    """
+
+    if img is None or img.size == 0:
+        return False
+
+    # =========================
+    # 1. 快速黑白过滤
+    # =========================
+    gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
+
+    bw_mask = (
+            (gray < black_thresh) |
+            (gray > white_thresh)
+    )
+
+    # 全黑白直接返回
+    if np.all(bw_mask):
+        return False
+
+    # =========================
+    # 2. 提取非黑白区域
+    # =========================
+    other_mask = ~bw_mask
+
+    # =========================
+    # 3. 使用通道差判断是否有颜色
+    # 灰色: RGB接近
+    # 彩色: RGB差异明显
+    # =========================
+    pixels = img[other_mask]
+
+    # 通道最大最小差
+    color_diff = (
+            np.max(pixels, axis=1).astype(np.int16) -
+            np.min(pixels, axis=1).astype(np.int16)
+    )
+
+    # 差值越大越可能是彩色
+    color_pixels = np.sum(color_diff > 20)
+
+    # 占比判断
+    ratio = color_pixels / (img.shape[0] * img.shape[1])
+
+    return ratio > min_ratio
 def detect_color_presence_bgr(
         img_bgr,
         min_ratio: float = 0.01,
@@ -153,7 +213,87 @@ class Visualizer:
                     non_circular_mask = cv2.bitwise_or(non_circular_mask, component_mask)
 
             return centers, non_circular_mask
+        def calc_patch_bounds(vertical_expand_value):
+            """
+            计算patch区域
+            """
 
+            xs = []
+            ys = []
+
+            if top_ext:
+                xs.extend([top_ext[0][0], top_ext[1][0]])
+                ys.extend([top_ext[0][1], top_ext[1][1]])
+
+            if bottom_ext:
+                xs.extend([bottom_ext[0][0], bottom_ext[1][0]])
+                ys.extend([bottom_ext[0][1], bottom_ext[1][1]])
+
+            if angle_deg < 25:
+
+                poly_np = np.array(poly)
+
+                min_x = min(xs)
+                max_x = max(xs)
+
+                min_y = np.min(poly_np[:, 1])
+                max_y = np.max(poly_np[:, 1])
+
+                x0 = max(int(min_x), 0)
+                x1 = min(int(max_x), raw_img.shape[1])
+
+                y0 = max(int(min_y - vertical_expand_value), 0)
+                y1 = min(int(max_y + vertical_expand_value), raw_img.shape[0])
+
+            else:
+
+                poly_np = np.array(poly)
+
+                xs.extend(poly_np[:, 0].tolist())
+
+                top_dx = top_ext[1][0] - top_ext[0][0]
+                top_dy = top_ext[1][1] - top_ext[0][1]
+
+                top_length = np.hypot(top_dx, top_dy)
+
+                top_perp_x = -top_dy / top_length
+                top_perp_y = top_dx / top_length
+
+                bottom_dx = bottom_ext[1][0] - bottom_ext[0][0]
+                bottom_dy = bottom_ext[1][1] - bottom_ext[0][1]
+
+                bottom_length = np.hypot(bottom_dx, bottom_dy)
+
+                bottom_perp_x = -bottom_dy / bottom_length
+                bottom_perp_y = bottom_dx / bottom_length
+
+                top_ext_np = np.array(top_ext)
+                bottom_ext_np = np.array(bottom_ext)
+
+                top_shift = np.array(
+                    [top_perp_x, top_perp_y]
+                ) * vertical_expand_value
+
+                bottom_shift = np.array(
+                    [bottom_perp_x, bottom_perp_y]
+                ) * vertical_expand_value
+
+                top_expand = top_ext_np + top_shift
+                bottom_expand = bottom_ext_np + bottom_shift
+
+                all_points = np.vstack([
+                    poly_np,
+                    top_expand,
+                    bottom_expand
+                ])
+
+                x0 = max(int(np.min(all_points[:, 0])), 0)
+                x1 = min(int(np.max(all_points[:, 0])), raw_img.shape[1])
+
+                y0 = max(int(np.min(all_points[:, 1])), 0)
+                y1 = min(int(np.max(all_points[:, 1])), raw_img.shape[0])
+
+            return x0, y0, x1, y1
         if cv2 is None:
             raise ModuleNotFoundError("未安装 cv2（opencv-python）")
 
@@ -510,89 +650,35 @@ class Visualizer:
             angle_rad = math.atan2(dy, dx)
             angle_deg = abs(math.degrees(angle_rad))
             if save_boxes_dir:
+
+
+                # =========================
+                # 第一次计算
+                # =========================
                 vertical_expand = 40
-                xs = []
-                ys = []
-                if top_ext:
-                    xs.extend([top_ext[0][0], top_ext[1][0]])
-                    ys.extend([top_ext[0][1], top_ext[1][1]])
-                if bottom_ext:
-                    xs.extend([bottom_ext[0][0], bottom_ext[1][0]])
-                    ys.extend([bottom_ext[0][1], bottom_ext[1][1]])
-                for p in poly:
-                    ys.append(p[1])
-                if xs and angle_deg < 25:
-                    min_x = min(xs)
-                    max_x = max(xs)
 
-                    min_y = min(p[1] for p in poly)
-                    max_y = max(p[1] for p in poly)
-                    # min_y = min(ys)
-                    # max_y = max(ys)
+                x0, y0, x1, y1 = calc_patch_bounds(
+                    vertical_expand
+                )
 
-                    x0 = max(int(min_x), 0)
-                    x1 = min(int(max_x), int(raw_img.shape[1]))
-                    y0 = max(int(min_y) - vertical_expand, 0)
-                    y1 = min(int(max_y) + vertical_expand, int(raw_img.shape[0]))
-                else:
-                    for p in poly:
-                        xs.append(p[0])
-
-                    min_x = min(xs)
-                    max_x = max(xs)
-
-                    top_dx = top_ext[1][0] - top_ext[0][0]
-                    top_dy = top_ext[1][1] - top_ext[0][1]
-                    top_length = np.sqrt(top_dx ** 2 + top_dy ** 2)
-                    top_perp_x = -top_dy / top_length
-                    top_perp_y = top_dx / top_length
-
-                    bottom_dx = bottom_ext[1][0] - bottom_ext[0][0]
-                    bottom_dy = bottom_ext[1][1] - bottom_ext[0][1]
-                    bottom_length = np.sqrt(bottom_dx ** 2 + bottom_dy ** 2)
-                    bottom_perp_x = -bottom_dy / bottom_length
-                    bottom_perp_y = bottom_dx / bottom_length
-
-                    # print(f"top_ext 方向: ({top_dx:.2f}, {top_dy:.2f})")
-                    # print(f"top_ext 垂直方向: ({top_perp_x:.2f}, {top_perp_y:.2f})")
-                    # print(f"bottom_ext 方向: ({bottom_dx:.2f}, {bottom_dy:.2f})")
-                    # print(f"bottom_ext 垂直方向: ({bottom_perp_x:.2f}, {bottom_perp_y:.2f})")
-
-                    poly_np = np.array(poly)
-                    poly_min_y = np.min(poly_np[:, 1])
-                    poly_max_y = np.max(poly_np[:, 1])
-                    poly_min_x = np.min(poly_np[:, 0])
-                    poly_max_x = np.max(poly_np[:, 0])
-
-                    top_ext_start = np.array(top_ext[0])
-                    top_ext_end = np.array(top_ext[1])
-                    bottom_ext_start = np.array(bottom_ext[0])
-                    bottom_ext_end = np.array(bottom_ext[1])
-
-                    top_ext_start_perp = top_ext_start + np.array([top_perp_x, top_perp_y]) * vertical_expand
-                    top_ext_end_perp = top_ext_end + np.array([top_perp_x, top_perp_y]) * vertical_expand
-                    bottom_ext_start_perp = bottom_ext_start + np.array(
-                        [bottom_perp_x, bottom_perp_y]) * vertical_expand
-                    bottom_ext_end_perp = bottom_ext_end + np.array([bottom_perp_x, bottom_perp_y]) * vertical_expand
-
-                    all_x = [poly_min_x, poly_max_x,
-                             top_ext_start_perp[0], top_ext_end_perp[0],
-                             bottom_ext_start_perp[0], bottom_ext_end_perp[0]]
-                    all_y = [poly_min_y, poly_max_y,
-                             top_ext_start_perp[1], top_ext_end_perp[1],
-                             bottom_ext_start_perp[1], bottom_ext_end_perp[1]]
-
-                    exp_min_x = min(all_x)
-                    exp_max_x = max(all_x)
-                    exp_min_y = min(all_y)
-                    exp_max_y = max(all_y)
-
-                    x0 = max(int(exp_min_x), 0)
-                    x1 = min(int(exp_max_x), img.shape[1])
-                    y0 = max(int(exp_min_y), 0)
-                    y1 = min(int(exp_max_y), img.shape[0])
                 if x1 > x0 and y1 > y0:
+
                     patch = raw_img[y0:y1, x0:x1]
+
+                    # =========================
+                    # 如果没有颜色
+                    # 重新扩大一次
+                    # =========================
+                    if not has_other_colors1(patch):
+
+                        vertical_expand = 50
+
+                        x0, y0, x1, y1 = calc_patch_bounds(
+                            vertical_expand
+                        )
+
+                        if x1 > x0 and y1 > y0:
+                            patch = raw_img[y0:y1, x0:x1]
                     if bool(re.search(r'[\u4e00-\u9fff]', str(text))):
                         continue
 
