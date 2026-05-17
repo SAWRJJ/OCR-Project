@@ -528,7 +528,8 @@ def process_micro_images(micro_img_dir):
                             "confidence": first_confidence,
                             "color_info": None,
                             "matched_key": filename_matched_key,
-                            "micro_poly": final_poly
+                            "micro_poly": final_poly,
+                            "img_path": img_path
                         }
 
                         if filename_matched_key and ((
@@ -680,7 +681,8 @@ def process_micro_images(micro_img_dir):
                                 "confidence": conf,
                                 "color_info": None,
                                 "matched_key": filename_matched_key1,
-                                "micro_poly": final_poly
+                                "micro_poly": final_poly,
+                                "img_path": img_path
                             }
                             if filename_matched_key1 and ((
                                     "S" in filename_matched_key1 or "X" in filename_matched_key1)):
@@ -760,7 +762,8 @@ def process_micro_images(micro_img_dir):
                         "confidence": first_confidence,
                         "color_info": None,
                         "matched_key": filename_matched_key,
-                        "micro_poly": final_poly
+                        "micro_poly": final_poly,
+                        "img_path": img_path
                     }
 
                     if filename_matched_key:
@@ -799,7 +802,7 @@ def process_micro_images(micro_img_dir):
                 res["color_stats"] = existing_color_stats
                 color_centers_separate = res.get("color_centers_separate")
                 micro_poly = res.get("micro_poly")
-                if filename == "micro_0110_2300_1X5.jpg" or "XII0" in filename:  # micro_0110_2300_1X5 # micro_0085__5c0f_D # micro_0064_DOQOOSN micro_0048_XI micro_0093_XL_I_HO_00.json_input.png
+                if filename == "micro_0096_HSBII.jpg" or "XII0" in filename:  # micro_0110_2300_1X5 # micro_0085__5c0f_D # micro_0064_DOQOOSN micro_0048_XI micro_0093_XL_I_HO_00.json_input.png
                     print(-1)
                 color_centers_separate["yellow"] = find_cluster_centers(color_centers_separate.get("yellow", []), distance_threshold=25)
                 nearest_point, min_dist, poly_center, nearest_white_points = find_nearest_point_to_poly(micro_poly, color_centers_separate)
@@ -808,9 +811,10 @@ def process_micro_images(micro_img_dir):
                 m_key = res.get("matched_key")
                 from ocr.t182 import detect_arc_by_curvature
                 img = cv2.imread(img_path)
-                boxes, vis = detect_arc_by_curvature(img, debug=True, max_arc_length=100,
-                                                     max_fit_error=1.5,
-                                                     min_points=15)
+                boxes, vis,_ = detect_arc_by_curvature(img, debug=True, max_arc_length=140,
+                                                     max_fit_error=1,
+                                                     min_points=15,min_threshold=100,radis=17,
+                                                  black_pixel_count_threshold=55)
                 name, ext = os.path.splitext(os.path.basename(img_path))
                 output_path = f"./output/{name}_arc_result.jpg"
                 cv2.imwrite(output_path, vis)
