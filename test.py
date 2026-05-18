@@ -1,2 +1,2 @@
 import numpy as np
-print(np.degrees(0.6194264))
+print(np.degrees(0.48312566))

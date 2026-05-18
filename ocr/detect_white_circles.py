@@ -1,3 +1,5 @@
+import os
+
 import cv2
 import numpy as np
 import json
@@ -155,11 +157,11 @@ def visualize_white_circular_regions(img, results, output_path):
         cv2.circle(vis_img, (int(center[0]), int(center[1])), int(radius), (0, 0, 255), 2)
         cv2.circle(vis_img, (int(center[0]), int(center[1])), 3, (203, 192, 255), -1)
 
-    for i, result in enumerate(results):
-        text = f"Region {result['region_id']}: center=({result['center'][0]:.1f}, {result['center'][1]:.1f}), " \
-               f"radius={result['radius']:.1f}, circularity={result['circularity']:.3f}"
-        cv2.putText(vis_img, text, (10, 30 + i * 25),
-                    cv2.FONT_HERSHEY_SIMPLEX, 0.5, (255, 255, 255), 1)
+    # for i, result in enumerate(results):
+    #     text = f"Region {result['region_id']}: center=({result['center'][0]:.1f}, {result['center'][1]:.1f}), " \
+    #            f"radius={result['radius']:.1f}, circularity={result['circularity']:.3f}"
+    #     cv2.putText(vis_img, text, (10, 30 + i * 25),
+    #                 cv2.FONT_HERSHEY_SIMPLEX, 0.5, (255, 255, 255), 1)
 
     cv2.imwrite(output_path, vis_img)
     print(f"Saved: {output_path}")
@@ -175,6 +177,21 @@ def find_white_circles(img0, white_threshold=200,textbox_center=None,poly=None,o
         img = cv2.bitwise_and(img0, img0, mask=mask)
         regions, white_mask = find_all_white_regions(img, white_threshold=white_threshold)
         print(f"Found {len(regions)} white pixel regions")
+
+        if output_path is not None:
+            vis_white = img.copy()
+            for region in regions:
+                bbox = region.get('bbox', region.get('bounding_rect'))
+                if bbox:
+                    x, y, w, h = bbox
+                    cv2.rectangle(vis_white, (x, y), (x + w, y + h), (255, 0, 0), 1)
+            white_vis_path = output_path.replace('.png', '_white_regions.png')
+            cv2.imwrite(white_vis_path, vis_white)
+            print(f"White regions visualization saved to: {white_vis_path}")
+
+            mask_vis_path = output_path.replace('.png', '_white_mask.png')
+            cv2.imwrite(mask_vis_path, white_mask * 255)
+            print(f"White mask visualization saved to: {mask_vis_path}")
 
         print("\nDetecting circular regions...")
         closed_regions = find_closed_dark_regions(img)
@@ -232,14 +249,35 @@ def find_white_circles(img0, white_threshold=200,textbox_center=None,poly=None,o
         regions, white_mask = find_all_white_regions(img, white_threshold=white_threshold)
         print(f"Found {len(regions)} white pixel regions")
 
+        if output_path is not None:
+            vis_white = img.copy()
+            for region in regions:
+                bbox = region.get('bbox', region.get('bounding_rect'))
+                if bbox:
+                    x, y, w, h = bbox
+                    cv2.rectangle(vis_white, (x, y), (x + w, y + h), (255, 0, 0), 1)
+            white_vis_path = output_path.replace('.png', '_white_regions.png')
+            cv2.imwrite(white_vis_path, vis_white)
+            print(f"White regions visualization saved to: {white_vis_path}")
+
+            mask_vis_path = output_path.replace('.png', '_white_mask.png')
+            cv2.imwrite(mask_vis_path, white_mask * 255)
+            print(f"White mask visualization saved to: {mask_vis_path}")
+
         print("\nDetecting circular regions...")
         ox, oy = 0,0
         if roi_offset is not None:
             ox, oy = roi_offset
         if ori_img is not None:
             closed_regions = find_closed_dark_regions(ori_img)
+            vis_img = ori_img.copy()
         else:
             closed_regions = find_closed_dark_regions(img)
+            vis_img = img.copy()
+        if len(closed_regions) > 0:
+            filename = os.path.basename(output_path).replace('_white_circle.png', '_closed_circles_in_white_detection.png')
+            vis_path = os.path.join('output', f'{filename}')
+            visualize_all_dark_regions(vis_img, [], closed_regions, vis_path)
         for r in closed_regions:
             r['center'] = (r['center'][0] - ox, r['center'][1] - oy)
         print(f"Found {len(closed_regions)} closed dark circular regions")

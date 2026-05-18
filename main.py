@@ -89,12 +89,12 @@ def main(image_paths):
 
 if __name__ == "__main__":
     # img_path1 =[]
-    img_path1 = ["img/t7.jpg"]
+    img_path1 = []
     img_path = ["img/t3.jpg", "img/t6.jpg", "img/t4.jpg", "img/t1.jpg"]
     img_path = ["img/t9.jpg", "img/t8.jpg", "img/t5.jpg", "img/t2.jpg"]
     # "img/t7.jpg"
-    img_path= ["img/t9.jpg","img/t8.jpg","img/t5.jpg","img/t2.jpg","img/t3.jpg","img/t6.jpg","img/t4.jpg","img/t1.jpg"]+img_path1
-    #img_path = ["img/t1.jpg"]# "img/t9.jpg","img/t8.jpg"," "img/t9.jpg","img/t8.jpg","img/t5.jpg"
+    img_path= ["img/t9.jpg","img/t8.jpg","img/t5.jpg","img/t2.jpg","img/t3.jpg","img/t6.jpg","img/t4.jpg","img/t1.jpg","img/t7.jpg"]+img_path1
+    img_path = ["img/t10.jpg"]# "img/t9.jpg","img/t8.jpg"," "img/t9.jpg","img/t8.jpg","img/t5.jpg"
     # img_path = ["img/元龙站.jpg","img/凤阁岭站.jpg","img/武功站.jpg","img/杨陵站场.jpg","img/新建河站.jpg"]#
     t1 = time.time()
     main(img_path)

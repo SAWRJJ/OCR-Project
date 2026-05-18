@@ -1117,7 +1117,7 @@ def detect_colors(image_path, target_char, debug=True, threshold=100):
             img1 = roi
             # img1 = find_drak_remove(roi, save_circle=True, remove_color_adjacent=True)
             tres = find_white_circles(img1, output_path=wh_path, textbox_center=textbox_center, poly=poly,
-                                  target_char=target_char, dark_polygon=find_poly,is_linear=True, roi_offset=(x, y),ori_img=img)
+                                  target_char=target_char, dark_polygon=find_poly,is_linear=True, roi_offset=(x, y),ori_img=img,white_threshold=130)
         else:
             tres = []
     else:
@@ -1136,7 +1136,7 @@ def detect_colors(image_path, target_char, debug=True, threshold=100):
             # cv2.imwrite(vis_debug_path, vis_img)
             # print(f"polygon可视化已保存到: {vis_debug_path}")
             # img = find_drak_remove(img)
-            tres = find_white_circles(img,output_path=wh_path,textbox_center=textbox_center,poly=poly,target_char=target_char,dark_polygon=polygon)
+            tres = find_white_circles(img,output_path=wh_path,textbox_center=textbox_center,poly=poly,target_char=target_char,dark_polygon=polygon,min_circularity=0.75)
             # black_pixel_count, polygon_total_pixels = calculate_black_pixels(img, polygon, json_path, data)
             # black_radio = black_pixel_count / polygon_total_pixels * 100.0
             # if 1170 < black_pixel_count <= 1500:
@@ -1866,7 +1866,10 @@ def single_line_find(img, json_path, target_char, linear_point, origin_img, text
         dy_linear = linear_point[1] - textbox_center[1]
         distance_linear_center = ((dx_linear ** 2) + (dy_linear ** 2)) ** 0.5
         print(f"linear_point到文本框中心的距离: {distance_linear_center:.2f} 像素")
-    closed_regions = find_closed_dark_regions(origin_img)
+    closed_regions = find_closed_dark_regions(origin_img, dark_threshold=190)
+    regions, white_mask = find_all_white_regions(origin_img, white_threshold=200)
+    _, closed_regions = detect_circular_white_regions(regions, origin_img.shape, closed_circles=closed_regions,
+                                                      min_circularity=0.8)
     if debug and len(closed_regions)>0:
         vis_path = os.path.join('output', f'{filename}_closed_circles.png')
         visualize_all_dark_regions(origin_img, [], closed_regions, vis_path)
