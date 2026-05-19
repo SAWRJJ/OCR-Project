@@ -575,7 +575,7 @@ def process_micro_images(micro_img_dir):
                                 rec_poly = rotate_polys_back(rec_poly, textbox_angle,
                                                              center_point,
                                                              img.shape)
-                            restored_poly = [[int(point[i] + x_min), int(point[1] + y_min)] for point in rec_poly]
+                            restored_poly = [[int(point[0] + x_min), int(point[1] + y_min)] for point in rec_poly]
                             filename_matched_key1, found_match_in_filename1 = check_all_text(text)
                             if found_match_in_filename1 and filename_matched_key1 not in matched_keys:
                                 matched_keys.append(filename_matched_key1)
@@ -717,7 +717,7 @@ def process_micro_images(micro_img_dir):
                 m_key = res.get("matched_key")
                 color_centers_separate = res.get("color_centers_separate")
                 micro_poly = res.get("micro_poly")
-                if filename == "micro_0017_FXF.jpg" or "XII0" in filename:  # micro_0110_2300_1X5 # micro_0085__5c0f_D # micro_0064_DOQOOSN micro_0048_XI micro_0093_XL_I_HO_00.json_input.png
+                if filename == "micro_0185_OO_0_SL20VI.jpg" or "XII0" in filename:  # micro_0110_2300_1X5 # micro_0085__5c0f_D # micro_0064_DOQOOSN micro_0048_XI micro_0093_XL_I_HO_00.json_input.png
                     print(-1)
                 print(json_path)
                 color_centers_separate["yellow"] = find_cluster_centers(color_centers_separate.get("yellow", []), distance_threshold=25)
