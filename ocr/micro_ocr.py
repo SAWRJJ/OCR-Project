@@ -22,6 +22,7 @@ from ocr.scan_dark_pixels import process_image_high_circularity_to_white
 from ocr.shift_VII import shift_step
 from ocr.find_nearest_point import find_nearest_point_to_poly, calculate_distances_to_all,filter_color_points_by_distance
 from ocr.calc_distance import if_triangle
+from ocr.filter_white import filter_white_points_in_rect
 import cv2
 
 logger = logging.getLogger("ocr_system")
@@ -221,7 +222,7 @@ def process_micro_images(micro_img_dir):
             continue
 
         # micro_0005_S
-        if filename == "micro_0103_1700XL1_80_00.jpg" or "XII0" in filename:  # micro_0087_D9
+        if filename == "micro_0052_XN.jpg" or "XII0" in filename:  # micro_0087_D9
             print(-1)
         img_path = os.path.join(micro_img_dir, filename)
         json_path = os.path.join(micro_img_dir, os.path.splitext(filename)[0] + ".json")
@@ -448,7 +449,7 @@ def process_micro_images(micro_img_dir):
 
                         if filename_matched_key and ((
                                 "S" in filename_matched_key or "X" in filename_matched_key)):
-                            is_match, black_pixel_count, template_match_res, color_centers_separate, black_radio = detect_colors(
+                            is_match, black_pixel_count, template_match_res, color_centers_separate, black_radio, is_linear = detect_colors(
                                 img_path,
                                 filename_matched_key,
                                 debug=True,
@@ -461,6 +462,7 @@ def process_micro_images(micro_img_dir):
                             detail_item["black_radio"] = black_radio
                             detail_item["template_name"] = "color_detection"
                             detail_item["color_centers_separate"] = color_centers_separate
+                            detail_item["is_linear"] = is_linear
 
                         detailed_results.append(detail_item)
                 elif "S" in filename_matched_key:
@@ -600,7 +602,7 @@ def process_micro_images(micro_img_dir):
                             }
                             if filename_matched_key1 and ((
                                     "S" in filename_matched_key1 or "X" in filename_matched_key1)):
-                                is_match, black_pixel_count, template_match_res, color_centers_separate, black_radio = detect_colors(
+                                is_match, black_pixel_count, template_match_res, color_centers_separate, black_radio, is_linear = detect_colors(
                                     img_path,
                                     filename_matched_key1,
                                     debug=True,
@@ -613,6 +615,7 @@ def process_micro_images(micro_img_dir):
                                 detail_item["black_radio"] = black_radio
                                 detail_item["template_name"] = "color_detection"
                                 detail_item["color_centers_separate"] = color_centers_separate
+                                detail_item["is_linear"] = is_linear
                             detailed_results.append(detail_item)
                         print(f"文本: {text}, 置信度: {conf:.2f}")
                 else:
@@ -681,7 +684,7 @@ def process_micro_images(micro_img_dir):
                     }
 
                     if filename_matched_key:
-                        is_match, black_pixel_count, template_match_res, color_centers_separate, black_radio = detect_colors(
+                        is_match, black_pixel_count, template_match_res, color_centers_separate, black_radio, is_linear = detect_colors(
                             img_path,
                             filename_matched_key,
                             debug=True,
@@ -694,6 +697,7 @@ def process_micro_images(micro_img_dir):
                         detail_item["black_radio"] = black_radio
                         detail_item["template_name"] = "color_detection"
                         detail_item["color_centers_separate"] = color_centers_separate
+                        detail_item["is_linear"] = is_linear
 
                     detailed_results.append(detail_item)
 
@@ -717,18 +721,26 @@ def process_micro_images(micro_img_dir):
                 m_key = res.get("matched_key")
                 color_centers_separate = res.get("color_centers_separate")
                 micro_poly = res.get("micro_poly")
-                if filename == "micro_0185_OO_0_SL20VI.jpg" or "XII0" in filename:  # micro_0110_2300_1X5 # micro_0085__5c0f_D # micro_0064_DOQOOSN micro_0048_XI micro_0093_XL_I_HO_00.json_input.png
+                if filename == "micro_0109_SL40III.jpg" or "XII0" in filename:  # micro_0110_2300_1X5 # micro_0085__5c0f_D # micro_0064_DOQOOSN micro_0048_XI micro_0093_XL_I_HO_00.json_input.png
                     print(-1)
                 print(json_path)
                 color_centers_separate["yellow"] = find_cluster_centers(color_centers_separate.get("yellow", []), distance_threshold=25)
                 nearest_point, min_dist, poly_center, nearest_white_points = find_nearest_point_to_poly(micro_poly, color_centers_separate)
                 color_centers_separate = filter_color_points_by_distance(color_centers_separate, threshold=255, reference_point=nearest_point)
+                is_linear = res.get("is_linear")
                 res["color_centers_separate"] = color_centers_separate
                 is_tri = False
                 is_double = False
                 if nearest_white_points and len(nearest_white_points) >= 3 and "F" in m_key:
                     is_tri = if_triangle(nearest_white_points)
-                elif len(nearest_white_points) ==2 and "D" not in m_key:
+                    if not is_tri:
+                        color_centers_separate, rect, removed = filter_white_points_in_rect(micro_poly,
+                                                                                            color_centers_separate,
+                                                                                            nearest_white_points,
+                                                                                            is_linear)
+                        nearest_white_points = color_centers_separate["white"]
+
+                if nearest_white_points and len(nearest_white_points) >=2 and "D" not in m_key and not is_tri:
                     is_double=True
                 res["is_double"] = is_double
                 res["is_tri"] = is_tri

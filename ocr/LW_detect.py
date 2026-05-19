@@ -785,7 +785,7 @@ def detect_colors(image_path, target_char, debug=True, threshold=100):
     ori_img= img.copy()
     if img is None:
         print(f"无法读取图像: {image_path}")
-        return False, 0.0, None, {}
+        return False, 0.0, None, {},False
     # center_row, region = find_left_to_right_dark_region(img, dark_threshold=195)
     #
     # if region is not None:
@@ -878,19 +878,20 @@ def detect_colors(image_path, target_char, debug=True, threshold=100):
 
     red_centers = calculate_centers_separate(mask_red)
     yellow_centers = calculate_centers_separate(mask_yellow)
+    y_centers = find_cluster_centers(yellow_centers,distance_threshold=25)
     green_centers = calculate_centers_separate(mask_green)
     blue_centers = calculate_centers_separate(mask_blue)
 
     color_centers1 = []
     if red_center:
-        color_centers1.append(red_center)
-        print(f"红色像素中心坐标: {red_center}")
+        color_centers1.extend(red_centers)
+        print(f"红色像素中心坐标: {red_centers}")
     if yellow_center:
-        color_centers1.append(yellow_center)
-        print(f"黄色像素中心坐标: {yellow_center}")
+        color_centers1.extend(y_centers)
+        print(f"黄色像素中心坐标: {y_centers}")
     if green_center:
-        color_centers1.append(green_center)
-        print(f"绿色像素中心坐标: {green_center}")
+        color_centers1.extend(green_centers)
+        print(f"绿色像素中心坐标: {green_centers}")
     # if blue_center:
     #     color_centers1.append(blue_center)
     #     print(f"蓝色像素中心坐标: {blue_center}")
@@ -946,7 +947,7 @@ def detect_colors(image_path, target_char, debug=True, threshold=100):
 
     if not os.path.exists(json_path):
         print(f"JSON文件不存在: {json_path}")
-        return False, 0.0, None, {}
+        return False, 0.0, None, {},False
 
     with open(json_path, 'r', encoding='utf-8') as f:
         data = json.load(f)
@@ -960,28 +961,6 @@ def detect_colors(image_path, target_char, debug=True, threshold=100):
         poly = dt_polys[0]
         textbox_angle, _ = calculate_textbox_angle(poly)
         print(f"文本框倾斜角度: {np.degrees(textbox_angle):.2f} 度")
-
-    if 'X' in target_char:
-        sorted_centers = build_sorted_centers_list(red_centers, yellow_centers, green_centers, reverse=False)
-        vis_img, color_line_info, linear_point, far_points, angle_diff = process_leftmost_pixels(img, mask_red,
-                                                                                                 mask_yellow,
-                                                                                                 mask_green, red_center,
-                                                                                                 yellow_center,
-                                                                                                 green_center,
-                                                                                                 angle=textbox_angle,
-                                                                                                 debug=debug,
-                                                                                                 is_linear=is_linear)
-    else:
-        sorted_centers = build_sorted_centers_list(red_centers, yellow_centers, green_centers, reverse=True)
-        vis_img, color_line_info, linear_point, far_points, angle_diff = process_rightmost_pixels(img, mask_red,
-                                                                                                  mask_yellow,
-                                                                                                  mask_green,
-                                                                                                  red_center,
-                                                                                                  yellow_center,
-                                                                                                  green_center,
-                                                                                                  angle=textbox_angle,
-                                                                                                  debug=debug,
-                                                                                                  is_linear=is_linear)
     closed_regions = find_closed_dark_regions(img, dark_threshold=190)
     regions, white_mask = find_all_white_regions(img, white_threshold=160)
     filename = os.path.basename(json_path).replace('_res.json', '')
@@ -996,7 +975,7 @@ def detect_colors(image_path, target_char, debug=True, threshold=100):
             pixel_color = img[cy, cx]
             if np.all(pixel_color >= 200):
                 b_white_centers.append((cx, cy))
-    if debug and len(closed_regions)>0:
+    if debug and len(closed_regions) > 0:
         filename = os.path.basename(json_path).replace('_res.json', '')
         vis_path = os.path.join('output', f'{filename}_closed_circles.png')
         visualize_all_dark_regions(img, [], closed_regions, vis_path)
@@ -1005,8 +984,32 @@ def detect_colors(image_path, target_char, debug=True, threshold=100):
         'yellow': yellow_centers,
         'green': green_centers,
         'blue': blue_centers,
-        "white":b_white_centers
+        "white": b_white_centers
     }
+    if 'X' in target_char:
+        sorted_centers = build_sorted_centers_list(red_centers, yellow_centers, green_centers, reverse=False)
+        vis_img, color_line_info, linear_point, far_points, angle_diff = process_leftmost_pixels(img, mask_red,
+                                                                                                 mask_yellow,
+                                                                                                 mask_green, red_center,
+                                                                                                 yellow_center,
+                                                                                                 green_center,
+                                                                                                 angle=textbox_angle,
+                                                                                                 debug=debug,
+                                                                                                 is_linear=is_linear,
+                                                                                                 b_white_centers=b_white_centers)
+    else:
+        sorted_centers = build_sorted_centers_list(red_centers, yellow_centers, green_centers, reverse=True)
+        vis_img, color_line_info, linear_point, far_points, angle_diff = process_rightmost_pixels(img, mask_red,
+                                                                                                  mask_yellow,
+                                                                                                  mask_green,
+                                                                                                  red_center,
+                                                                                                  yellow_center,
+                                                                                                  green_center,
+                                                                                                  angle=textbox_angle,
+                                                                                                  debug=debug,
+                                                                                                  is_linear=is_linear,
+                                                                                                  b_white_centers=b_white_centers)
+
     # 假设你已经获取了以下变量：
     # rec_poly: 文本框四个点
     # color_centers_separate: 颜色点字典 {'red': [(x,y)], ...}
@@ -1054,9 +1057,9 @@ def detect_colors(image_path, target_char, debug=True, threshold=100):
         #     color_centers_separate["red"] = []
     save_visualization(vis_img, image_path.replace(".jpg","_debug.jpg"), debug=debug)
     if "D" in target_char:
-        return False, 0, 0, color_centers_separate, 0
+        return False, 0, 0, color_centers_separate, 0, is_linear
     if not is_linear and angle_diff < 75:
-        return False, 0, 0, color_centers_separate, 0
+        return False, 0, 0, color_centers_separate, 0, is_linear
     # red_rightmost = calculate_rightmost(mask_red)
     # yellow_rightmost = calculate_rightmost(mask_yellow)
     # green_rightmost = calculate_rightmost(mask_green)
@@ -1084,7 +1087,7 @@ def detect_colors(image_path, target_char, debug=True, threshold=100):
         vis_img, polygon = draw_target_char_left_edge(vis_img, json_path, color_line_info=color_line_info,
                                                       target_char=target_char, is_linear=is_linear, debug=debug,
                                                       textbox_angle=textbox_angle)
-
+    # polygon = sort_polygon_points(polygon)
     black_pixel_count = 0
     img = find_drak_remove(img, save_circle=True, remove_color_adjacent=True)
     tres = None
@@ -1132,7 +1135,7 @@ def detect_colors(image_path, target_char, debug=True, threshold=100):
             polygon_width = abs(a1 * b2 - a2 * b1) / ((a1 ** 2 + b1 ** 2) ** 0.5)
             print(f"{json_path.split('/')[-1]:10}  polygon_width:{polygon_width}")
             if polygon_width > 280:
-                return False, 0, 0, color_centers_separate, 0
+                return False, 0, 0, color_centers_separate, 0, is_linear
             # filename = os.path.basename(image_path)
             # name, ext = os.path.splitext(filename)
             # vis_debug_path = os.path.join('output', f'{name}_polygon_debug.png')
@@ -1182,7 +1185,7 @@ def detect_colors(image_path, target_char, debug=True, threshold=100):
     if tres:
         template_match_res = len(tres)
 
-    return is_match, black_pixel_count, template_match_res, color_centers_separate, black_radio
+    return is_match, black_pixel_count, template_match_res, color_centers_separate, black_radio,is_linear
 
 
 def analyze_color_relationships(color_centers):
@@ -2038,7 +2041,7 @@ def calculate_leftmost(mask):
 
 
 def process_leftmost_pixels(img, mask_red, mask_yellow, mask_green, red_center, yellow_center, green_center, angle=0.0,
-                            debug=True, is_linear=False):
+                            debug=True, is_linear=False, b_white_centers=None):
     """
     处理最左端像素，根据文本框倾斜角度从颜色圆心沿角度方向找最边缘点
 
@@ -2134,11 +2137,14 @@ def process_leftmost_pixels(img, mask_red, mask_yellow, mask_green, red_center, 
         leftmost_points.append(yellow_leftmost)
     if green_leftmost:
         leftmost_points.append(green_leftmost)
+    # if b_white_centers:
+    #     white_leftmost = min(b_white_centers, key=lambda p: p[0])
+    #     leftmost_points.append(white_leftmost)
+    #     print(f"白色最左端坐标: {white_leftmost}")
     linear_point = None
     angle_diff = 90
     if leftmost_points:
         leftmost_sorted = sorted(leftmost_points, key=lambda p: p[0])
-
         if is_linear:
             far_left_points = leftmost_sorted[:2]
             linear_point = far_left_points[0]
@@ -2190,7 +2196,10 @@ def process_leftmost_pixels(img, mask_red, mask_yellow, mask_green, red_center, 
                               int(point1[1] - unit_dy * extend_length))
             extended_end = (int(point2[0] + unit_dx * extend_length),
                             int(point2[1] + unit_dy * extend_length))
-
+            # if length > 40:
+            #     center_point = far_left_points[0]
+            #     extended_start = (center_point[0], center_point[1] - 50)
+            #     extended_end = (center_point[0], center_point[1] + 50)
             if debug:
                 cv2.line(vis_img, extended_start, extended_end, (255, 0, 0), 1)
             color_line_info = (extended_start, extended_end)
@@ -2274,7 +2283,7 @@ def calculate_edge_point_along_angle(mask, center, angle, direction='right'):
 
 
 def process_rightmost_pixels(img, mask_red, mask_yellow, mask_green, red_center, yellow_center, green_center, angle=0.0,
-                             debug=True, is_linear=False):
+                             debug=True, is_linear=False, b_white_centers=None):
     """
     处理最右端像素，根据文本框倾斜角度从颜色圆心沿角度方向找最边缘点
 
@@ -2370,6 +2379,10 @@ def process_rightmost_pixels(img, mask_red, mask_yellow, mask_green, red_center,
         rightmost_points.append(yellow_rightmost)
     if green_rightmost:
         rightmost_points.append(green_rightmost)
+    # if b_white_centers:
+    #     white_rightmost = max(b_white_centers, key=lambda p: p[0])
+    #     rightmost_points.append(white_rightmost)
+    #     print(f"白色最右端坐标: {white_rightmost}")
     linear_point = None
     angle_diff = 90
     if rightmost_points:
@@ -2495,6 +2508,27 @@ def is_vertically_related_by_angle(box_center, color_point, textbox_angle_rad, t
 
     # 如果差距小于阈值，说明在“垂直”方向线上
     return angle_diff < threshold_deg
+import numpy as np
+
+
+def sort_polygon_points(points):
+    """
+    对多边形点进行顺时针排序
+    防止边交叉
+    """
+
+    pts = np.array(points, dtype=np.float32)
+
+    center = np.mean(pts, axis=0)
+
+    angles = np.arctan2(
+        pts[:, 1] - center[1],
+        pts[:, 0] - center[0]
+    )
+
+    sorted_idx = np.argsort(angles)
+
+    return pts[sorted_idx].astype(np.int32).tolist()
 if __name__ == "__main__":
     # 输入图像路径
     input_image = r"micro_0010_X4.jpg"  # micro_0079_S8.jpg micro_0004_S1 micro_0016_XI.jpg
