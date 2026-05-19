@@ -983,7 +983,10 @@ def detect_colors(image_path, target_char, debug=True, threshold=100):
                                                                                                   debug=debug,
                                                                                                   is_linear=is_linear)
     closed_regions = find_closed_dark_regions(img, dark_threshold=190)
-    regions, white_mask = find_all_white_regions(img, white_threshold=200)
+    regions, white_mask = find_all_white_regions(img, white_threshold=160)
+    filename = os.path.basename(json_path).replace('_res.json', '')
+    mask_vis_path = os.path.join('output', f'{filename}_white_mask_LW_detect.png')
+    cv2.imwrite(mask_vis_path, white_mask * 255)
     _, closed_regions = detect_circular_white_regions(regions, img.shape, closed_circles=closed_regions,
                                                       min_circularity=0.8)
     b_white_centers = []

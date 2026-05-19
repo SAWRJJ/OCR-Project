@@ -51,7 +51,8 @@ def compare_xlsx_files(template_path, output_path, filename):
 
     fields_to_compare = [
         'template_match_res', 'color_white',
-        'red_centers', 'yellow_centers', 'green_centers', "blue_centers"
+        'red_centers', 'yellow_centers', 'green_centers', "blue_centers",
+        'is_tri', 'is_double'
     ]
 
     # 3. 处理：共有部分的字段比对

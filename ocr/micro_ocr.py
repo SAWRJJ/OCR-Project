@@ -221,7 +221,7 @@ def process_micro_images(micro_img_dir):
             continue
 
         # micro_0005_S
-        if filename == "micro_0108_FSPN.jpg" or "XII0" in filename:  # micro_0087_D9
+        if filename == "micro_0103_1700XL1_80_00.jpg" or "XII0" in filename:  # micro_0087_D9
             print(-1)
         img_path = os.path.join(micro_img_dir, filename)
         json_path = os.path.join(micro_img_dir, os.path.splitext(filename)[0] + ".json")
@@ -728,7 +728,7 @@ def process_micro_images(micro_img_dir):
                 is_double = False
                 if nearest_white_points and len(nearest_white_points) >= 3 and "F" in m_key:
                     is_tri = if_triangle(nearest_white_points)
-                elif len(nearest_white_points) ==2:
+                elif len(nearest_white_points) ==2 and "D" not in m_key:
                     is_double=True
                 res["is_double"] = is_double
                 res["is_tri"] = is_tri
