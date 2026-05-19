@@ -269,10 +269,10 @@ def find_white_circles(img0, white_threshold=200,textbox_center=None,poly=None,o
         if roi_offset is not None:
             ox, oy = roi_offset
         if ori_img is not None:
-            closed_regions = find_closed_dark_regions(ori_img)
+            closed_regions = find_closed_dark_regions(ori_img,dark_threshold=85,path=output_path)
             vis_img = ori_img.copy()
         else:
-            closed_regions = find_closed_dark_regions(img)
+            closed_regions = find_closed_dark_regions(img,dark_threshold=85,path=output_path)
             vis_img = img.copy()
         if len(closed_regions) > 0:
             filename = os.path.basename(output_path).replace('_white_circle.png', '_closed_circles_in_white_detection.png')

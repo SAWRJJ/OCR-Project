@@ -21,6 +21,7 @@ from ocr.utils import calculate_shift_params, fullwidth_to_halfwidth
 from ocr.scan_dark_pixels import process_image_high_circularity_to_white
 from ocr.shift_VII import shift_step
 from ocr.find_nearest_point import find_nearest_point_to_poly, calculate_distances_to_all,filter_color_points_by_distance
+from ocr.calc_distance import if_triangle
 import cv2
 
 logger = logging.getLogger("ocr_system")
@@ -220,7 +221,7 @@ def process_micro_images(micro_img_dir):
             continue
 
         # micro_0005_S
-        if filename == "micro_0002_SL6.jpg" or "XII0" in filename:  # micro_0110_2300_1X5 # micro_0085__5c0f_D # micro_0064_DOQOOSN micro_0048_XI micro_0093_XL_I_HO_00.json_input.png
+        if filename == "micro_0108_FSPN.jpg" or "XII0" in filename:  # micro_0087_D9
             print(-1)
         img_path = os.path.join(micro_img_dir, filename)
         json_path = os.path.join(micro_img_dir, os.path.splitext(filename)[0] + ".json")
@@ -713,15 +714,24 @@ def process_micro_images(micro_img_dir):
             for res in detailed_results:
                 res["color_presence"] = existing_color_presence
                 res["color_stats"] = existing_color_stats
+                m_key = res.get("matched_key")
                 color_centers_separate = res.get("color_centers_separate")
                 micro_poly = res.get("micro_poly")
-                if filename == "micro_0096_HSBII.jpg" or "XII0" in filename:  # micro_0110_2300_1X5 # micro_0085__5c0f_D # micro_0064_DOQOOSN micro_0048_XI micro_0093_XL_I_HO_00.json_input.png
+                if filename == "micro_0017_FXF.jpg" or "XII0" in filename:  # micro_0110_2300_1X5 # micro_0085__5c0f_D # micro_0064_DOQOOSN micro_0048_XI micro_0093_XL_I_HO_00.json_input.png
                     print(-1)
+                print(json_path)
                 color_centers_separate["yellow"] = find_cluster_centers(color_centers_separate.get("yellow", []), distance_threshold=25)
                 nearest_point, min_dist, poly_center, nearest_white_points = find_nearest_point_to_poly(micro_poly, color_centers_separate)
                 color_centers_separate = filter_color_points_by_distance(color_centers_separate, threshold=255, reference_point=nearest_point)
                 res["color_centers_separate"] = color_centers_separate
-                m_key = res.get("matched_key")
+                is_tri = False
+                is_double = False
+                if nearest_white_points and len(nearest_white_points) >= 3 and "F" in m_key:
+                    is_tri = if_triangle(nearest_white_points)
+                elif len(nearest_white_points) ==2:
+                    is_double=True
+                res["is_double"] = is_double
+                res["is_tri"] = is_tri
                 from ocr.t182 import detect_arc_by_curvature
                 img = cv2.imread(img_path)
                 boxes, vis,_ = detect_arc_by_curvature(img, debug=True, max_arc_length=140,
@@ -769,12 +779,16 @@ def process_micro_images(micro_img_dir):
                         if compare_score - existing_score > 0.12:
                             best_results_map[m_key] = {
                                 "confidence": res["confidence"],  # 仍然记录原始置信度
-                                "item": final_item
+                                "item": final_item,
+                                "is_tri": res.get("is_tri", False),
+                                "is_double":res.get("is_double", False)
                             }
                     else:  # 如果 m_key 不存在，直接添加
                         best_results_map[m_key] = {
                             "confidence": res["confidence"],
-                            "item": final_item
+                            "item": final_item,
+                            "is_tri": res.get("is_tri", False),
+                            "is_double": res.get("is_double", False)
                         }
 
             # 如果对应 JSON 文件存在，则更新
@@ -917,6 +931,8 @@ def save_results_to_excel(all_results, output_file="ocr_results.xlsx", micro_img
                     "green_centers": gl,
                     "blue_centers": len(color_centers.get("blue", [])),
                     "white_centers": len(color_centers.get("white", [])),
+                    "is_tri": 1 if detail.get("is_tri", False) else 0,
+                    "is_double": 1 if detail.get("is_double", False) else 0
                 }
                 data_list.append(row)
 
@@ -930,7 +946,7 @@ def save_results_to_excel(all_results, output_file="ocr_results.xlsx", micro_img
                "black_pixel_count", "black_radio",
                "color_white",
                "red_centers", "yellow_centers", "green_centers", "blue_centers",
-               "white_centers"]  # "color_blue", "color_green", "color_yellow", "color_red",
+               "white_centers", "is_tri", "is_double"]  # "color_blue", "color_green", "color_yellow", "color_red",
     final_columns = [c for c in columns if c in df.columns]
     df = df[final_columns]
 

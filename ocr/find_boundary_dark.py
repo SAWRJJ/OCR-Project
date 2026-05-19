@@ -3,7 +3,7 @@ import numpy as np
 from collections import deque
 import os
 
-def find_closed_dark_regions(img_path, dark_threshold=125, min_circularity=0.7):
+def find_closed_dark_regions(img_path, dark_threshold=125, min_circularity=0.7,path=None):
     """
     找出完全封闭的深色区域（闭合圆环）
     通过检查深色区域的边界是否完全被深色像素包围（即内部有空洞）
@@ -22,6 +22,14 @@ def find_closed_dark_regions(img_path, dark_threshold=125, min_circularity=0.7):
     h, w = gray.shape
 
     dark_mask = (gray < dark_threshold).astype(np.uint8)
+
+    if isinstance(path, str):
+        dark_mask_vis = (dark_mask * 255).astype(np.uint8)
+        name, _ = os.path.splitext(os.path.basename(path))
+        output_dir = os.path.join(os.path.dirname(path), 'output')
+        os.makedirs(output_dir, exist_ok=True)
+        output_path = os.path.join('output', f"{name}_dark_mask.jpg")
+        cv2.imwrite(output_path, dark_mask_vis)
 
     labeled = np.zeros_like(dark_mask, dtype=np.int32)
     label = 0

@@ -4,7 +4,7 @@ import sys
 sys.path.insert(0, '/Users/saw/WorkSpace/work/OCR-Project')
 from ocr.find_boundary_dark import find_boundary_connected_dark_pixels, find_closed_dark_regions, remove_dark_regions
 
-img_path = "/Users/saw/WorkSpace/work/OCR-Project/test/test11/micro_0039_2300_1XVI.jpg"
+img_path = "/Users/saw/WorkSpace/work/OCR-Project/test/test11/micro_0108_FSPN.jpg"
 
 img = cv2.imread(img_path)
 if img is None:
@@ -13,10 +13,10 @@ if img is None:
 
 print(f"图片尺寸: {img.shape[1]}x{img.shape[0]}")
 
-dark_threshold = 200
+dark_threshold = 85
 print("\n=== 不排除与彩色区域相邻的深色区域 ===")
 _, boundary_regions = find_boundary_connected_dark_pixels(img, dark_threshold=dark_threshold, remove_color_adjacent=True)
-closed_regions = find_closed_dark_regions(img, dark_threshold=dark_threshold)
+closed_regions = find_closed_dark_regions(img, dark_threshold=dark_threshold,path = r"/Users/saw/WorkSpace/work/OCR-Project/test/test11/micro_0108_FSPN.jpg")
 
 print(f"\n边界连通区域数: {len(boundary_regions)}")
 print(f"闭合圆环区域数: {len(closed_regions)}")
