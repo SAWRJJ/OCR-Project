@@ -9,10 +9,12 @@ import math
 from paddleocr import PaddleOCR
 from ocr.scan_dark_pixels import find_left_to_right_dark_region, remove_dark_region
 from ocr.find_boundary_dark import find_closed_dark_regions, visualize_all_dark_regions, find_drak_remove
-from ocr.detect_white_circles import find_white_circles,find_all_white_regions, detect_circular_white_regions
+from ocr.detect_white_circles import find_white_circles, find_all_white_regions, detect_circular_white_regions
 from ocr.X_detect import expand_poly_vertical, count_dark_pixels_in_expanded_region, \
     find_first_non_white_column_along_tilt, calculate_horizontal_tilt_angle, expand_poly, shift_poly_along_angle1
 from ocr.utils import calculate_angle_to_horizontal
+from ocr.filter_white import shift_side_and_move_up
+
 
 def count_dark_pixels_in_radius(point, img, radius=3, threshold=100):
     """
@@ -701,7 +703,7 @@ def build_sorted_centers_list(red_centers, yellow_centers, green_centers, sort_b
     #             'x': center[0],
     #             'y': center[1]
     #         })
-    for centers, color_name in [(red_centers, 'red'),(green_centers, 'green')]:
+    for centers, color_name in [(red_centers, 'red'), (green_centers, 'green')]:
         for center in centers:
             all_centers.append({
                 'center': center,
@@ -716,6 +718,7 @@ def build_sorted_centers_list(red_centers, yellow_centers, green_centers, sort_b
         all_centers.sort(key=lambda item: item['y'], reverse=reverse)
 
     return [item['center'] for item in all_centers]
+
 
 def find_cluster_centers(points, distance_threshold=30):
     """
@@ -744,7 +747,7 @@ def find_cluster_centers(points, distance_threshold=30):
             current = queue.pop(0)
             for j in range(n):
                 if not visited[j]:
-                    dist = np.sqrt((points[current][0] - points[j][0])**2 + (points[current][1] - points[j][1])**2)
+                    dist = np.sqrt((points[current][0] - points[j][0]) ** 2 + (points[current][1] - points[j][1]) ** 2)
                     if dist < distance_threshold:
                         visited[j] = True
                         cluster.append(j)
@@ -755,14 +758,16 @@ def find_cluster_centers(points, distance_threshold=30):
     for cluster in clusters:
         cluster_points_arr = points[cluster]
         centroid = np.mean(cluster_points_arr, axis=0)
-        distances = [np.sqrt((p[0] - centroid[0])**2 + (p[1] - centroid[1])**2) for p in cluster_points_arr]
+        distances = [np.sqrt((p[0] - centroid[0]) ** 2 + (p[1] - centroid[1]) ** 2) for p in cluster_points_arr]
         min_idx = np.argmin(distances)
         center_points.append(tuple(cluster_points_arr[min_idx]))
 
     return center_points
 
+
 def calculate_distance(point1, point2):
-    return math.sqrt((point1[0] - point2[0])**2 + (point1[1] - point2[1])**2)
+    return math.sqrt((point1[0] - point2[0]) ** 2 + (point1[1] - point2[1]) ** 2)
+
 
 def detect_colors(image_path, target_char, debug=True, threshold=100):
     """
@@ -782,10 +787,10 @@ def detect_colors(image_path, target_char, debug=True, threshold=100):
             - color_centers_separate: 各颜色独立区域中心坐标字典 {'red': [...], 'yellow': [...], 'green': [...]}
     """
     img = cv2.imread(image_path)
-    ori_img= img.copy()
+    ori_img = img.copy()
     if img is None:
         print(f"无法读取图像: {image_path}")
-        return False, 0.0, None, {},False
+        return False, 0.0, None, {}, False
     # center_row, region = find_left_to_right_dark_region(img, dark_threshold=195)
     #
     # if region is not None:
@@ -878,7 +883,7 @@ def detect_colors(image_path, target_char, debug=True, threshold=100):
 
     red_centers = calculate_centers_separate(mask_red)
     yellow_centers = calculate_centers_separate(mask_yellow)
-    y_centers = find_cluster_centers(yellow_centers,distance_threshold=25)
+    y_centers = find_cluster_centers(yellow_centers, distance_threshold=25)
     green_centers = calculate_centers_separate(mask_green)
     blue_centers = calculate_centers_separate(mask_blue)
 
@@ -947,7 +952,7 @@ def detect_colors(image_path, target_char, debug=True, threshold=100):
 
     if not os.path.exists(json_path):
         print(f"JSON文件不存在: {json_path}")
-        return False, 0.0, None, {},False
+        return False, 0.0, None, {}, False
 
     with open(json_path, 'r', encoding='utf-8') as f:
         data = json.load(f)
@@ -996,7 +1001,8 @@ def detect_colors(image_path, target_char, debug=True, threshold=100):
                                                                                                  angle=textbox_angle,
                                                                                                  debug=debug,
                                                                                                  is_linear=is_linear,
-                                                                                                 b_white_centers=b_white_centers)
+                                                                                                 b_white_centers=b_white_centers,
+                                                                                                 micro_poly=poly)
     else:
         sorted_centers = build_sorted_centers_list(red_centers, yellow_centers, green_centers, reverse=True)
         vis_img, color_line_info, linear_point, far_points, angle_diff = process_rightmost_pixels(img, mask_red,
@@ -1008,7 +1014,8 @@ def detect_colors(image_path, target_char, debug=True, threshold=100):
                                                                                                   angle=textbox_angle,
                                                                                                   debug=debug,
                                                                                                   is_linear=is_linear,
-                                                                                                  b_white_centers=b_white_centers)
+                                                                                                  b_white_centers=b_white_centers,
+                                                                                                  micro_poly=poly)
 
     # 假设你已经获取了以下变量：
     # rec_poly: 文本框四个点
@@ -1035,27 +1042,27 @@ def detect_colors(image_path, target_char, debug=True, threshold=100):
             valid_points.append(pt)
         filtered_color_centers[color] = valid_points
 
-    if poly and len(color_centers_separate["green"])>=1:
+    if poly and len(color_centers_separate["green"]) >= 1:
         green_cs = color_centers_separate["green"]
         diss = [calculate_distance(textbox_center, gc) for gc in green_cs]
 
         # 如果差异很大，说明有干扰点 → 只保留最近的
-        if len(color_centers_separate["green"])>1 and (max(diss) - min(diss)) > 200:
+        if len(color_centers_separate["green"]) > 1 and (max(diss) - min(diss)) > 200:
             min_index = diss.index(min(diss))
             color_centers_separate["green"] = [green_cs[min_index]]
         # if len(color_centers_separate["green"])==1 and diss[0]>300:
         #     color_centers_separate["green"] = []
-    elif len(color_centers_separate["red"])>=1:
+    elif len(color_centers_separate["red"]) >= 1:
         red_cs = color_centers_separate["red"]
         diss = [calculate_distance(textbox_center, gc) for gc in red_cs]
 
         # 如果差异很大，说明有干扰点 → 只保留最近的
-        if len(color_centers_separate["red"])>1 and (max(diss) - min(diss)) > 200:
+        if len(color_centers_separate["red"]) > 1 and (max(diss) - min(diss)) > 200:
             min_index = diss.index(min(diss))
             color_centers_separate["red"] = [red_cs[min_index]]
         # if len(color_centers_separate["red"])==1 and diss[0] > 300:
         #     color_centers_separate["red"] = []
-    save_visualization(vis_img, image_path.replace(".jpg","_debug.jpg"), debug=debug)
+    save_visualization(vis_img, image_path.replace(".jpg", "_debug.jpg"), debug=debug)
     if "D" in target_char:
         return False, 0, 0, color_centers_separate, 0, is_linear
     if not is_linear and angle_diff < 75:
@@ -1101,11 +1108,11 @@ def detect_colors(image_path, target_char, debug=True, threshold=100):
         #                                                                                           textbox_angle=textbox_angle,
         #                                                                                           debug=debug,
         #                                                                                           far_points=sorted_centers)
-        find_poly = single_line_find(vis_img, json_path,target_char,
-                                                                   linear_point, img,
-                                                                    textbox_angle=textbox_angle,
-                                                                                                  debug=debug,
-                                                                                                  far_points=sorted_centers)
+        find_poly = single_line_find(vis_img, json_path, target_char,
+                                     linear_point, img,
+                                     textbox_angle=textbox_angle,
+                                     debug=debug,
+                                     far_points=sorted_centers)
         if find_poly is not None and len(find_poly) > 0:
             # find_poly = find_poly.astype(np.int32)
             # find_poly[0][1] += 20
@@ -1116,14 +1123,15 @@ def detect_colors(image_path, target_char, debug=True, threshold=100):
             mask = np.zeros(img.shape[:2], dtype=np.uint8)
             cv2.fillPoly(mask, [find_poly], 255)
             x, y, w, h = cv2.boundingRect(find_poly)
-            roi = img[y:y+h, x:x+w]
+            roi = img[y:y + h, x:x + w]
             filename = os.path.basename(json_path).replace('_res.json', '')
             roi_path = os.path.join('output', f'{filename}_roi.png')
             cv2.imwrite(roi_path, roi)
             img1 = roi
             # img1 = find_drak_remove(roi, save_circle=True, remove_color_adjacent=True)
             tres = find_white_circles(img1, output_path=wh_path, textbox_center=textbox_center, poly=poly,
-                                  target_char=target_char, dark_polygon=find_poly,is_linear=True, roi_offset=(x, y),ori_img=img,white_threshold=130)
+                                      target_char=target_char, dark_polygon=find_poly, is_linear=True,
+                                      roi_offset=(x, y), ori_img=img, white_threshold=130)
         else:
             tres = []
     else:
@@ -1142,7 +1150,8 @@ def detect_colors(image_path, target_char, debug=True, threshold=100):
             # cv2.imwrite(vis_debug_path, vis_img)
             # print(f"polygon可视化已保存到: {vis_debug_path}")
             # img = find_drak_remove(img)
-            tres = find_white_circles(img,output_path=wh_path,textbox_center=textbox_center,poly=poly,target_char=target_char,dark_polygon=polygon,min_circularity=0.75)
+            tres = find_white_circles(img, output_path=wh_path, textbox_center=textbox_center, poly=poly,
+                                      target_char=target_char, dark_polygon=polygon, min_circularity=0.75)
             # black_pixel_count, polygon_total_pixels = calculate_black_pixels(img, polygon, json_path, data)
             # black_radio = black_pixel_count / polygon_total_pixels * 100.0
             # if 1170 < black_pixel_count <= 1500:
@@ -1185,7 +1194,7 @@ def detect_colors(image_path, target_char, debug=True, threshold=100):
     if tres:
         template_match_res = len(tres)
 
-    return is_match, black_pixel_count, template_match_res, color_centers_separate, black_radio,is_linear
+    return is_match, black_pixel_count, template_match_res, color_centers_separate, black_radio, is_linear
 
 
 def analyze_color_relationships(color_centers):
@@ -1295,10 +1304,11 @@ def analyze_color_relationships1(color_centers):
     print(f"所有中心点都在矩形范围内，判定为单线")
     return 'single_line'
 
+
 def find_nearest(closed_regions, textbox_center):
     center_0 = closed_regions[0]["center"]
     min_dist = ((float(center_0[0]) - float(textbox_center[0])) ** 2 + (
-                float(center_0[1]) - float(textbox_center[1])) ** 2) ** 0.5
+            float(center_0[1]) - float(textbox_center[1])) ** 2) ** 0.5
     nearest_center = (float(center_0[0]), float(center_0[1]))
     for r in closed_regions:
         if 'center' in r:
@@ -1309,6 +1319,7 @@ def find_nearest(closed_regions, textbox_center):
                 nearest_center = (float(cx), float(cy))
 
     return min_dist, nearest_center
+
 
 def single_line_detection(img, json_path, target_char, linear_point, origin_img, textbox_angle=0.0, debug=True,
                           far_points=None):
@@ -1404,7 +1415,7 @@ def single_line_detection(img, json_path, target_char, linear_point, origin_img,
         distance_linear_center = ((dx_linear ** 2) + (dy_linear ** 2)) ** 0.5
         print(f"linear_point到文本框中心的距离: {distance_linear_center:.2f} 像素")
     closed_regions = find_closed_dark_regions(origin_img)
-    if debug and len(closed_regions)>0:
+    if debug and len(closed_regions) > 0:
         vis_path = os.path.join('output', f'{filename}_closed_circles.png')
         visualize_all_dark_regions(origin_img, [], closed_regions, vis_path)
     point1 = far_points[0]
@@ -1431,7 +1442,7 @@ def single_line_detection(img, json_path, target_char, linear_point, origin_img,
         # TODO: 计算 closed_regions 与 textbox_center 的距离 找到最近的圆心
         # 计算 closed_regions 与 textbox_center 的距离 找到最近的圆心
         if closed_regions and "center" in closed_regions[0]:
-            min_dist, nearest_center = find_nearest(closed_regions,textbox_center)
+            min_dist, nearest_center = find_nearest(closed_regions, textbox_center)
             if nearest_center:
                 red_point_pos3 = (int(nearest_center[0] - unit_dx_far * 4),
                                   int(nearest_center[1] - unit_dy_far * 4))
@@ -1447,13 +1458,13 @@ def single_line_detection(img, json_path, target_char, linear_point, origin_img,
         cv2.circle(far_vis_img, red_point_pos3, 3, (255, 100, 128), -1)
         cd = count_dark_pixels_in_radius(red_point_pos3, origin_img)
         print(f"{json_path.split('/')[-1]:10} cd:{cd}")
-    if distance_linear_center <= 120 and length_far>0 and cd <= 1:
+    if distance_linear_center <= 120 and length_far > 0 and cd <= 1:
         # 可视化linear_point到文本框中心的距离
         cv2.circle(far_vis_img, (int(linear_point[0]), int(linear_point[1])), 3, (0, 165, 255), -1)
         cv2.circle(far_vis_img, (int(textbox_center[0]), int(textbox_center[1])), 3, (255, 0, 255), -1)
         cv2.line(far_vis_img, (int(linear_point[0]), int(linear_point[1])),
                  (int(textbox_center[0]), int(textbox_center[1])), (255, 255, 0), 2)
-       # 黄线 连接两个颜色
+        # 黄线 连接两个颜色
         cv2.line(far_vis_img, point1, point2, (0, 255, 255), 2)
         # 青色延长线
         cv2.line(far_vis_img, extend_start, extend_end, (255, 255, 0), 2)
@@ -1516,7 +1527,7 @@ def single_line_detection(img, json_path, target_char, linear_point, origin_img,
                 unit_dx_far = dx_far / length_far
                 unit_dy_far = dy_far / length_far
                 if distance_linear_center > extend_length:
-                    extend_length = extend_length+add_length
+                    extend_length = extend_length + add_length
                 if target_char.startswith('X'):
                     extend_start = (int(point1[0] - unit_dx_far * extend_length),
                                     int(point1[1] - unit_dy_far * extend_length))
@@ -1705,7 +1716,7 @@ def single_line_detection(img, json_path, target_char, linear_point, origin_img,
 
                                 img_h, img_w = origin_img.shape[:2]
                                 stop_rect = [
-                                    (max(0, min(img_w-1, pt[0])), max(0, min(img_h-1, pt[1])))
+                                    (max(0, min(img_w - 1, pt[0])), max(0, min(img_h - 1, pt[1])))
                                     for pt in stop_rect
                                 ]
 
@@ -1719,12 +1730,12 @@ def single_line_detection(img, json_path, target_char, linear_point, origin_img,
                                     template_match_res = 1
                                 elif black_count == 6:
                                     template_match_res = 3
-                                elif black_count == 2 and len(closed_regions)>0:
-                                    min_dist, nearest_center = find_nearest(closed_regions,stop_pos)
+                                elif black_count == 2 and len(closed_regions) > 0:
+                                    min_dist, nearest_center = find_nearest(closed_regions, stop_pos)
                                     print(f"{filename} stop_pos与closed_regions的最短距离: {min_dist:.2f} 像素")
                                     dis_threth = 27
                                     if distance_linear_center > extend_length:
-                                        dis_threth = dis_threth+add_length
+                                        dis_threth = dis_threth + add_length
                                     if min_dist > dis_threth:
                                         template_match_res = 1
 
@@ -1795,8 +1806,9 @@ def single_line_detection(img, json_path, target_char, linear_point, origin_img,
 
     return img, found_pixel, left_black_pixels, right_black_pixels, template_match_res
 
+
 def single_line_find(img, json_path, target_char, linear_point, origin_img, textbox_angle=0.0, debug=True,
-                          far_points=None):
+                     far_points=None):
     """
     单线检测函数，根据文本内容从文本框的左侧或右侧边开始找黑色像素
 
@@ -1876,7 +1888,7 @@ def single_line_find(img, json_path, target_char, linear_point, origin_img, text
     regions, white_mask = find_all_white_regions(origin_img, white_threshold=200)
     _, closed_regions = detect_circular_white_regions(regions, origin_img.shape, closed_circles=closed_regions,
                                                       min_circularity=0.8)
-    if debug and len(closed_regions)>0:
+    if debug and len(closed_regions) > 0:
         vis_path = os.path.join('output', f'{filename}_closed_circles.png')
         visualize_all_dark_regions(origin_img, [], closed_regions, vis_path)
     shifted_poly = None
@@ -1887,10 +1899,10 @@ def single_line_find(img, json_path, target_char, linear_point, origin_img, text
     far_vis_path0 = os.path.join('output', f'{filename}_shift_points.png')
 
     if closed_regions and "center" in closed_regions[0]:
-        min_dist, nearest_center = find_nearest(closed_regions,textbox_center)
+        min_dist, nearest_center = find_nearest(closed_regions, textbox_center)
         shifted_poly, shift_line_start, shift_line_end = shift_poly_along_angle1(
             poly,
-            img =origin_img,
+            img=origin_img,
             shift_point=nearest_center,
             target_char=target_char,
             output_path=far_vis_path0
@@ -2041,7 +2053,7 @@ def calculate_leftmost(mask):
 
 
 def process_leftmost_pixels(img, mask_red, mask_yellow, mask_green, red_center, yellow_center, green_center, angle=0.0,
-                            debug=True, is_linear=False, b_white_centers=None):
+                            debug=True, is_linear=False, b_white_centers=None, micro_poly=None):
     """
     处理最左端像素，根据文本框倾斜角度从颜色圆心沿角度方向找最边缘点
 
@@ -2196,10 +2208,8 @@ def process_leftmost_pixels(img, mask_red, mask_yellow, mask_green, red_center, 
                               int(point1[1] - unit_dy * extend_length))
             extended_end = (int(point2[0] + unit_dx * extend_length),
                             int(point2[1] + unit_dy * extend_length))
-            # if length > 40:
-            #     center_point = far_left_points[0]
-            #     extended_start = (center_point[0], center_point[1] - 50)
-            #     extended_end = (center_point[0], center_point[1] + 50)
+            if length > 60 and micro_poly:
+                extended_start, extended_end = shift_side_and_move_up(micro_poly, angle, [far_left_points[0]])
             if debug:
                 cv2.line(vis_img, extended_start, extended_end, (255, 0, 0), 1)
             color_line_info = (extended_start, extended_end)
@@ -2283,7 +2293,7 @@ def calculate_edge_point_along_angle(mask, center, angle, direction='right'):
 
 
 def process_rightmost_pixels(img, mask_red, mask_yellow, mask_green, red_center, yellow_center, green_center, angle=0.0,
-                             debug=True, is_linear=False, b_white_centers=None):
+                             debug=True, is_linear=False, b_white_centers=None,micro_poly=None):
     """
     处理最右端像素，根据文本框倾斜角度从颜色圆心沿角度方向找最边缘点
 
@@ -2440,7 +2450,8 @@ def process_rightmost_pixels(img, mask_red, mask_yellow, mask_green, red_center,
                               int(point1[1] - unit_dy * extend_length))
             extended_end = (int(point2[0] + unit_dx * extend_length),
                             int(point2[1] + unit_dy * extend_length))
-
+            if length > 60 and micro_poly:
+                extended_start, extended_end = shift_side_and_move_up(micro_poly, angle, [far_right_points[0]])
             if debug:
                 cv2.line(vis_img, extended_start, extended_end, (255, 0, 0), 1)
             color_line_info = (extended_start, extended_end)
@@ -2478,6 +2489,7 @@ def save_visualization(img, image_path, debug=True):
     cv2.imwrite(vis_output_path, img)
     print(f"颜色中心可视化结果已保存到: {vis_output_path}")
 
+
 def is_vertically_related_by_angle(box_center, color_point, textbox_angle_rad, threshold_deg=20):
     """
     通过比较文本框角度和连线角度，判断点是否处于“垂直”路径上
@@ -2508,6 +2520,8 @@ def is_vertically_related_by_angle(box_center, color_point, textbox_angle_rad, t
 
     # 如果差距小于阈值，说明在“垂直”方向线上
     return angle_diff < threshold_deg
+
+
 import numpy as np
 
 
@@ -2529,6 +2543,8 @@ def sort_polygon_points(points):
     sorted_idx = np.argsort(angles)
 
     return pts[sorted_idx].astype(np.int32).tolist()
+
+
 if __name__ == "__main__":
     # 输入图像路径
     input_image = r"micro_0010_X4.jpg"  # micro_0079_S8.jpg micro_0004_S1 micro_0016_XI.jpg
