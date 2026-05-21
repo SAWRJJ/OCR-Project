@@ -98,7 +98,7 @@ def find_closed_dark_regions(img_path, dark_threshold=125, min_circularity=0.7,p
 
             if hole_pixels > 0:
                 circularity, largest_contour = calculate_circularity(r, (h, w))
-                print(f"区域 {r['label']} 的圆度: {circularity:.4f}")
+                # print(f"区域 {r['label']} 的圆度: {circularity:.4f}")
                 if circularity >= min_circularity:
                     center, radius = calculate_circle_from_contour(largest_contour)
                     r['center'] = center
@@ -290,12 +290,12 @@ def find_boundary_connected_dark_pixels(img_path, dark_threshold=125, remove_col
 
         boundary_regions = boundary_regions + adjacent_color_regions
 
-    print(f"图像尺寸: {w}x{h}")
-    print(f"深色阈值: {dark_threshold}")
-    print(f"总连通区域数: {len(regions)}")
-    print(f"与边界相连的深色区域数: {len(boundary_regions)}")
-    if find_adjacent_color_regions:
-        print(f"与黑色像素相连的非白色区域数: {len(adjacent_color_regions)}")
+    # print(f"图像尺寸: {w}x{h}")
+    # print(f"深色阈值: {dark_threshold}")
+    # print(f"总连通区域数: {len(regions)}")
+    # print(f"与边界相连的深色区域数: {len(boundary_regions)}")
+    # if find_adjacent_color_regions:
+    #     print(f"与黑色像素相连的非白色区域数: {len(adjacent_color_regions)}")
 
     for i, r in enumerate(boundary_regions):
         boundary_sides = []
@@ -308,10 +308,10 @@ def find_boundary_connected_dark_pixels(img_path, dark_threshold=125, remove_col
         if r['max_col'] == w - 1:
             boundary_sides.append('右')
 
-        print(f"  区域{i+1}: 像素数={len(r['pixels'])}, "
-              f"行范围=[{r['min_row']}, {r['max_row']}], "
-              f"列范围=[{r['min_col']}, {r['max_col']}], "
-              f"接触边界: {', '.join(boundary_sides)}")
+        # print(f"  区域{i+1}: 像素数={len(r['pixels'])}, "
+        #       f"行范围=[{r['min_row']}, {r['max_row']}], "
+        #       f"列范围=[{r['min_col']}, {r['max_col']}], "
+        #       f"接触边界: {', '.join(boundary_sides)}")
 
     return img, boundary_regions
 
@@ -456,12 +456,110 @@ def visualize_with_original(img, regions, output_path):
 
     return vis_img
 
-def find_drak_remove(image_path, dark_threshold=200, output_path=None, save_circle=True, remove_light_white=False, remove_color_adjacent=False, find_adjacent_color_regions=False, not_save_boundary=False,min_circularity=0.8):
+
+def find_color_and_adjacent_black_regions(image_path, dark_threshold=200, detect_green=False, detect_blue=False, detect_red=False, detect_yellow=False):
+    """
+    查找图中指定彩色像素及其相连的黑色像素区域
+    image_path: 可以是图片路径(str)或图片数组(numpy.ndarray)
+    dark_threshold: 黑色像素阈值
+    detect_green/detect_blue/detect_red/detect_yellow: 是否检测对应颜色
+    """
+    if isinstance(image_path, np.ndarray):
+        img = image_path
+    else:
+        img = cv2.imread(image_path)
+        if img is None:
+            print(f"无法读取图像: {image_path}")
+            return []
+
+    hsv = cv2.cvtColor(img, cv2.COLOR_BGR2HSV)
+    gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
+    h, w = gray.shape
+
+    dark_mask = (gray < dark_threshold).astype(np.uint8)
+
+    color_mask = np.zeros((h, w), dtype=np.uint8)
+
+    if detect_green:
+        green_lower = np.array([35, 50, 50])
+        green_upper = np.array([85, 255, 255])
+        green_mask = cv2.inRange(hsv, green_lower, green_upper)
+        color_mask = cv2.bitwise_or(color_mask, green_mask)
+
+    if detect_blue:
+        blue_lower = np.array([100, 50, 50])
+        blue_upper = np.array([140, 255, 255])
+        blue_mask = cv2.inRange(hsv, blue_lower, blue_upper)
+        color_mask = cv2.bitwise_or(color_mask, blue_mask)
+
+    if detect_red:
+        red_lower1 = np.array([0, 50, 50])
+        red_upper1 = np.array([10, 255, 255])
+        red_lower2 = np.array([170, 50, 50])
+        red_upper2 = np.array([180, 255, 255])
+        red_mask1 = cv2.inRange(hsv, red_lower1, red_upper1)
+        red_mask2 = cv2.inRange(hsv, red_lower2, red_upper2)
+        red_mask = cv2.bitwise_or(red_mask1, red_mask2)
+        color_mask = cv2.bitwise_or(color_mask, red_mask)
+
+    if detect_yellow:
+        yellow_lower = np.array([15, 50, 50])
+        yellow_upper = np.array([35, 255, 255])
+        yellow_mask = cv2.inRange(hsv, yellow_lower, yellow_upper)
+        color_mask = cv2.bitwise_or(color_mask, yellow_mask)
+
+    labeled = np.zeros_like(dark_mask, dtype=np.int32)
+    label = 0
+    all_regions = []
+
+    for row in range(h):
+        for col in range(w):
+            if (dark_mask[row, col] == 1 or color_mask[row, col] == 1) and labeled[row, col] == 0:
+                label += 1
+                region_pixels = []
+                queue = deque([(row, col)])
+                labeled[row, col] = label
+                is_dark_region = dark_mask[row, col] == 1
+
+                while queue:
+                    r, c = queue.popleft()
+                    region_pixels.append((r, c))
+
+                    neighbors = [
+                        (r - 1, c), (r + 1, c), (r, c - 1), (r, c + 1),
+                        (r - 1, c - 1), (r - 1, c + 1), (r + 1, c - 1), (r + 1, c + 1),
+                    ]
+
+                    for nr, nc in neighbors:
+                        if 0 <= nr < h and 0 <= nc < w:
+                            if labeled[nr, nc] == 0:
+                                if dark_mask[nr, nc] == 1 or color_mask[nr, nc] == 1:
+                                    labeled[nr, nc] = label
+                                    queue.append((nr, nc))
+                                    if dark_mask[nr, nc] == 1:
+                                        is_dark_region = True
+
+                if is_dark_region and region_pixels:
+                    all_regions.append({
+                        'label': label,
+                        'pixels': region_pixels,
+                        'min_col': min(p[1] for p in region_pixels),
+                        'max_col': max(p[1] for p in region_pixels),
+                        'min_row': min(p[0] for p in region_pixels),
+                        'max_row': max(p[0] for p in region_pixels),
+                    })
+
+    return all_regions
+
+
+def find_drak_remove(image_path, dark_threshold=200, output_path=None, save_circle=True, remove_light_white=False, remove_color_adjacent=False, find_adjacent_color_regions=False, not_save_boundary=False,min_circularity=0.8, remove_color_and_adjacent_black=False, detect_green=False, detect_blue=False, detect_red=False, detect_yellow=False):
     """
     找出并移除深色像素（边界连通 + 闭合圆环）
     image_path: 可以是图片路径(str)或图片数组(numpy.ndarray)
     remove_color_adjacent: 如果为True，则排除与彩色像素相邻的深色区域
     find_adjacent_color_regions: 如果为True，额外找到与黑色像素相连的彩色像素区域
+    remove_color_and_adjacent_black: 如果为True，查找图中指定彩色像素及其相连的黑色像素并去除
+    detect_green/detect_blue/detect_red/detect_yellow: 指定要去除的彩色颜色
     """
     from ocr.detect_white_circles import find_all_white_regions, detect_circular_white_regions
     img, boundary_regions = find_boundary_connected_dark_pixels(
@@ -476,6 +574,14 @@ def find_drak_remove(image_path, dark_threshold=200, output_path=None, save_circ
                                                     min_circularity=min_circularity)
     if not_save_boundary == True:
         boundary_regions =[]
+
+    if remove_color_and_adjacent_black:
+        color_and_black_regions = find_color_and_adjacent_black_regions(
+            image_path, dark_threshold=dark_threshold,
+            detect_green=detect_green, detect_blue=detect_blue,
+            detect_red=detect_red, detect_yellow=detect_yellow)
+        boundary_regions = boundary_regions + color_and_black_regions
+
     result = remove_dark_regions(img, boundary_regions, closed_regions, output_path)
     return result
 

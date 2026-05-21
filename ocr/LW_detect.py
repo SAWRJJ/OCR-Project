@@ -1096,6 +1096,7 @@ def detect_colors(image_path, target_char, debug=True, threshold=100):
                                                       textbox_angle=textbox_angle)
     # polygon = sort_polygon_points(polygon)
     black_pixel_count = 0
+    temp = "test/test10/temp.jpg"
     img = find_drak_remove(img, save_circle=True, remove_color_adjacent=True)
     tres = None
     filename = os.path.basename(json_path).replace('_res.json', '')
@@ -1108,22 +1109,24 @@ def detect_colors(image_path, target_char, debug=True, threshold=100):
         #                                                                                           textbox_angle=textbox_angle,
         #                                                                                           debug=debug,
         #                                                                                           far_points=sorted_centers)
+        ori_img1 = img.copy()
+        # cv2.imwrite(temp, ori_img1)
         find_poly = single_line_find(vis_img, json_path, target_char,
                                      linear_point, img,
                                      textbox_angle=textbox_angle,
                                      debug=debug,
                                      far_points=sorted_centers)
         if find_poly is not None and len(find_poly) > 0:
-            # find_poly = find_poly.astype(np.int32)
-            # find_poly[0][1] += 20
-            # find_poly[1][1] -= 20
-            # find_poly[2][1] -= 20
-            # find_poly[3][1] += 20
+            h, w = img.shape[:2]  # h=127, w=425
+
+            # 记住口诀：X 对应 w，Y 对应 h
+            find_poly[:, 0] = np.clip(find_poly[:, 0], 0, w - 1)  # X 限制在 0 到 424
+            find_poly[:, 1] = np.clip(find_poly[:, 1], 0, h - 1)
 
             mask = np.zeros(img.shape[:2], dtype=np.uint8)
             cv2.fillPoly(mask, [find_poly], 255)
             x, y, w, h = cv2.boundingRect(find_poly)
-            roi = img[y:y + h, x:x + w]
+            roi = ori_img1[y:y + h, x:x + w]
             filename = os.path.basename(json_path).replace('_res.json', '')
             roi_path = os.path.join('output', f'{filename}_roi.png')
             cv2.imwrite(roi_path, roi)
@@ -1131,7 +1134,7 @@ def detect_colors(image_path, target_char, debug=True, threshold=100):
             # img1 = find_drak_remove(roi, save_circle=True, remove_color_adjacent=True)
             tres = find_white_circles(img1, output_path=wh_path, textbox_center=textbox_center, poly=poly,
                                       target_char=target_char, dark_polygon=find_poly, is_linear=True,
-                                      roi_offset=(x, y), ori_img=img, white_threshold=130)
+                                      roi_offset=(x, y), ori_img=ori_img1, white_threshold=130)
         else:
             tres = []
     else:

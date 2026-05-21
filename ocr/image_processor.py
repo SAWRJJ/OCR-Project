@@ -2,10 +2,118 @@ import os
 import cv2
 import numpy as np
 import logging
-
+from ocr.find_boundary_dark import find_drak_remove
 logger = logging.getLogger("ocr_system")
+import os
+import cv2
+import numpy as np
 
 
+def detect_and_whiten_color_with_connected_dark(
+    img, dark_threshold=165, debug_name=None
+):
+    hsv = cv2.cvtColor(img, cv2.COLOR_BGR2HSV)
+    h, s, v = hsv[:, :, 0], hsv[:, :, 1], hsv[:, :, 2]
+
+    valid_color = (s >= 50) & (v >= 50)
+
+    color_ranges = {
+        'blue': (90, 130),
+        'green': (35, 85),
+        'yellow': (20, 35),
+        'red': [(0, 10), (170, 179)],
+    }
+
+    combined_color_mask = np.zeros_like(valid_color, dtype=bool)
+    color_masks = {}
+
+    for color_name, h_range in color_ranges.items():
+        if isinstance(h_range, list):
+            mask = np.zeros_like(valid_color, dtype=bool)
+            for h_min, h_max in h_range:
+                mask |= (h >= h_min) & (h <= h_max) & valid_color
+        else:
+            h_min, h_max = h_range
+            mask = (h >= h_min) & (h <= h_max) & valid_color
+
+        color_masks[color_name] = mask
+        combined_color_mask |= mask
+
+    # 1. 第一步：平滑蓝色 mask
+    blue_mask = color_masks.get('blue', np.zeros_like(valid_color))
+    if np.any(blue_mask):
+        kernel = np.ones((3, 3), np.uint8)
+        blue_mask_uint8 = cv2.erode(
+            blue_mask.astype(np.uint8), kernel, iterations=1
+        )
+        blue_mask_uint8 = cv2.dilate(blue_mask_uint8, kernel, iterations=1)
+        blue_mask = blue_mask_uint8.astype(bool)
+        color_masks['blue'] = blue_mask
+
+        # 重新更新总颜色面具
+        combined_color_mask = np.zeros_like(valid_color, dtype=bool)
+        for m in color_masks.values():
+            combined_color_mask |= m.astype(bool)
+
+    # 2. 第二步：提取基础的暗色/黑色区域
+    gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
+    black_mask = (gray < dark_threshold).astype(np.uint8)
+
+    # ==================== 核心战略修改：动态向外生长触碰 ====================
+    # 放弃死板的 15px 固定长线。我们使用一个稍大的核进行膨胀，让颜色区域主动“长”出去触碰黑块。
+    # 如果你的外圈黑块距离颜色区域真的很远，可以把 iterations 改大（比如 5 或 8）
+    growth_kernel = np.ones((5, 5), np.uint8)
+    dilated_color_mask = cv2.dilate(
+        combined_color_mask.astype(np.uint8), growth_kernel, iterations=3
+    )
+
+    # 寻找颜色外延后，与黑色区域的交集（即触碰点）
+    touching_mask = (dilated_color_mask > 0) & (black_mask > 0)
+    # =====================================================================
+
+    # 3. 第三步：连通域追踪。
+    # 只要黑块的任何一个像素碰到了 `touching_mask`，整个黑块（连通域）就会被全部标记。
+    num_labels, labels, stats_cc, centroids = (
+        cv2.connectedComponentsWithStats(black_mask, connectivity=8)
+    )
+    connected_black_mask = np.zeros_like(black_mask, dtype=bool)
+
+    for i in range(1, num_labels):
+        # 如果当前连通块的面积太小（比如小于5个像素的噪点），可以选择跳过
+        if stats_cc[i, cv2.CC_STAT_AREA] < 5:
+            continue
+
+        component_mask = labels == i
+        if np.any(component_mask & touching_mask):
+            connected_black_mask |= component_mask
+
+    # Debug 导出
+    if debug_name is not None and np.any(blue_mask):
+        debug_path = "splits/debug"
+        os.makedirs(debug_path, exist_ok=True)
+        blue_mask_vis = (blue_mask * 255).astype(np.uint8)
+        cv2.imwrite(
+            os.path.join(debug_path, f"{debug_name}_blue_mask.jpg"),
+            blue_mask_vis,
+        )
+
+    # 4. 第四步：最终图像涂白渲染
+    result_img = img.copy()
+
+    # 联合颜色区 + 顺藤摸瓜找到的所有连通黑色区，全部涂白
+    final_white_mask = combined_color_mask | connected_black_mask
+    result_img[final_white_mask] = [255, 255, 255]
+
+    output_stats = {
+        'blue': int(np.sum(color_masks.get("blue", 0))),
+        'green': int(np.sum(color_masks['green'])),
+        'yellow': int(np.sum(color_masks['yellow'])),
+        'red': int(np.sum(color_masks['red'])),
+        'dark': int(np.sum(black_mask)),
+        'connected_dark': int(np.sum(connected_black_mask)),
+    }
+
+    return result_img, output_stats
 class ImageProcessor:
     @staticmethod
     def split_image(img_path, window=1000, overlap=300):
@@ -22,12 +130,15 @@ class ImageProcessor:
 
         bordered_h, bordered_w = bordered_img.shape[:2]
         os.makedirs("splits", exist_ok=True)
+        debug_path = "splits/debug"
+        os.makedirs(debug_path, exist_ok=True)
 
         infos = []
         valid_paths = []
         step = window - overlap
         idx = 0
 
+        img_size = os.path.getsize(img_path)
         for y in range(overlap, bordered_h, step):
             for x in range(overlap, bordered_w, step):
                 x2 = min(x + window, bordered_w)
@@ -35,6 +146,9 @@ class ImageProcessor:
                 orig_x, orig_y = x - overlap, y - overlap
 
                 patch = bordered_img[y:y2, x:x2]
+                debug_name = f"split_{idx}_{orig_x}_{orig_y}"
+                if img_size < 450 * 1024:
+                    patch, _ = detect_and_whiten_color_with_connected_dark(patch, debug_name=debug_name)
                 h_patch, w_patch = patch.shape[:2]
 
                 # --- 正常图保存 ---

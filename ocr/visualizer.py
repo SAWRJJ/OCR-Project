@@ -347,8 +347,8 @@ class Visualizer:
                 continue
             textbox_angle, _ = calculate_textbox_angle(poly)
             textbox_angle = abs(np.degrees(textbox_angle))
-            # if "K1242.304" == text:
-            #     print(-1)
+            if "S" in text:
+                print(-1)
             if textbox_angle > 34 and len(text.replace(" ", "")) > 5 and has_text_or_number(text) and "DG" not in text:
                 tt = text
                 # print(text)
@@ -617,7 +617,8 @@ class Visualizer:
             text = text.replace("×", "X")
             if "2300" in text and "404" in text:  # '1700xL1-80-00O0'
                 print(0)
-
+            if "S" in text:
+                print(-1)
             # if "K" in text or "." in text:
             #     mask = np.zeros(img.shape[:2], dtype=np.uint8)
             #     cv2.fillPoly(mask, [np.array(poly, dtype=np.int32)], 255)
@@ -685,8 +686,8 @@ class Visualizer:
                     # 确保文件名安全，不包含中文或非法字符
                     name = safe_filename_component(str(text))
                     # 如果 name 中包含非 ASCII 字符，替换为 hex 或其他
-                    if not all(ord(c) < 128 for c in name):
-                        name = "".join(c if ord(c) < 128 else f"_{ord(c):x}_" for c in name)
+                    # if not all(ord(c) < 128 for c in name):
+                    #     name = "".join(c if ord(c) < 128 else f"_{ord(c):x}_" for c in name)
 
                     filename = f"micro_{saved_count:04d}_{name}.jpg" if name else f"micro_{saved_count:04d}.jpg"
                     # 使用 imencode/imdecode 处理中文路径，或者确保路径不含中文
