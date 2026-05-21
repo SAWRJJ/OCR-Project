@@ -1,4 +1,5 @@
 import logging
+import math
 import os
 
 import cv2
@@ -179,3 +180,32 @@ def has_text_or_number(s):
     # a-zA-Z0-9 是字母和数字
     pattern = re.compile(r'[a-zA-Z0-9\u4e00-\u9fa5]')
     return bool(pattern.search(s))
+
+def is_polygon_center_close(poly1, poly2, distance_threshold=4.0):
+    """计算两个多边形文本框中心点的距离，若小于指定阈值则返回 True，反之返回 False。
+
+    参数:
+    poly1, poly2: 多边形的顶点坐标，可以是列表形式如 [[x1, y1], [x2, y2], ...]
+                  或者是 NumPy 数组形式。
+    distance_threshold: 距离阈值，默认 4.0 像素
+
+    返回:
+    bool: 是否小于阈值
+    """
+    # 1. 将输入转换为 NumPy 数组，方便矩阵运算
+    p1 = np.array(poly1, dtype=np.float32)
+    p2 = np.array(poly2, dtype=np.float32)
+
+    # 2. 计算两个多边形的几何中心点 (X平均值, Y平均值)
+    # axis=0 表示对所有顶点的 x 和 y 分别求平均
+    center1 = np.mean(p1, axis=0)
+    center2 = np.mean(p2, axis=0)
+
+    # 3. 计算两个中心点之间的欧几里得距离
+    # 公式: sqrt((x1 - x2)^2 + (y1 - y2)^2)
+    distance = math.sqrt(
+        (center1[0] - center2[0]) ** 2 + (center1[1] - center2[1]) ** 2
+    )
+
+    # 4. 判断并返回结果
+    return distance < distance_threshold

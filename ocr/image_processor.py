@@ -10,7 +10,7 @@ import numpy as np
 
 
 def detect_and_whiten_color_with_connected_dark(
-    img, dark_threshold=165, debug_name=None
+    img, dark_threshold=165, debug_name=None, debug_base_path=None
 ):
     hsv = cv2.cvtColor(img, cv2.COLOR_BGR2HSV)
     h, s, v = hsv[:, :, 0], hsv[:, :, 1], hsv[:, :, 2]
@@ -39,7 +39,7 @@ def detect_and_whiten_color_with_connected_dark(
         color_masks[color_name] = mask
         combined_color_mask |= mask
 
-    # 1. 第一步：平滑蓝色 mask
+    # 1. 第一步：优先提取并平滑蓝色 mask
     blue_mask = color_masks.get('blue', np.zeros_like(valid_color))
     if np.any(blue_mask):
         kernel = np.ones((3, 3), np.uint8)
@@ -59,50 +59,93 @@ def detect_and_whiten_color_with_connected_dark(
     gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
     black_mask = (gray < dark_threshold).astype(np.uint8)
 
-    # ==================== 核心战略修改：动态向外生长触碰 ====================
-    # 放弃死板的 15px 固定长线。我们使用一个稍大的核进行膨胀，让颜色区域主动“长”出去触碰黑块。
-    # 如果你的外圈黑块距离颜色区域真的很远，可以把 iterations 改大（比如 5 或 8）
-    growth_kernel = np.ones((5, 5), np.uint8)
-    dilated_color_mask = cv2.dilate(
-        combined_color_mask.astype(np.uint8), growth_kernel, iterations=3
-    )
+    # ==================== 核心修改：记录所有线段用于 Debug 绘图 ====================
+    bridge_lines = []  # 新增：用来存储所有画好的线段坐标
 
-    # 寻找颜色外延后，与黑色区域的交集（即触碰点）
-    touching_mask = (dilated_color_mask > 0) & (black_mask > 0)
+    if np.any(blue_mask):
+        num_labels, labels, stats, centroids = cv2.connectedComponentsWithStats(
+            blue_mask.astype(np.uint8), connectivity=8
+        )
+
+        h_img, w_img = img.shape[:2]
+        all_lines_mask = np.zeros_like(black_mask)
+
+        for i in range(1, num_labels):
+            if stats[i, cv2.CC_STAT_AREA] < 4:
+                continue
+
+            center_x = int(centroids[i][0])
+            center_y = int(centroids[i][1])
+
+            pt1 = (center_x, np.clip(center_y - 18, 0, h_img - 1))
+            pt2 = (center_x, np.clip(center_y + 18, 0, h_img - 1))
+
+            # 存储线段供后续 debug 使用
+            bridge_lines.append((pt1, pt2))
+
+            cv2.line(black_mask, pt1, pt2, 255, thickness=3)
+            cv2.line(all_lines_mask, pt1, pt2, 255, thickness=3)
+
+        combined_color_mask |= all_lines_mask > 0
     # =====================================================================
 
-    # 3. 第三步：连通域追踪。
-    # 只要黑块的任何一个像素碰到了 `touching_mask`，整个黑块（连通域）就会被全部标记。
-    num_labels, labels, stats_cc, centroids = (
+    # 3. 第三步：让颜色与黑色面具发生碰撞
+    kernel = np.ones((3, 3), np.uint8)
+    dilated_color_mask = cv2.dilate(
+        combined_color_mask.astype(np.uint8), kernel, iterations=2
+    )
+
+    touching_mask = (dilated_color_mask > 0) & (black_mask > 0)
+
+    # 4. 第四步：连通域追踪
+    num_labels_black, labels_black, stats_cc, centroids_black = (
         cv2.connectedComponentsWithStats(black_mask, connectivity=8)
     )
     connected_black_mask = np.zeros_like(black_mask, dtype=bool)
 
-    for i in range(1, num_labels):
-        # 如果当前连通块的面积太小（比如小于5个像素的噪点），可以选择跳过
-        if stats_cc[i, cv2.CC_STAT_AREA] < 5:
-            continue
-
-        component_mask = labels == i
+    for i in range(1, num_labels_black):
+        component_mask = labels_black == i
         if np.any(component_mask & touching_mask):
             connected_black_mask |= component_mask
 
-    # Debug 导出
-    if debug_name is not None and np.any(blue_mask):
-        debug_path = "splits/debug"
+    # ==================== 新增 Debug 导出：保存画了黑线的原图 ====================
+    if debug_name is not None and debug_base_path is not None:
+        debug_path = debug_base_path
         os.makedirs(debug_path, exist_ok=True)
-        blue_mask_vis = (blue_mask * 255).astype(np.uint8)
-        cv2.imwrite(
-            os.path.join(debug_path, f"{debug_name}_blue_mask.jpg"),
-            blue_mask_vis,
-        )
 
-    # 4. 第四步：最终图像涂白渲染
+        # 1. 保存原有的蓝色 Mask
+        if np.any(blue_mask):
+            blue_mask_vis = (blue_mask * 255).astype(np.uint8)
+            cv2.imwrite(
+                os.path.join(debug_path, f"{debug_name}_blue_mask.jpg"),
+                blue_mask_vis,
+            )
+
+        # 2. 核心要求：在原图上画出所有搭桥线并保存
+        if len(bridge_lines) > 0:
+            line_debug_img = img.copy()
+            for pt1, pt2 in bridge_lines:
+                # 用纯黑色 (0, 0, 0) 粗度为 3 画线。
+                # 提示：如果你觉得黑色在暗色背景里看不清，可以换成鲜艳的红色 (0, 0, 255)
+                cv2.line(line_debug_img, pt1, pt2, (0, 0, 0), thickness=3)
+
+            cv2.imwrite(
+                os.path.join(debug_path, f"{debug_name}_with_lines.jpg"),
+                line_debug_img,
+            )
+    # =====================================================================
+
+    # 5. 第五步：最终图像涂白渲染
     result_img = img.copy()
 
-    # 联合颜色区 + 顺藤摸瓜找到的所有连通黑色区，全部涂白
-    final_white_mask = combined_color_mask | connected_black_mask
-    result_img[final_white_mask] = [255, 255, 255]
+    # 先把所有独立颜色区域涂白
+    for color_name, mask in color_masks.items():
+        if np.sum(mask) > 0:
+            result_img[mask.astype(bool)] = [255, 255, 255]
+
+    # 再把总颜色区以及顺藤摸瓜找到的连通黑色区全部涂白
+    combined_mask = combined_color_mask | connected_black_mask
+    result_img[combined_mask] = [255, 255, 255]
 
     output_stats = {
         'blue': int(np.sum(color_masks.get("blue", 0))),
@@ -116,7 +159,7 @@ def detect_and_whiten_color_with_connected_dark(
     return result_img, output_stats
 class ImageProcessor:
     @staticmethod
-    def split_image(img_path, window=1000, overlap=300):
+    def split_image(img_path, window=1000, overlap=300,remove_color=False,clean_img = False):
         img = cv2.imread(img_path)
         if img is None:
             logger.error("无法读取图像")
@@ -129,9 +172,13 @@ class ImageProcessor:
         )
 
         bordered_h, bordered_w = bordered_img.shape[:2]
-        os.makedirs("splits", exist_ok=True)
-        debug_path = "splits/debug"
+        img_base_name = os.path.splitext(os.path.basename(img_path))[0]
+        splits_img_dir = os.path.join("splits", img_base_name)
+        os.makedirs(splits_img_dir, exist_ok=True)
+        debug_path = os.path.join(splits_img_dir, "debug")
         os.makedirs(debug_path, exist_ok=True)
+        clean_path = os.path.join(splits_img_dir, "clean")
+        os.makedirs(clean_path, exist_ok=True)
 
         infos = []
         valid_paths = []
@@ -147,12 +194,13 @@ class ImageProcessor:
 
                 patch = bordered_img[y:y2, x:x2]
                 debug_name = f"split_{idx}_{orig_x}_{orig_y}"
-                if img_size < 450 * 1024:
-                    patch, _ = detect_and_whiten_color_with_connected_dark(patch, debug_name=debug_name)
+                if img_size < 450 * 1024 or remove_color:
+                    patch, _ = detect_and_whiten_color_with_connected_dark(patch, debug_name=debug_name, debug_base_path=debug_path)
                 h_patch, w_patch = patch.shape[:2]
 
                 # --- 正常图保存 ---
-                path = f"splits/split_{idx}_{orig_x}_{orig_y}.jpg"
+                path = os.path.join(splits_img_dir, f"split_{idx}_{orig_x}_{orig_y}.jpg")
+                clean_path = os.path.join(clean_path, f"split_{idx}_{orig_x}_{orig_y}.jpg")
                 cv2.imwrite(path, patch)
 
                 # # --- 旋转图保存 ---
