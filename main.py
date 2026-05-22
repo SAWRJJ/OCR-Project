@@ -39,7 +39,7 @@ def main(image_paths):
         ocr_start_time = time.time()
         # Processing all splits in batch
         first_ocr_res = ocr_engine.predict(img_paths, output_dir=output_dir,init=True)
-        #TODO 进行一次筛选 去除 空的 和 全是中文字的 然后 对那些 符合条件的 进行 干净ocr 将额外结果 补充到第一次ocr的结果中
+
         second_ocr_res = ImageProcessor.filter_ocr_results(first_ocr_res)
         ImageProcessor.ocr_again(second_ocr_res,image_base_name=image_base_name)
         ocr_end_time = time.time()
