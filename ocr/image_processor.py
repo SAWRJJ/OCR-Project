@@ -1,4 +1,8 @@
+import json
+import math
 import os
+import re
+
 import cv2
 import numpy as np
 import logging
@@ -7,7 +11,8 @@ logger = logging.getLogger("ocr_system")
 import os
 import cv2
 import numpy as np
-
+# from ocr.utils import is_polygon_center_close
+from ocr.ocr_engine import OCREngine
 
 def detect_and_whiten_color_with_connected_dark(
     img, dark_threshold=165, debug_name=None, debug_base_path=None
@@ -157,7 +162,95 @@ def detect_and_whiten_color_with_connected_dark(
     }
 
     return result_img, output_stats
+
+# 1. 递归转换函数：防止 Numpy 数据导致 JSON 序列化失败
+def convert_numpy_to_list(obj):
+    if isinstance(obj, np.ndarray):
+        return obj.tolist()
+    elif isinstance(obj, (np.int16, np.int32, np.int64, np.integer)):
+        return int(obj)
+    elif isinstance(obj, (np.float16, np.float32, np.float64, np.floating)):
+        return float(obj)
+    elif isinstance(obj, dict):
+        return {k: convert_numpy_to_list(v) for k, v in obj.items()}
+    elif isinstance(obj, list):
+        return [convert_numpy_to_list(item) for item in obj]
+    return obj
+
+
+def is_polygon_center_close(poly1, poly2, distance_threshold=4.0):
+    p1 = np.array(poly1, dtype=np.float32)
+    p2 = np.array(poly2, dtype=np.float32)
+    center1 = np.mean(p1, axis=0)
+    center2 = np.mean(p2, axis=0)
+    distance = math.sqrt(
+        (center1[0] - center2[0]) ** 2 + (center1[1] - center2[1]) ** 2
+    )
+    return distance < distance_threshold
+
 class ImageProcessor:
+    @staticmethod
+    def filter_ocr_results(first_ocr_res):
+        """筛选 OCR 结果，去除空的和全是中文的结果
+        Args:
+            first_ocr_res: OCR 引擎返回的原始结果列表
+        Returns:
+            list: 筛选后的 OCR 结果列表
+        """
+        if not first_ocr_res:
+            return []
+        filtered_results = []
+        for res in first_ocr_res:
+            # 如果结果为空，跳过
+            if not res:
+                continue
+            # 检查是否有有效的文本内容
+            has_valid_text = False
+            # PaddleOCR 结果可能包含 'rec_texts' 字段或其他结构
+            if isinstance(res, dict):
+                # 检查 rec_texts 字段
+                if 'rec_texts' in res and res['rec_texts']:
+                    for text_item in res['rec_texts']:
+                        text = str(text_item) if text_item else ""
+                        # 检查是否包含非中文字符（字母、数字、符号等）
+                        if text and not ImageProcessor._is_all_chinese(text):
+                            has_valid_text = True
+                            break
+            elif isinstance(res, list):
+                # 如果结果是列表格式 [[box, (text, conf)], ...]
+                for item in res:
+                    if isinstance(item, (list, tuple)) and len(item) >= 2:
+                        box, info = item[0], item[1]
+                        if isinstance(info, (list, tuple)) and len(info) >= 1:
+                            text = str(info[0]) if info[0] else ""
+                            if text and not ImageProcessor._is_all_chinese(text):
+                                has_valid_text = True
+                                break
+            # 只有包含有效文本的结果才保留
+            if has_valid_text:
+                filtered_results.append(res)
+        logger.info(f"OCR 结果筛选: 原始 {len(first_ocr_res)} 个，筛选后 {len(filtered_results)} 个")
+        return filtered_results
+    
+    @staticmethod
+    def _is_all_chinese(text):
+        """判断文本是否全是中文字符
+        
+        Args:
+            text: 待判断的文本字符串
+            
+        Returns:
+            bool: 如果文本全是中文则返回 True，否则返回 False
+        """
+        if not text or not text.strip():
+            return True
+        
+        # 匹配中文字符的正则表达式
+        chinese_pattern = re.compile(r'^[\u4e00-\u9fff\u3000-\u303f\uff00-\uffef]+$')
+        
+        # 如果完全匹配中文正则，说明全是中文
+        return bool(chinese_pattern.match(text.strip()))
+
     @staticmethod
     def split_image(img_path, window=1000, overlap=300,remove_color=False,clean_img = False):
         img = cv2.imread(img_path)
@@ -187,6 +280,7 @@ class ImageProcessor:
 
         img_size = os.path.getsize(img_path)
         for y in range(overlap, bordered_h, step):
+            is_clean=False
             for x in range(overlap, bordered_w, step):
                 x2 = min(x + window, bordered_w)
                 y2 = min(y + window, bordered_h)
@@ -195,13 +289,24 @@ class ImageProcessor:
                 patch = bordered_img[y:y2, x:x2]
                 debug_name = f"split_{idx}_{orig_x}_{orig_y}"
                 if img_size < 450 * 1024 or remove_color:
+                    is_clean = True
+                    clean_img = False
                     patch, _ = detect_and_whiten_color_with_connected_dark(patch, debug_name=debug_name, debug_base_path=debug_path)
+                    # patch = find_drak_remove(patch, not_save_boundary=True, save_circle=False,
+                    #                           remove_light_white=True)
                 h_patch, w_patch = patch.shape[:2]
 
                 # --- 正常图保存 ---
                 path = os.path.join(splits_img_dir, f"split_{idx}_{orig_x}_{orig_y}.jpg")
-                clean_path = os.path.join(clean_path, f"split_{idx}_{orig_x}_{orig_y}.jpg")
                 cv2.imwrite(path, patch)
+                if clean_img and not is_clean:
+                    patch0, _ = detect_and_whiten_color_with_connected_dark(patch, debug_name=debug_name,
+                                                                           debug_base_path=debug_path)
+                    # patch0 = find_drak_remove(patch0,dark_threshold=190,not_save_boundary=True,save_circle=False,remove_light_white=True)
+                    clean_path0 = os.path.join(clean_path, f"split_{idx}_{orig_x}_{orig_y}.jpg")
+                    # print(clean_path0)
+                    cv2.imwrite(clean_path0, patch0)
+
 
                 # # --- 旋转图保存 ---
                 # center_patch = (w_patch // 2, h_patch // 2)
@@ -256,8 +361,111 @@ class ImageProcessor:
             json.dump(infos, f)
 
         logger.info(f"图像切分完成，共 {len(infos)*2} 张，其中非白图 {len(valid_paths)} 张")
-        return infos, valid_paths
+        return infos, valid_paths,clean_img
 
+    @staticmethod
+    def ocr_again(ocr_list,image_base_name):
+        ocr_engine = OCREngine()
+
+        for ocr_res in ocr_list:
+            input_path = ocr_res["input_path"]
+            if not input_path:
+                continue
+
+            # 解析路径：splits/t15/split_0_0_0.jpg
+            dirname, filename = os.path.split(input_path)
+            base_name, _ = os.path.splitext(filename)  # 得到 'split_0_0_0'
+
+            # 1. 读取用于二次识别的 clean 图像路径
+            input_path0 = os.path.join(dirname, "clean", filename)
+
+            if not os.path.exists(input_path0):
+                print(f"警告: 找不到清洗后的图片 {input_path0}，跳过。")
+                continue
+
+            # 2. 调用 PaddleX 执行二次预测
+            img = cv2.imread(input_path0)
+            results = ocr_engine.ocr.predict(img)
+
+            # 3. 解析并合并新结果
+            for result in results:
+                res_dict = (
+                    result if isinstance(result, dict) else result.get_to_dict()
+                )
+
+                if "rec_texts" not in res_dict or not res_dict["rec_texts"]:
+                    continue
+
+                new_texts = res_dict["rec_texts"]
+                new_scores = res_dict["rec_scores"]
+
+                new_polys = [
+                    poly.tolist() if isinstance(poly, np.ndarray) else poly
+                    for poly in res_dict["rec_polys"]
+                ]
+                new_dt_polys = [
+                    poly.tolist() if isinstance(poly, np.ndarray) else poly
+                    for poly in res_dict["dt_polys"]
+                ]
+
+                # 比对中心点距离，追加缺失框
+                for idx, new_poly in enumerate(new_polys):
+                    is_already_exist = False
+                    if new_texts[idx] == "D5":
+                        print(-1)
+                    for old_poly in ocr_res["rec_polys"]:
+                        if is_polygon_center_close(
+                                new_poly, old_poly, distance_threshold=10.0
+                        ):
+                            is_already_exist = True
+                            break
+
+                    if not is_already_exist:
+                        # print(
+                        #     f"[{filename}] 补回漏检文本: {new_texts[idx]}"
+                        # )
+                        if new_texts[idx] == "0" or new_texts[idx] == "":
+                            continue
+                        ocr_res["rec_polys"].append(new_poly)
+                        ocr_res["dt_polys"].append(new_dt_polys[idx])
+                        ocr_res["rec_texts"].append(new_texts[idx])
+                        ocr_res["rec_scores"].append(new_scores[idx])
+
+                        # 动态补齐外接矩形框 [xmin, ymin, xmax, ymax]
+                        poly_np = np.array(new_poly)
+                        xmin = int(np.min(poly_np[:, 0]))
+                        ymin = int(np.min(poly_np[:, 1]))
+                        xmax = int(np.max(poly_np[:, 0]))
+                        ymax = int(np.max(poly_np[:, 1]))
+                        ocr_res["rec_boxes"].append([xmin, ymin, xmax, ymax])
+
+            # ==================== 核心修改：写回对应的 JSON 文件 ====================
+            # 4. 构造输出目标路径：output/t1/split_0_0_0_res.json
+            # 这里的 'output/t1' 会根据你图片的层级自动匹配（如果固定是 t1，也可以硬编码）
+            output_dir = os.path.join("output", image_base_name)
+            os.makedirs(output_dir, exist_ok=True)  # 确保输出文件夹存在
+
+            json_out_path = os.path.join(output_dir, f"{base_name}_res.json")
+
+            # 5. 清理多余数据并执行安全格式化转换
+            # 移除不可导出的字体类对象、或者包含图像矩阵的大字段防止 JSON 体积爆炸
+            export_data = ocr_res.copy()
+            if "vis_fonts" in export_data:
+                export_data.pop("vis_fonts")
+            if "doc_preprocessor_res" in export_data:
+                export_data.pop("doc_preprocessor_res")
+
+            cleaned_data = convert_numpy_to_list(export_data)
+
+            # 6. 正式写入文件
+            with open(json_out_path, "w", encoding="utf-8") as f:
+                # indent=4 保持优美的缩进格式，ensure_ascii=False 确保中文正常不乱码
+                json.dump(cleaned_data, f, indent=4, ensure_ascii=False)
+            #
+            # print(f"成功将更新结果写回至: {json_out_path}")
+            # =====================================================================
+
+        return ocr_list
     @staticmethod
     def count_non_bw_pixels_along_line(img, p1, p2, line_thickness=3, white_thresh=245, black_thresh=10, mask=None):
         if img is None or img.size == 0:

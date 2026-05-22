@@ -28,7 +28,7 @@ def main(image_paths):
         t0 = time.time()
 
         # Split Image
-        splits, img_paths = ImageProcessor.split_image(image_path, window=1000,remove_color=True)
+        splits, img_paths,clean = ImageProcessor.split_image(image_path, window=1000,remove_color=False,clean_img=True)
 
         t2 = time.time()
         if not splits:
@@ -38,8 +38,10 @@ def main(image_paths):
         # Run OCR
         ocr_start_time = time.time()
         # Processing all splits in batch
-        ocr_engine.predict(img_paths, output_dir=output_dir)
-
+        first_ocr_res = ocr_engine.predict(img_paths, output_dir=output_dir,init=True)
+        #TODO 进行一次筛选 去除 空的 和 全是中文字的 然后 对那些 符合条件的 进行 干净ocr 将额外结果 补充到第一次ocr的结果中
+        second_ocr_res = ImageProcessor.filter_ocr_results(first_ocr_res)
+        ImageProcessor.ocr_again(second_ocr_res,image_base_name=image_base_name)
         ocr_end_time = time.time()
         ocr_total_time = ocr_end_time - ocr_start_time
         logger.info(f"OCR 处理总耗时: {ocr_total_time:.2f}s")
@@ -88,12 +90,12 @@ def main(image_paths):
         logger.info(f"OCR {image_base_name} 完成，文字结果已保存 time:{tn-t0}")
 
 if __name__ == "__main__":
-    # img_path1 =[]
-    img_path1 = []
+    img_path1 =[]
+    #img_path1 = ["img/t7.jpg"]
     # "img/t7.jpg"
-    img_path= ["img/t12.jpg","img/t11.jpg","img/t9.jpg","img/t8.jpg","img/t5.jpg","img/t2.jpg","img/t3.jpg","img/t6.jpg","img/t4.jpg","img/t1.jpg","img/t7.jpg"]+img_path1
+    img_path= ["img/t12.jpg","img/t11.jpg","img/t9.jpg","img/t8.jpg","img/t5.jpg","img/t2.jpg","img/t3.jpg","img/t6.jpg","img/t4.jpg","img/t1.jpg"]+img_path1
     # img_path = ["img/t9.jpg","img/t8.jpg","img/t5.jpg","img/t11.jpg","img/t12.jpg"]# "img/t9.jpg","img/t8.jpg"," "img/t9.jpg","img/t8.jpg","img/t5.jpg"
-    img_path = ["img/t15.jpg"]
+    # img_path = ["img/t11.jpg"]
     # img_path = ["img/元龙站.jpg","img/凤阁岭站.jpg","img/武功站.jpg","img/杨陵站场.jpg","img/新建河站.jpg"]#
     t1 = time.time()
     main(img_path)

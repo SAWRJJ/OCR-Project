@@ -562,9 +562,18 @@ def find_drak_remove(image_path, dark_threshold=200, output_path=None, save_circ
     detect_green/detect_blue/detect_red/detect_yellow: 指定要去除的彩色颜色
     """
     from ocr.detect_white_circles import find_all_white_regions, detect_circular_white_regions
-    img, boundary_regions = find_boundary_connected_dark_pixels(
-        image_path, dark_threshold=dark_threshold, remove_color_adjacent=remove_color_adjacent,
-        find_adjacent_color_regions=find_adjacent_color_regions)
+    if isinstance(image_path, np.ndarray):
+        img = image_path
+    else:
+        img = cv2.imread(image_path)
+        if img is None:
+            print(f"无法读取图像: {image_path}")
+            return None, None
+    boundary_regions = []
+    if not_save_boundary == False:
+        img, boundary_regions = find_boundary_connected_dark_pixels(
+            img, dark_threshold=dark_threshold, remove_color_adjacent=remove_color_adjacent,
+            find_adjacent_color_regions=find_adjacent_color_regions)
     closed_regions = []
     if not save_circle:
         closed_regions = find_closed_dark_regions(image_path, dark_threshold=dark_threshold)
@@ -572,9 +581,6 @@ def find_drak_remove(image_path, dark_threshold=200, output_path=None, save_circ
             regions, white_mask = find_all_white_regions(img, white_threshold=200)
             _, closed_regions = detect_circular_white_regions(regions, img.shape, closed_circles=closed_regions,
                                                     min_circularity=min_circularity)
-    if not_save_boundary == True:
-        boundary_regions =[]
-
     if remove_color_and_adjacent_black:
         color_and_black_regions = find_color_and_adjacent_black_regions(
             image_path, dark_threshold=dark_threshold,

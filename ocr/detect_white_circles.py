@@ -298,7 +298,7 @@ def find_white_circles(img0, white_threshold=200,textbox_center=None,poly=None,o
             print(f"  Region {r['region_id']}: center=({r['center'][0]:.1f}, {r['center'][1]:.1f}), "
                 f"radius={r['radius']:.1f}, circularity={r['circularity']:.3f}, pixels={r['pixel_count']}, "
                 f"距文本框距离={dist:.2f}, 距边界距离={border_dist:.2f}")
-            if dist <= 160 and not point_in_poly(r['center'], poly) and r['pixel_count']>10:
+            if dist <= 160 and not point_in_poly(r['center'], poly) and r['pixel_count']>10 and r["radius"]>1:
                 filtered_results.append(r)
 
         if output_path is not None:

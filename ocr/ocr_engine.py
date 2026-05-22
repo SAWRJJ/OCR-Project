@@ -33,9 +33,9 @@ class OCREngine:
         logger.info(f"OCR 初始化完成，耗时 {time.time() - start:.2f}s")
         self._initialized = True
 
-    def predict(self, img_path, output_dir: str = Config.DEFAULT_OUTPUT_DIR,adjust_type=False):
+    def predict(self, img_path, output_dir: str = Config.DEFAULT_OUTPUT_DIR,adjust_type=False,init=False):
         results = []
-        
+        res0 = []
         try:
             # PaddleOCR handles both single path and list of paths
             raw = self.ocr.predict(img_path)
@@ -48,13 +48,15 @@ class OCREngine:
             try:
                 res.save_to_img(output_dir)
                 res.save_to_json(output_dir)
+                res0.append(res.json["res"])
             except Exception as e:
                  logger.error(f"Error saving results for index {index}: {e}")
 
         # # If input is a list of paths, the function in original code returned None
         # if isinstance(img_path, list):
         #     return []
-            
+        if init:
+            return res0
         if not raw or not raw[0]:
             return results
 

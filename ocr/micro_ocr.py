@@ -3,6 +3,7 @@ import os
 import json
 import logging
 import math
+import re
 import traceback
 from functools import reduce
 
@@ -20,7 +21,8 @@ from ocr.find_boundary_dark import find_drak_remove
 from ocr.utils import calculate_shift_params, fullwidth_to_halfwidth
 from ocr.scan_dark_pixels import process_image_high_circularity_to_white
 from ocr.shift_VII import shift_step
-from ocr.find_nearest_point import find_nearest_point_to_poly, calculate_distances_to_all,filter_color_points_by_distance
+from ocr.find_nearest_point import find_nearest_point_to_poly, calculate_distances_to_all, \
+    filter_color_points_by_distance
 from ocr.calc_distance import if_triangle
 from ocr.filter_white import filter_white_points_in_rect
 import cv2
@@ -29,6 +31,20 @@ logger = logging.getLogger("ocr_system")
 PROJECT_ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 TARGET_PATH = os.path.join(PROJECT_ROOT, "resource", "target.json")
 THRESHOLD = 100
+
+
+def clean_potential_text(potential_text):
+    if not potential_text:
+        return potential_text
+
+    # 1. 规则一：如果含有 "O" 或 "o"，去掉其及后面的所有字符
+    cleaned = re.sub(r"[Oo].*", "", potential_text)
+
+    # 2. 规则二：如果最后一位是 "0"，且前面不是 1-9（即没有组合成 10, 20, 30...）则去除
+    # (?<![1-9])0$ 完美过滤 10,20,30，只对单独孤立的末尾 0 动手
+    cleaned = re.sub(r"(?<![1-9])0$", "", cleaned)
+
+    return cleaned
 
 
 def make_json_serializable(obj):
@@ -222,7 +238,7 @@ def process_micro_images(micro_img_dir):
             continue
 
         # micro_0005_S
-        if filename == "micro_0012_X1.jpg" or "micro_0004_X" in filename:  # micro_0087_D9
+        if filename == "micro_0261_SL2032600.jpg" or "XLI0" in filename:  # micro_0087_D9
             print(-1)
         img_path = os.path.join(micro_img_dir, filename)
         json_path = os.path.join(micro_img_dir, os.path.splitext(filename)[0] + ".json")
@@ -333,14 +349,13 @@ def process_micro_images(micro_img_dir):
                             not_save_boundary = False
                             # 'XⅣ'
                             if "FX" in filename_matched_key:
-                                ex_px=160
+                                ex_px = 160
                             elif "F" in filename_matched_key or "L" in filename_matched_key or "Z" in filename_matched_key or "Ⅳ" in filename_matched_key or "V" in filename_matched_key:
                                 ex_px = 120
                             elif "YXD" in potential_text:
                                 ex_px = 155
                             elif "XD" in potential_text:
                                 ex_px = 130
-
 
                             debug_vis_path = os.path.join(micro_img_dir, 'debug',
                                                           filename.replace('.jpg', '_shift_poly.jpg'))
@@ -351,7 +366,7 @@ def process_micro_images(micro_img_dir):
                                 debug_img=img,
                                 output_path=debug_vis_path
                             )
-                        if np.degrees(textbox_angle)>27:
+                        if np.degrees(textbox_angle) > 27:
                             not_save_boundary = False
                         x_min = max(0, int(min(p[0] for p in shifted_poly)))
                         x_max = min(img.shape[1], int(max(p[0] for p in shifted_poly)))
@@ -385,7 +400,8 @@ def process_micro_images(micro_img_dir):
                                                     filename.replace('.jpg', '_cropped_expect.jpg'))
 
                         cropped0 = find_drak_remove(cropped, dark_threshold=190, find_adjacent_color_regions=True,
-                                                    save_circle=False, remove_light_white=True,not_save_boundary=not_save_boundary)
+                                                    save_circle=False, remove_light_white=True,
+                                                    not_save_boundary=not_save_boundary)
                         if "FX" in filename_matched_key:
                             cropped_path1 = os.path.join(micro_img_dir, 'debug',
                                                          filename.replace('.jpg', '_cropped1.jpg'))
@@ -408,6 +424,7 @@ def process_micro_images(micro_img_dir):
                             for result in results:
                                 for i in range(len(result['rec_texts'])):
                                     potential_text = result['rec_texts'][i]
+                                    potential_text = clean_potential_text(potential_text)
                                     if "X" in potential_text[-1]:
                                         continue
                                     if "T" in potential_text[-1]:
@@ -568,25 +585,33 @@ def process_micro_images(micro_img_dir):
                                 clean_text = text.replace(' ', '')
                                 filtered_texts.append(clean_text)
 
-                            rec_poly = main_poly # 'SⅡI'
+                            rec_poly = main_poly  # 'SⅡI'
                             final_text = ''.join(filtered_texts)
                             if final_text == "SⅡI":
                                 print(-1)
+                            if  "VT" in final_text:
+                                final_text = final_text.replace("VT","VI")
                             if "ⅡI" in final_text and final_text[-1] == "I":
                                 final_text = final_text[:-1]
                             text = fullwidth_to_halfwidth(final_text)
                             if "VII" in text or "VI" in text:
                                 VII_count = count_vertical_strokes(cropped0)
+                                # 确定原本字符串里到底匹配到了哪一个（优先匹配长的 VII）
+                                target_roman = "VII" if "VII" in text else "VI"
                                 if VII_count <= 2:
-                                    text = "SVII"
+                                    # 只把 VII 或 VI 的部分替换为 VII
+                                    text = text.replace(target_roman, "VII")
                                 elif VII_count == 3:
-                                    text = "SVIII"
+                                    # 只把 VII 或 VI 的部分替换为 VIII
+                                    text = text.replace(target_roman, "VIII")
                             if abs(np.degrees(textbox_angle)) > angle_threshold:
                                 rec_poly = rotate_polys_back(rec_poly, textbox_angle,
                                                              center_point,
                                                              img.shape)
                             restored_poly = [[int(point[0] + x_min), int(point[1] + y_min)] for point in rec_poly]
                             filename_matched_key1, found_match_in_filename1 = check_all_text(text)
+                            filename_matched_key1 = clean_potential_text(filename_matched_key1)
+                            text = filename_matched_key1
                             if found_match_in_filename1 and filename_matched_key1 not in matched_keys:
                                 matched_keys.append(filename_matched_key1)
                             # if found_match_in_filename1:
@@ -661,7 +686,7 @@ def process_micro_images(micro_img_dir):
                             if i >= len(rec_scores) or i >= len(rec_polys):
                                 continue
                             potential_text = rec_texts[i]
-                            potential_text = potential_text.replace("YD"," ")
+                            potential_text = potential_text.replace("YD", " ")
                             first_confidence = rec_scores[i]
                             rec_poly = rec_polys[i]
                             restored_poly = [[int(point[0] + x_min), int(point[1] + y_min)] for point in rec_poly]
@@ -732,7 +757,7 @@ def process_micro_images(micro_img_dir):
                 # 计算字典里所有颜色的坐标总数
                 total_points = sum(len(v) for v in color_centers_separate.values())
                 # 只有当总点数是 1，且绿色的点数也是 1 时，说明“有且仅有绿色一个点”
-                if m_key=="X" and total_points == 1 and len(color_centers_separate.get('green', [])) == 1 :
+                if m_key == "X" and total_points == 1 and len(color_centers_separate.get('green', [])) == 1:
                     num_points = len(micro_poly)
                     center_x = sum(p[0] for p in micro_poly) / num_points
                     center_y = sum(p[1] for p in micro_poly) / num_points
@@ -740,15 +765,18 @@ def process_micro_images(micro_img_dir):
                     target_point = color_centers_separate["green"][0]
                     # 2. 计算给定点到中心的欧几里得距离
                     distance = math.sqrt((target_point[0] - center_x) ** 2 + (target_point[1] - center_y) ** 2)
-                    if distance>123:
+                    if distance > 123:
                         continue
                     print("条件满足：有且仅有绿色一个点")
                 if filename == "micro_0109_SL40III.jpg" or "XII0" in filename:  # micro_0110_2300_1X5 # micro_0085__5c0f_D # micro_0064_DOQOOSN micro_0048_XI micro_0093_XL_I_HO_00.json_input.png
                     print(-1)
                 print(json_path)
-                color_centers_separate["yellow"] = find_cluster_centers(color_centers_separate.get("yellow", []), distance_threshold=25)
-                nearest_point, min_dist, poly_center, nearest_white_points = find_nearest_point_to_poly(micro_poly, color_centers_separate)
-                color_centers_separate = filter_color_points_by_distance(color_centers_separate, threshold=255, reference_point=nearest_point)
+                color_centers_separate["yellow"] = find_cluster_centers(color_centers_separate.get("yellow", []),
+                                                                        distance_threshold=25)
+                nearest_point, min_dist, poly_center, nearest_white_points = find_nearest_point_to_poly(micro_poly,
+                                                                                                        color_centers_separate)
+                color_centers_separate = filter_color_points_by_distance(color_centers_separate, threshold=255,
+                                                                         reference_point=nearest_point)
                 is_linear = res.get("is_linear")
                 res["color_centers_separate"] = color_centers_separate
                 is_tri = False
@@ -762,20 +790,20 @@ def process_micro_images(micro_img_dir):
                                                                                             is_linear)
                         nearest_white_points = color_centers_separate["white"]
 
-                if nearest_white_points and len(nearest_white_points) >=2 and "D" not in m_key and not is_tri:
-                    is_double=True
+                if nearest_white_points and len(nearest_white_points) >= 2 and "D" not in m_key and not is_tri:
+                    is_double = True
                 res["is_double"] = is_double
                 res["is_tri"] = is_tri
                 from ocr.t182 import detect_arc_by_curvature
                 img = cv2.imread(img_path)
-                boxes, vis,_ = detect_arc_by_curvature(img, debug=True, max_arc_length=140,
-                                                     max_fit_error=1,
-                                                     min_points=15,min_threshold=100,radis=17,
-                                                  black_pixel_count_threshold=55)
+                boxes, vis, _ = detect_arc_by_curvature(img, debug=True, max_arc_length=140,
+                                                        max_fit_error=1,
+                                                        min_points=15, min_threshold=100, radis=17,
+                                                        black_pixel_count_threshold=55)
                 name, ext = os.path.splitext(os.path.basename(img_path))
                 output_path = f"./output/{name}_arc_result.jpg"
                 cv2.imwrite(output_path, vis)
-                if len(boxes)>0:
+                if len(boxes) > 0:
                     continue
                 if color_centers_separate and all(len(v) == 0 for v in color_centers_separate.values()):
                     continue
@@ -788,7 +816,7 @@ def process_micro_images(micro_img_dir):
 
                     if blue_len == 0 and red_len == 0:
                         continue
-                if m_key == "1FXII":
+                if m_key == "SBⅠ":
                     print(0)
                 if m_key:
                     if "D" in m_key and "D" not in filename:
@@ -815,7 +843,7 @@ def process_micro_images(micro_img_dir):
                                 "confidence": res["confidence"],  # 仍然记录原始置信度
                                 "item": final_item,
                                 "is_tri": res.get("is_tri", False),
-                                "is_double":res.get("is_double", False)
+                                "is_double": res.get("is_double", False)
                             }
                     else:  # 如果 m_key 不存在，直接添加
                         best_results_map[m_key] = {
@@ -1088,3 +1116,6 @@ if __name__ == '__main__':
     print(len(res))
     for r in res:
         print(r)
+    s= "SBⅠ0"
+    s0 = clean_potential_text(s)
+    print(s0)
