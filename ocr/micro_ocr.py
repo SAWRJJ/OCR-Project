@@ -238,7 +238,7 @@ def process_micro_images(micro_img_dir):
             continue
 
         # micro_0005_S
-        if filename == "micro_0261_SL2032600.jpg" or "XLI0" in filename:  # micro_0087_D9
+        if filename == 'micro_0028_XFS.jpg' or "XLI0" in filename:  # micro_0087_D9
             print(-1)
         img_path = os.path.join(micro_img_dir, filename)
         json_path = os.path.join(micro_img_dir, os.path.splitext(filename)[0] + ".json")
@@ -889,41 +889,60 @@ def process_micro_images(micro_img_dir):
     return all_matched_keys
 
 
-def save_results_to_excel(all_results, output_file="ocr_results.xlsx", micro_img_dir=None):
-    """
-    将 OCR 结果保存为 Excel 文件
-    包含字段: matched_keys, confidence, image_path, color_presence
-    """
-    import pandas as pd
-    import shutil
+import os
+import shutil
+import pandas as pd
 
-    results_dir = None
-    if micro_img_dir:
-        results_dir = os.path.join(os.path.dirname(micro_img_dir), "results")
-        os.makedirs(results_dir, exist_ok=True)
 
-    data_list = []
+def backup_ocr_files(all_results, micro_img_dir):
+    """
+    第一部分：专职负责备份/复制图片和 JSON 文件到 results 目录
+    """
+    if not micro_img_dir:
+        return
+
+    results_dir = os.path.join(os.path.dirname(micro_img_dir), "results")
+    os.makedirs(results_dir, exist_ok=True)
+
     copied_files = set()
-    print(all_results)
+
+    for item in all_results:
+        filename = item.get("filename", "")
+        if not filename:
+            continue
+
+        src_img_path = os.path.join(micro_img_dir, filename)
+        src_json_path = os.path.join(micro_img_dir, os.path.splitext(filename)[0] + ".json")
+
+        # 复制图片（去重）
+        if os.path.exists(src_img_path) and filename not in copied_files:
+            try:
+                shutil.copy2(src_img_path, os.path.join(results_dir, filename))
+                copied_files.add(filename)
+            except Exception as e:
+                logger.error(f"复制图片失败 {filename}: {e}")
+
+        # 复制 JSON 配置文件
+        if os.path.exists(src_json_path):
+            try:
+                shutil.copy2(src_json_path, os.path.join(results_dir, os.path.basename(src_json_path)))
+            except Exception as e:
+                logger.error(f"复制 JSON 失败 {os.path.basename(src_json_path)}: {e}")
+
+    logger.info(f"文件备份完成，共备份了 {len(copied_files)} 张不同的图片到: {results_dir}")
+
+
+def save_results_to_excel(all_results, output_file="ocr_results.xlsx"):
+    """
+    第二部分：专职负责解析 OCR 结果、计算特征并保存为 Excel 文件
+    """
+    data_list = []
+
     for item in all_results:
         filename = item.get("filename", "")
         details = item.get("details", [])
 
-        # 获取完整图片路径（假设 micro_img_dir 是已知的或者可以通过 filename 推断）
-        # 这里只保存文件名作为相对路径
-        image_path = filename
-
-        # 复制图片和JSON到results目录
-        if results_dir and filename:
-            src_img_path = os.path.join(micro_img_dir, filename)
-            src_json_path = os.path.join(micro_img_dir, os.path.splitext(filename)[0] + ".json")
-            if os.path.exists(src_img_path) and filename not in copied_files:
-                shutil.copy2(src_img_path, os.path.join(results_dir, filename))
-                copied_files.add(filename)
-            if os.path.exists(src_json_path):
-                shutil.copy2(src_json_path, os.path.join(results_dir, os.path.basename(src_json_path)))
-
-        # 如果没有 details，也要记录一条
+        # 1. 空数据兜底逻辑
         if not details:
             data_list.append({
                 "filename": filename,
@@ -934,10 +953,6 @@ def save_results_to_excel(all_results, output_file="ocr_results.xlsx", micro_img
                 "template_match_score": "",
                 "black_pixel_count": "",
                 "black_radio": "",
-                "color_blue": "No",
-                "color_green": "No",
-                "color_yellow": "No",
-                "color_red": "No",
                 "color_white": "No",
                 "red_centers": "",
                 "yellow_centers": "",
@@ -945,35 +960,29 @@ def save_results_to_excel(all_results, output_file="ocr_results.xlsx", micro_img
             })
             continue
 
+        # 2. 有数据时的清洗与提取
         for detail in details:
             text = detail.get("text", "")
             confidence = detail.get("confidence", 0.0)
-            # 颜色信息
-            # color_presence 结构: {'blue': False, 'green': True, ...}
             color_presence = detail.get("color_presence", {}) or {}
+
             clean_text = text.strip()
-            current_matched_key = ""
             current_matched_key, find_match = check_all_text(clean_text)
-            # 如果只想输出匹配到的结果：
-            if "XJ" in text:
-                print(-1)
+
+            # 只有成功匹配到关键字的行才录入 Excel
             if current_matched_key:
                 color_centers = detail.get("color_centers_separate", {})
 
-                def format_centers(centers):
-                    if not centers:
-                        return ""
-                    return ";".join([f"({c[0]},{c[1]})" for c in centers])
-
-                yellow_length = len(color_centers.get("yellow", []))
+                # 聚类计算黄色中心点
                 yr = find_cluster_centers(color_centers.get("yellow", []), distance_threshold=25)
+                yr = color_centers.get("yellow", [])
                 yl = len(yr)
-                gl = 0
-                rl = 0
-                if len(color_centers.get("green", [])) > 0:
-                    gl = len(color_centers.get("green", []))
-                if len(color_centers.get("red", [])) > 0:
-                    rl = 1
+
+                # 绿色与红色中心计数
+                gl = len(color_centers.get("green", [])) if color_centers.get("green") else 0
+                gl = len(color_centers.get("green", []))
+                rl = 1 if color_centers.get("red") else 0
+
                 row = {
                     "filename": filename,
                     "matched_key": current_matched_key,
@@ -983,10 +992,6 @@ def save_results_to_excel(all_results, output_file="ocr_results.xlsx", micro_img
                     "template_match_score": detail.get("template_match_score", ""),
                     "black_pixel_count": detail.get("black_pixel_count", ""),
                     "black_radio": detail.get("black_radio", ""),
-                    # "color_blue": "Yes" if color_presence.get("blue") else "No",
-                    # "color_green": "Yes" if color_presence.get("green") else "No",
-                    # "color_yellow": "Yes" if color_presence.get("yellow") else "No",
-                    # "color_red": "Yes" if color_presence.get("red") else "No",
                     "color_white": "Yes" if color_presence.get("white") else "No",
                     "red_centers": rl,
                     "yellow_centers": yl,
@@ -998,26 +1003,33 @@ def save_results_to_excel(all_results, output_file="ocr_results.xlsx", micro_img
                 }
                 data_list.append(row)
 
+    # 3. 校验并转换为 DataFrame
     if not data_list:
         logger.warning("没有数据需要保存到 Excel")
         return
 
     df = pd.DataFrame(data_list)
+
+    # 排序逻辑
     df = df.sort_values(by="matched_key", key=lambda x: x.str.lower() if x.dtype == object else x, ascending=False)
-    columns = ["filename", "matched_key", "confidence", "template_name", "template_match_res", "template_match_score",
-               "black_pixel_count", "black_radio",
-               "color_white",
-               "red_centers", "yellow_centers", "green_centers", "blue_centers",
-               "white_centers", "is_tri", "is_double"]  # "color_blue", "color_green", "color_yellow", "color_red",
+
+    # 定义需要输出的指定列和顺序
+    columns = [
+        "filename", "matched_key", "confidence", "template_name", "template_match_res", "template_match_score",
+        "black_pixel_count", "black_radio", "color_white",
+        "red_centers", "yellow_centers", "green_centers", "blue_centers", "white_centers",
+        "is_tri", "is_double"
+    ]
+
     final_columns = [c for c in columns if c in df.columns]
     df = df[final_columns]
 
+    # 4. 写入文件
     try:
         df.to_excel(output_file, index=False)
-        logger.info(f"结果已保存到 Excel: {output_file}")
+        logger.info(f"结果已成功保存到 Excel: {output_file}")
     except Exception as e:
         logger.error(f"保存 Excel 失败: {e}")
-
 
 def adjust_textbox_edge(img, poly, direction, json_path, crop_size=40):
     import cv2

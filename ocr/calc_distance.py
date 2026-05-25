@@ -8,7 +8,7 @@ def calculate_distances(points):
     return distances
 
 
-def filter_distance_pairs(points, distances, min_dist=29, max_dist=31):
+def filter_distance_pairs(points, distances, min_dist=29, max_dist=43):
     filtered_pairs = []
     for i in range(len(points)):
         for j in range(i + 1, len(points)):

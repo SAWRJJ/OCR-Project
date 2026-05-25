@@ -7,8 +7,10 @@ from ocr.ocr_engine import OCREngine
 from ocr.image_processor import ImageProcessor
 from ocr.data_handler import DataHandler
 from ocr.visualizer import Visualizer
-from ocr.micro_ocr import process_micro_images, save_results_to_excel
+from ocr.micro_ocr import process_micro_images, save_results_to_excel, backup_ocr_files
 from compare_xlsx_matched_keys import *
+from ocr.calculate_color_polygon_distances import process_distances,update_and_return_all_results
+from ocr.new_cal import generate_accurate_micro_relations_vis
 # Setup logging
 logger = setup_logging()
 
@@ -80,7 +82,16 @@ def main(image_paths):
             all_results = process_micro_images(micro_img_dir)
             # 保存到 Excel
             excel_path = os.path.join(output_dir, f"{image_base_name}_ocr_report.xlsx")
-            save_results_to_excel(all_results, excel_path, micro_img_dir)
+            # 假设你的 OCR 数据是 my_results，图片目录是 my_img_dir
+
+            # 步骤 1：先做文件归档备份（如果需要的话）
+            if micro_img_dir:
+                backup_ocr_files(all_results, micro_img_dir=micro_img_dir)
+            res = generate_accurate_micro_relations_vis(image_path, os.path.join(output_dir, "results"))
+            all_results1 = update_and_return_all_results(all_results,res)
+            # 步骤 2：生成并保存 Excel 报表
+            save_results_to_excel(all_results1, output_file=excel_path)
+            # save_results_to_excel(all_results, excel_path, micro_img_dir)
         t2 = time.time()
         logger.info(f"{image_base_name} micro ocr time:{t2 - t1}")
 
@@ -95,7 +106,7 @@ if __name__ == "__main__":
     # "img/t7.jpg"
     img_path= ["img/t12.jpg","img/t11.jpg","img/t9.jpg","img/t8.jpg","img/t5.jpg","img/t2.jpg","img/t3.jpg","img/t6.jpg","img/t4.jpg","img/t1.jpg"]+img_path1
     # img_path = ["img/t9.jpg","img/t8.jpg","img/t5.jpg","img/t11.jpg","img/t12.jpg"]# "img/t9.jpg","img/t8.jpg"," "img/t9.jpg","img/t8.jpg","img/t5.jpg"
-    # img_path = ["img/t11.jpg"]
+    img_path = ["img/t13.jpg"]
     # img_path = ["img/元龙站.jpg","img/凤阁岭站.jpg","img/武功站.jpg","img/杨陵站场.jpg","img/新建河站.jpg"]#
     t1 = time.time()
     main(img_path)

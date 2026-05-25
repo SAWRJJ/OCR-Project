@@ -707,11 +707,14 @@ class Visualizer:
                     # The poly coordinates are global. We subtract x0, y0.
                     relative_poly = [[p[0] - x0, p[1] - y0] for p in poly]
 
+                    patch_poly = [[x0, y0], [x1, y0], [x1, y1], [x0, y1]]
+
                     info_data = {
                         "micro_image_name": filename,
                         "text": text,
                         "global_poly": poly,  # Global coordinates
                         "micro_poly": relative_poly,  # Coordinates in the micro image
+                        "patch_poly": patch_poly,  # Patch bounding box coordinates
                         "source_split_image": os.path.basename(source_split),  # Which split image
                         "split_poly": split_poly,  # Coordinates in the split image
                         "color_presence": color_info["presence"],
