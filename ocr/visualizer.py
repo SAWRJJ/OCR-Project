@@ -434,6 +434,13 @@ class Visualizer:
                             mask_red
                         )
                         roi[final_mask > 0] = 255
+        base_name = os.path.basename(out_path)
+        name_without_ext = os.path.splitext(base_name)[0].split("_")[0]
+        ext = os.path.splitext(base_name)[1]
+        out_dir = os.path.dirname(out_path)
+        no_red_out_path = os.path.join(out_dir, f"{name_without_ext}{ext}")
+        cv2.imencode('.jpg', raw_img)[1].tofile(no_red_out_path)
+        logger.info(f"去除红色像素后的原图已保存: {no_red_out_path}")
         restored_results = []
         if text_list:
             rotate_angle = 30  # 顺时针30度
@@ -740,6 +747,7 @@ class Visualizer:
         logger.info(f"绘制红线后的结果已保存: {out_path}")
         if save_boxes_dir:
             logger.info(f"红线小方格及其对应的JSON文件已保存: {save_boxes_dir}，数量: {saved_count}")
+        return no_red_out_path
 
     @staticmethod
     def visualize(img_path, results, out_path="ocr_result.jpg"):

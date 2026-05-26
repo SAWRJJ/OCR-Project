@@ -66,7 +66,7 @@ def main(image_paths):
             t2 = time.time()
             logger.info(f"{image_base_name} rec_polys 加载完成，耗时：:{t2 - t1}")
             if rec_polys:
-                Visualizer.draw_red_lines(
+                no_red_out_path = Visualizer.draw_red_lines(
                     image_path,
                     rec_polys,
                     out_path=os.path.join(output_dir, f"{image_base_name}_ocr_result_with_red_lines.jpg"),
@@ -87,7 +87,7 @@ def main(image_paths):
             # 步骤 1：先做文件归档备份（如果需要的话）
             if micro_img_dir:
                 backup_ocr_files(all_results, micro_img_dir=micro_img_dir)
-            res = generate_accurate_micro_relations_vis(image_path, os.path.join(output_dir, "results"))
+            res = generate_accurate_micro_relations_vis(no_red_out_path, os.path.join(output_dir, "results"))
             all_results1 = update_and_return_all_results(all_results,res)
             # 步骤 2：生成并保存 Excel 报表
             save_results_to_excel(all_results1, output_file=excel_path)
@@ -102,11 +102,11 @@ def main(image_paths):
 
 if __name__ == "__main__":
     img_path1 =[]
-    #img_path1 = ["img/t7.jpg"]
+    # img_path1 = ["img/t7.jpg"]
     # "img/t7.jpg"
-    img_path= ["img/t12.jpg","img/t11.jpg","img/t9.jpg","img/t8.jpg","img/t5.jpg","img/t2.jpg","img/t3.jpg","img/t6.jpg","img/t4.jpg","img/t1.jpg"]+img_path1
+    img_path= ["img/t15.jpg","img/t13.jpg","img/t14.jpg","img/t12.jpg","img/t11.jpg","img/t9.jpg","img/t8.jpg","img/t5.jpg","img/t2.jpg","img/t3.jpg","img/t6.jpg","img/t4.jpg","img/t1.jpg"]+img_path1
     # img_path = ["img/t9.jpg","img/t8.jpg","img/t5.jpg","img/t11.jpg","img/t12.jpg"]# "img/t9.jpg","img/t8.jpg"," "img/t9.jpg","img/t8.jpg","img/t5.jpg"
-    img_path = ["img/t13.jpg"]
+    # img_path = ["img/t7.jpg"]
     # img_path = ["img/元龙站.jpg","img/凤阁岭站.jpg","img/武功站.jpg","img/杨陵站场.jpg","img/新建河站.jpg"]#
     t1 = time.time()
     main(img_path)

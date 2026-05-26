@@ -238,7 +238,7 @@ def process_micro_images(micro_img_dir):
             continue
 
         # micro_0005_S
-        if filename == 'micro_0028_XFS.jpg' or "XLI0" in filename:  # micro_0087_D9
+        if filename == 'micro_0017_X2FSII.jpg' or "D525" in filename:  # micro_0087_D9
             print(-1)
         img_path = os.path.join(micro_img_dir, filename)
         json_path = os.path.join(micro_img_dir, os.path.splitext(filename)[0] + ".json")
@@ -345,7 +345,7 @@ def process_micro_images(micro_img_dir):
                                         break
                         rect_width = max_x - min_x
                         if rect_width > 130:
-                            ex_px = 75
+                            ex_px = 80
                             not_save_boundary = False
                             # 'XⅣ'
                             if "FX" in filename_matched_key:
@@ -675,7 +675,7 @@ def process_micro_images(micro_img_dir):
                     cv2.imwrite(cropped_path0, cropped)
                     cropped0 = find_drak_remove(cropped, dark_threshold=190, find_adjacent_color_regions=True,
                                                 save_circle=False, remove_light_white=True, not_save_boundary=True,
-                                                min_circularity=0.81)
+                                                min_circularity=0.82)
                     cv2.imwrite(cropped_path, cropped0)
                     results = ocr_engine.ocr.predict(cropped0)
                     for result in results:
@@ -687,6 +687,7 @@ def process_micro_images(micro_img_dir):
                                 continue
                             potential_text = rec_texts[i]
                             potential_text = potential_text.replace("YD", " ")
+                            potential_text = potential_text.replace("K", "")
                             first_confidence = rec_scores[i]
                             rec_poly = rec_polys[i]
                             restored_poly = [[int(point[0] + x_min), int(point[1] + y_min)] for point in rec_poly]
@@ -810,7 +811,7 @@ def process_micro_images(micro_img_dir):
                 # if "F" not in m_key and "Y" not in m_key and color_centers_separate and len(nearest_white_points)==0:
                 #     continue
                 # 检查并更新全局最佳结果
-                if "D" in m_key and "Y" not in m_key:
+                if "D" in m_key and "Y" not in m_key and "F" not in m_key:
                     blue_len = len(color_centers_separate.get("blue", []))
                     red_len = len(color_centers_separate.get("red", []))
 

@@ -3,7 +3,7 @@ import numpy as np
 import json
 from ocr.LW_detect import detect_colors, calculate_textbox_angle
 from ocr.utils import calculate_angle_to_horizontal
-img_path = "/Users/saw/WorkSpace/work/OCR-Project/test/test10/micro_0012_X1.jpg"
+img_path = "/Users/saw/WorkSpace/work/OCR-Project/test/test10/t15.jpg"
 json_path = "/Users/saw/WorkSpace/work/OCR-Project/test/test10/micro_0014_FXII_K.json"
 
 img = cv2.imread(img_path)
@@ -36,7 +36,7 @@ print(len(text))
 # print(np.degrees(textbox_angle1))
 # print(np.degrees(angle))
 # print("===============")
-micro_poly = np.array([[122, 44], [122, 154], [159, 108], [159, -2]], dtype=np.int32)
+micro_poly = np.array([[5044.0, 974.0], [5134.0, 921.0], [5172.0, 974.0], [5081.0, 1026.0]], dtype=np.int32)
 # micro_poly1 = np.array([[300, 40], [300, 67], [419, 70], [419, 43]], dtype=np.int32)
 # cv2.polylines(img, [micro_poly1], isClosed=True, color=(0, 255, 255), thickness=2)
 h, w = img.shape[:2]
@@ -67,11 +67,11 @@ cv2.polylines(img, [micro_poly], isClosed=True, color=(0, 255, 0), thickness=2)
 # cv2.putText(img, f"C2({int(center_poly1[0])},{int(center_poly1[1])})", (int(center_poly1[0]) + 10, int(center_poly1[1]) - 10),
 #             cv2.FONT_HERSHEY_SIMPLEX, 0.5, (255, 0, 0), 2)
 
-# extra_point = (324, 57)
-# cv2.circle(img, extra_point, 5, (255, 0, 0), -1)
-# cv2.putText(img, f"P({extra_point[0]},{extra_point[1]})", (extra_point[0] + 10, extra_point[1] - 10),
-#             cv2.FONT_HERSHEY_SIMPLEX, 0.6, (255, 0, 0), 2)
-#
+extra_point = (5086, 1063)
+cv2.circle(img, extra_point, 5, (255, 0, 255), -1)
+cv2.putText(img, f"P({extra_point[0]},{extra_point[1]})", (extra_point[0] + 10, extra_point[1] - 10),
+            cv2.FONT_HERSHEY_SIMPLEX, 0.6, (255, 0, 255), 2)
+# #
 # extra_point1 = (97, 79)
 # dist = np.sqrt((extra_point[0] - extra_point1[0])**2 + (extra_point[1] - extra_point1[1])**2)
 # print(f"两个extra_point之间的距离: {dist:.2f}")
