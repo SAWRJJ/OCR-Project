@@ -102,7 +102,7 @@ def main(image_paths):
 
 if __name__ == "__main__":
     img_path1 =[]
-    # img_path1 = ["img/t7.jpg"]
+    img_path1 = ["img/t7.jpg"]
     # "img/t7.jpg"
     img_path= ["img/t15.jpg","img/t13.jpg","img/t14.jpg","img/t12.jpg","img/t11.jpg","img/t9.jpg","img/t8.jpg","img/t5.jpg","img/t2.jpg","img/t3.jpg","img/t6.jpg","img/t4.jpg","img/t1.jpg"]+img_path1
     # img_path = ["img/t9.jpg","img/t8.jpg","img/t5.jpg","img/t11.jpg","img/t12.jpg"]# "img/t9.jpg","img/t8.jpg"," "img/t9.jpg","img/t8.jpg","img/t5.jpg"

@@ -305,7 +305,7 @@ class Visualizer:
         raw_img = copy.deepcopy(img)
 
         if target_chars is None:
-            target_chars = ["S", "X", "D"]
+            target_chars = ["S", "X", "D","F"]
         if exclude_substrings is None:
             exclude_substrings = ["/", "DG", "G", "SK"]
 

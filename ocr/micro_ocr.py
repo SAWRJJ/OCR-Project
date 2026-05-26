@@ -238,7 +238,7 @@ def process_micro_images(micro_img_dir):
             continue
 
         # micro_0005_S
-        if filename == 'micro_0017_X2FSII.jpg' or "D525" in filename:  # micro_0087_D9
+        if filename == 'micro_0197_X406.jpg' or "D525" in filename:  # micro_0087_D9
             print(-1)
         img_path = os.path.join(micro_img_dir, filename)
         json_path = os.path.join(micro_img_dir, os.path.splitext(filename)[0] + ".json")
