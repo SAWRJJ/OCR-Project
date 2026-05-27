@@ -307,7 +307,7 @@ class Visualizer:
         if target_chars is None:
             target_chars = ["S", "X", "D","F"]
         if exclude_substrings is None:
-            exclude_substrings = ["/", "DG", "G", "SK"]
+            exclude_substrings = ["/", "DG", "G"]
 
         if save_boxes_dir:
             os.makedirs(save_boxes_dir, exist_ok=True)

@@ -238,7 +238,7 @@ def process_micro_images(micro_img_dir):
             continue
 
         # micro_0005_S
-        if filename == 'micro_0197_X406.jpg' or "D525" in filename:  # micro_0087_D9
+        if filename == 'micro_0197_X406.jpg' or "XX" in filename:  # micro_0087_D9
             print(-1)
         img_path = os.path.join(micro_img_dir, filename)
         json_path = os.path.join(micro_img_dir, os.path.splitext(filename)[0] + ".json")
@@ -293,7 +293,38 @@ def process_micro_images(micro_img_dir):
                 found_match_in_filename1 = False
                 textbox_angle, _ = calculate_textbox_angle(first_poly)
                 final_poly = copy.copy(first_poly)
-                if "X" in filename_matched_key:
+                filename_matched_key = filename_matched_key.replace("Ⅹ","X")
+                if filename_matched_key == "SX" or filename_matched_key == "XX":
+                    filename_matched_key = filename_matched_key[:-1] + "Ⅹ"
+                    matched_keys.append(filename_matched_key)
+                    all_detected_texts.append(potential_text)
+
+                    detail_item = {
+                        "text": potential_text,
+                        "confidence": first_confidence,
+                        "color_info": None,
+                        "matched_key": filename_matched_key,
+                        "micro_poly": final_poly,
+                        "img_path": img_path
+                    }
+                    if filename_matched_key and (("S" in filename_matched_key or "X" in filename_matched_key)):
+                        is_match, black_pixel_count, template_match_res, color_centers_separate, black_radio, is_linear = detect_colors(
+                            img_path,
+                            filename_matched_key,
+                            debug=True,
+                            threshold=THRESHOLD
+                        )
+                        print(template_match_res)
+                        detail_item["template_match_res"] = template_match_res
+                        detail_item["template_match_score"] = is_match
+                        detail_item["black_pixel_count"] = black_pixel_count
+                        detail_item["black_radio"] = black_radio
+                        detail_item["template_name"] = "color_detection"
+                        detail_item["color_centers_separate"] = color_centers_separate
+                        detail_item["is_linear"] = is_linear
+
+                    detailed_results.append(detail_item)
+                elif "X" in filename_matched_key:
                     dark_count, total_count, dark_ratio = count_dark_pixels_in_expanded_region(
                         cv2.imdecode(np.fromfile(img_path, dtype=np.uint8), cv2.IMREAD_COLOR),
                         first_poly,
